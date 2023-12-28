@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "101328423470",
+    "project_id": "healthysmile-af050",
+    "storage_bucket": "healthysmile-af050.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101328423470:android:af6ca1e9fee362e3b76dbf",
+        "android_client_info": {
+          "package_name": "com.buc.gradution"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101328423470-c8bm6v78s9f9cv2c3isv5movqgv8jpnc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.buc.gradution",
+            "certificate_hash": "e9f5a9cb31c078f6dba530b4177f4df7a481dc55"
+          }
+        },
+        {
+          "client_id": "101328423470-pqv65ekuels41oj66neliaa3h601unc5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB45PSCd_c8t8QelxgAnAiph7VfqI8-464"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101328423470-pqv65ekuels41oj66neliaa3h601unc5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

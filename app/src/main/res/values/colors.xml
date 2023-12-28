@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_color">#FF000000</color>
+    <color name="background_color">#FFFFFFFF</color>
+    <color name="main_color">#495796</color>
+    <color name="gradient_center">#80D2D8EE</color>
+    <color name="gradient_end">#00F5F7FF</color>
+    <color name="grey">#8D9299</color>
+    <color name="grey_stroke">#E5E7EB</color>
+    <color name="grey_background">#F9FAFB</color>
+    <color name="transparent">#00000000</color>
+    <color name="error_color">#FF5C5C</color>
+    <color name="ad_background">#E8F3F1</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>
