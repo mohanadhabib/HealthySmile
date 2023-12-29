@@ -3,7 +3,9 @@ package com.buc.gradution.Activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -16,10 +18,12 @@ import android.widget.Toast;
 
 import com.buc.gradution.Activity.Doctor.DoctorHomeActivity;
 import com.buc.gradution.Activity.User.UserHomeActivity;
+import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
@@ -30,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private String emailTxt, passwordTxt;
     private ImageView back;
     private TextInputLayout email , password;
+    private MaterialCheckBox doctorCheckBox;
     private TextView forgetPasswordBtn, signupBtn;
     private MaterialButton loginBtn , googleLoginBtn, facebookLoginBtn;
     private CircularProgressIndicator progressIndicator;
@@ -65,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         back = findViewById(R.id.back_button);
         email = findViewById(R.id.email_layout);
         password = findViewById(R.id.password_layout);
+        doctorCheckBox = findViewById(R.id.doctor);
         forgetPasswordBtn = findViewById(R.id.forget_password);
         loginBtn = findViewById(R.id.login_button);
         signupBtn = findViewById(R.id.signUp_button);
@@ -170,25 +176,41 @@ public class LoginActivity extends AppCompatActivity {
                     alertDialog.setView(view);
                     alertDialog.show();
                     goToHome.setOnClickListener(v -> {
-                        FirebaseService.getFirebaseDatabase().getReference("User").get()
-                                .addOnSuccessListener(dataSnapshot -> {
-                                    for(DataSnapshot data0 : dataSnapshot.getChildren()){
-                                        UserModel user = data0.getValue(UserModel.class);
-                                        if(authResult.getUser().getUid().equals(user.getId())&& user.getType().equals("Patient")){
-                                            Intent intent = new Intent(LoginActivity.this, UserHomeActivity.class);
-                                            startActivity(intent);
-                                            finish();
+                        String type = getUserType(doctorCheckBox);
+                        if(type.equals(Constant.PATIENT_TYPE)){
+                            FirebaseService.getFirebaseDatabase().getReference(Constant.PATIENT_TYPE).get()
+                                    .addOnSuccessListener(dataSnapshot -> {
+                                        for(DataSnapshot data0 : dataSnapshot.getChildren()){
+                                            UserModel user = data0.getValue(UserModel.class);
+                                            if(authResult.getUser().getUid().equals(user.getId())){
+                                                writeToSharedPreferences(Constant.PATIENT_TYPE);
+                                                Intent intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
                                         }
-                                        else{
-                                            Intent intent = new Intent(LoginActivity.this, DoctorHomeActivity.class);
-                                            startActivity(intent);
-                                            finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                        else if(type.equals(Constant.DOCTOR_TYPE)){
+                            FirebaseService.getFirebaseDatabase().getReference(Constant.DOCTOR_TYPE).get()
+                                    .addOnSuccessListener(dataSnapshot -> {
+                                        for(DataSnapshot data0 : dataSnapshot.getChildren()){
+                                            UserModel user = data0.getValue(UserModel.class);
+                                            if(authResult.getUser().getUid().equals(user.getId())){
+                                                writeToSharedPreferences(Constant.DOCTOR_TYPE);
+                                                Intent intent = new Intent(LoginActivity.this, DoctorHomeActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
                                         }
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                                });
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        }
                     });
                 })
                 .addOnFailureListener(e -> {
@@ -198,5 +220,24 @@ public class LoginActivity extends AppCompatActivity {
                     progressIndicator.setIndicatorColor(getColor(R.color.main_color));
                     Toast.makeText(LoginActivity.this,"Sorry, Couldn't login\nPlease try again", Toast.LENGTH_SHORT).show();
                 });
+    }
+    private String getUserType(MaterialCheckBox checkBox){
+        if(checkBox.isChecked()){
+            return Constant.DOCTOR_TYPE;
+        }
+        else{
+            return Constant.PATIENT_TYPE;
+        }
+    }
+    private void writeToSharedPreferences(String type){
+        SharedPreferences.Editor sharedPreference = getSharedPreferences(Constant.PREF_NAME,0).edit();
+        if(type.equals(Constant.DOCTOR_TYPE)){
+            sharedPreference.putString(Constant.TYPE,Constant.DOCTOR_TYPE);
+            sharedPreference.commit();
+        }
+        else if(type.equals(Constant.PATIENT_TYPE)){
+            sharedPreference.putString(Constant.TYPE,Constant.PATIENT_TYPE);
+            sharedPreference.commit();
+        }
     }
 }

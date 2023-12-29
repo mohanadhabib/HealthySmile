@@ -4,6 +4,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -46,7 +47,12 @@ public class UserHomeActivity extends AppCompatActivity {
         });
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
-            public void handleOnBackPressed() {}
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         });
     }
     private void initComponents(){

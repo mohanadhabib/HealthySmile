@@ -5,7 +5,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
-public class FirebaseService {
+public abstract class FirebaseService {
     public static final String WEB_CLIENT_ID = "101328423470-pqv65ekuels41oj66neliaa3h601unc5.apps.googleusercontent.com";
     private static FirebaseAuth firebaseAuth;
     private static FirebaseFirestore firebaseFirestore;

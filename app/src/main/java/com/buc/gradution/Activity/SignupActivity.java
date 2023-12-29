@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
@@ -187,10 +190,10 @@ public class SignupActivity extends AppCompatActivity {
     }
     private String getUserType(MaterialCheckBox checkBox){
         if(checkBox.isChecked()){
-            return "Doctor";
+            return Constant.DOCTOR_TYPE;
         }
         else{
-            return "Patient";
+            return Constant.PATIENT_TYPE;
         }
     }
     private void showAndHidePassword(TextInputLayout password){
@@ -210,13 +213,14 @@ public class SignupActivity extends AppCompatActivity {
         String id = authResult.getUser().getUid();
         UserModel user = new UserModel(id,name,email,getUserType(doctorCheck),uri.toString());
         FirebaseService.getFirebaseDatabase()
-                .getReference("User")
+                .getReference(getUserType(doctorCheck))
                 .child(id)
                 .setValue(user)
                 .addOnSuccessListener(
                         e -> {
                             progressIndicator.setProgress(100,true);
                             progressIndicator.setVisibility(View.INVISIBLE);
+                            writeToSharedPreferences(getUserType(doctorCheck));
                             LayoutInflater layoutInflater = LayoutInflater.from(this);
                             View layout = layoutInflater.inflate(R.layout.alert_dialog_signup,null);
                             MaterialButton login = layout.findViewById(R.id.login_button);
@@ -288,5 +292,16 @@ public class SignupActivity extends AppCompatActivity {
                     progressIndicator.setIndicatorColor(getColor(R.color.main_color));
                     Toast.makeText(SignupActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+    private void writeToSharedPreferences(String type){
+        SharedPreferences.Editor sharedPreference = getSharedPreferences(Constant.PREF_NAME,0).edit();
+        if(type.equals(Constant.DOCTOR_TYPE)){
+            sharedPreference.putString(Constant.TYPE,Constant.DOCTOR_TYPE);
+            sharedPreference.commit();
+        }
+        else if(type.equals(Constant.PATIENT_TYPE)){
+            sharedPreference.putString(Constant.TYPE,Constant.PATIENT_TYPE);
+            sharedPreference.commit();
+        }
     }
 }

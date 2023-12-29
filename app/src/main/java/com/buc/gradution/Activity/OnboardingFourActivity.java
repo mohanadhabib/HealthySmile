@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.R;
 import com.google.android.material.button.MaterialButton;
 
@@ -21,8 +22,8 @@ public class OnboardingFourActivity extends AppCompatActivity {
         setContentView(R.layout.activity_onboarding_four);
         initComponents();
         loginBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(OnboardingFourActivity.this, LoginActivity.class);
-            startActivity(intent);
+                Intent intent = new Intent(OnboardingFourActivity.this, LoginActivity.class);
+                startActivity(intent);
         });
         signupBtn.setOnClickListener(v -> {
             Intent intent = new Intent(OnboardingFourActivity.this, SignupActivity.class);
