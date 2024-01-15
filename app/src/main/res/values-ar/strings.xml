@@ -77,4 +77,13 @@
     <string name="dummy_doctor_spec">طبيب أسنان</string>
     <string name="dummy_rating">4,7</string>
     <string name="dummy_distance">علي بعد 500م</string>
+    <string name="my_saved">محفوظاتي</string>
+    <string name="appointment_txt">مواعيدي</string>
+    <string name="payment_method">وسائل الدفع</string>
+    <string name="faqs">الأسئله</string>
+    <string name="logout">تسجيل خروج</string>
+    <string name="are_you_sure_to_log_out_of">هل انت متأكد من انك تريد</string>
+    <string name="your_account">تسجيل الخروج من حسابك؟</string>
+    <string name="log_out">تسجيل خروج</string>
+    <string name="cancel">الغاء</string>
 </resources>

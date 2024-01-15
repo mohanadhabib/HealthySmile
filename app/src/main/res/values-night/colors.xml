@@ -13,4 +13,6 @@
     <color name="ad_background">#E8F3F1</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="icon_background">#76748C</color>
+    <color name="shadow_color">#DD2C3552</color>
 </resources>

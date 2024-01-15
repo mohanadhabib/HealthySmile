@@ -21,11 +21,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="5dp"
         android:cropToPadding="true"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:scaleType="centerCrop"
-        app:tint="@color/grey"
-        app:shapeAppearanceOverlay="@style/circleImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        app:shapeAppearanceOverlay="@style/circleImageView"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g1"
         android:orientation="horizontal"

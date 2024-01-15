@@ -10,8 +10,6 @@
         android:id="@+id/frame"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/nav_bar"
-        android:paddingVertical="25dp"
-        android:paddingHorizontal="15dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
     <com.google.android.material.bottomnavigation.BottomNavigationView

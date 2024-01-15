@@ -76,4 +76,13 @@
     <string name="dummy_doctor_spec">Dentist</string>
     <string name="dummy_rating">4,7</string>
     <string name="dummy_distance">500m away</string>
+    <string name="my_saved">My Saved</string>
+    <string name="appointment_txt">Appointment</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="faqs">FAQs</string>
+    <string name="logout">Logout</string>
+    <string name="are_you_sure_to_log_out_of">Are you sure to log out of</string>
+    <string name="your_account">your account?</string>
+    <string name="log_out">Log Out</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -2,15 +2,27 @@ package com.buc.gradution.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRecyclerAdapter.TopDoctorsRecyclerHolder> {
 
+    private ArrayList<UserModel> doctors = new ArrayList<>();
+    public void setDoctors(ArrayList<UserModel> doctors){
+        this.doctors = doctors;
+    }
     @NonNull
     @Override
     public TopDoctorsRecyclerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -20,8 +32,8 @@ public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRe
 
     @Override
     public void onBindViewHolder(@NonNull TopDoctorsRecyclerHolder holder, int position) {
-        holder.doctorImg.setImageResource(R.drawable.ic_user);
-        holder.doctorName.setText(holder.itemView.getResources().getString(R.string.dummy_doctor_name));
+        Picasso.get().load(doctors.get(position).getProfileImgUri()).into(holder.doctorImg);
+        holder.doctorName.setText(doctors.get(position).getName());
         holder.doctorSpec.setText(holder.itemView.getResources().getString(R.string.dummy_doctor_spec));
         holder.starTxt.setText(holder.itemView.getResources().getString(R.string.dummy_rating));
         holder.distance.setText(holder.itemView.getResources().getString(R.string.dummy_distance));
@@ -29,7 +41,7 @@ public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRe
 
     @Override
     public int getItemCount() {
-        return 4;
+        return doctors.size();
     }
 
     static class TopDoctorsRecyclerHolder extends RecyclerView.ViewHolder{
