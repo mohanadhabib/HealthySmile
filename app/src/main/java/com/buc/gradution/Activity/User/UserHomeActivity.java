@@ -24,24 +24,34 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class UserHomeActivity extends AppCompatActivity {
     private FrameLayout frame;
     private BottomNavigationView bottomNavigationView;
+    private UserHomeFragment userHomeFragment;
+    private UserChatFragment userChatFragment;
+    private UserScanFragment userScanFragment;
+    private UserAppointmentFragment userAppointmentFragment;
+    private UserProfileFragment userProfileFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_home);
         initComponents();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame,new UserHomeFragment()).commit();
+        userHomeFragment = new UserHomeFragment();
+        userChatFragment = new UserChatFragment();
+        userScanFragment = new UserScanFragment();
+        userAppointmentFragment = new UserAppointmentFragment();
+        userProfileFragment =  new UserProfileFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame,userHomeFragment).commit();
         bottomNavigationView.getMenu().getItem(0).setChecked(true);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame, new UserHomeFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame,userHomeFragment).commit();
             } else if (item.getItemId() == R.id.chat) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame, new UserChatFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame,userChatFragment).commit();
             } else if (item.getItemId() == R.id.scan) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame, new UserScanFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame,userScanFragment).commit();
             } else if (item.getItemId() == R.id.appointment) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame, new UserAppointmentFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame,userAppointmentFragment).commit();
             } else if (item.getItemId() == R.id.profile) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame, new UserProfileFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame,userProfileFragment).commit();
             }
             return true;
         });

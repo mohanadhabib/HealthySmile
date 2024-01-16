@@ -1,11 +1,13 @@
 package com.buc.gradution.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
@@ -89,10 +92,17 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 .addOnSuccessListener(command -> {
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
-                    Intent intent = new Intent(ResetPasswordActivity.this, VerifyCodeActivity.class);
-                    intent.putExtra("isEmail",true);
-                    intent.putExtra("email",email);
-                    startActivity(intent);
+                    LayoutInflater inflater = LayoutInflater.from(ResetPasswordActivity.this);
+                    View view = inflater.inflate(R.layout.alert_dialog_email_reset_password,null);
+                    AlertDialog alertDialog = new MaterialAlertDialogBuilder(ResetPasswordActivity.this).create();
+                    MaterialButton goToLoginPage = view.findViewById(R.id.go_to_login);
+                    alertDialog.setView(view);
+                    alertDialog.show();
+                    goToLoginPage.setOnClickListener(v ->{
+                        Intent intent = new Intent(ResetPasswordActivity.this, OnboardingFourActivity.class);
+                        startActivity(intent);
+                        finish();
+                    });
                 })
                 .addOnFailureListener(e -> Toast.makeText(ResetPasswordActivity.this, "Sorry,Couldn't send email\nplease try again", Toast.LENGTH_SHORT).show());
     }

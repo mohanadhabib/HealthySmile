@@ -86,4 +86,11 @@
     <string name="your_account">تسجيل الخروج من حسابك؟</string>
     <string name="log_out">تسجيل خروج</string>
     <string name="cancel">الغاء</string>
+    <string name="submit_image">اختر صوره</string>
+    <string name="error">حدثت مشكله</string>
+    <string name="sorry_it_is_not_an_xray_image">عذرا هذه ليست صوره اشعه صحيحه</string>
+    <string name="success_sent">Success</string>
+    <string name="a_verification_email_has_been_successfully">A Verification Email has been successfully</string>
+    <string name="sent_to_you_please_check_your_mail">Sent to you ,Please Check your mail</string>
+    <string name="go_to_login_page">Go To Login Page</string>
 </resources>

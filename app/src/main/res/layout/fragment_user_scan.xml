@@ -3,12 +3,92 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vg0"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vg1"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g0"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g1"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/before_img"
+        app:layout_constraintTop_toBottomOf="@id/g0"
+        app:layout_constraintBottom_toTopOf="@id/g1"
+        app:layout_constraintStart_toEndOf="@id/vg0"
+        app:layout_constraintEnd_toStartOf="@id/vg1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
     <TextView
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/result"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        android:textFontWeight="900"
+        android:fontFamily="@font/nunito"
+        app:layout_constraintTop_toBottomOf="@id/g1"
+        app:layout_constraintStart_toStartOf="@id/vg0"
+        app:layout_constraintEnd_toEndOf="@id/vg1"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g2"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g3"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/after_img"
+        app:layout_constraintTop_toBottomOf="@id/g2"
+        app:layout_constraintBottom_toTopOf="@id/g3"
+        app:layout_constraintStart_toEndOf="@id/vg0"
+        app:layout_constraintEnd_toStartOf="@id/vg1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/submit_img_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/scan"
+        android:layout_marginHorizontal="20dp"
+        android:padding="15dp"
+        app:cornerRadius="20dp"
+        android:text="@string/submit_image"
+        android:textColor="@color/background_color"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="600"
+        android:textSize="16sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress"
+        app:layout_constraintTop_toBottomOf="@id/result"
+        app:layout_constraintStart_toStartOf="@id/submit_img_button"
+        app:layout_constraintEnd_toEndOf="@id/submit_img_button"
+        app:indicatorColor="@color/main_color"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

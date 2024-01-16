@@ -5,4 +5,5 @@ public abstract class Constant {
     public static final String PATIENT_TYPE = "Patient";
     public static final String TYPE = "Type";
     public static final String PREF_NAME = "User Type";
+    public static final String apiScanKey = "MS6qgKKeYSWKBqbaiV7N";
 }
