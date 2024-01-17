@@ -6,8 +6,9 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     tools:context=".Activity.User.UserHomeActivity">
-    <FrameLayout
-        android:id="@+id/frame"
+    <androidx.viewpager2.widget.ViewPager2
+        android:isScrollContainer="false"
+        android:id="@+id/view_pager"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/nav_bar"
         android:layout_width="match_parent"

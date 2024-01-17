@@ -52,7 +52,7 @@ public class SignupActivity extends AppCompatActivity {
                 profileImg.setImageTintMode(null);
                 uri.set(result.getData().getData());
             }else{
-                Toast.makeText(SignupActivity.this, "Please select an image ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
         back.setOnClickListener(v -> finish());

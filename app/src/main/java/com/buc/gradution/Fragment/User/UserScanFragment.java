@@ -1,11 +1,14 @@
 package com.buc.gradution.Fragment.User;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,6 +35,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.concurrent.atomic.AtomicReference;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,11 +61,15 @@ public class UserScanFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initComponents(view);
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            uri.set(result.getData().getData());
-            beforeImg.setImageURI(uri.get());
-            progress.setVisibility(View.VISIBLE);
-            progress.setProgress(15,true);
-            uploadImage();
+            if(result.getResultCode() == RESULT_OK && result.getData() != null){
+                uri.set(result.getData().getData());
+                beforeImg.setImageURI(uri.get());
+                progress.setVisibility(View.VISIBLE);
+                progress.setProgress(15,true);
+                uploadImage();
+            }else {
+                Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
+            }
         });
         submitBtn.setOnClickListener(v -> {
             progress.setProgress(0,true);
@@ -124,24 +132,34 @@ public class UserScanFragment extends Fragment {
                                     String x = "";
                                     Bitmap bitmapWithText = createBitmapFromUri(uri.get()).copy(Bitmap.Config.ARGB_8888, true);
                                     Canvas canvas = new Canvas(bitmapWithText);
-                                    Paint paint = new Paint();
-                                    paint.setColor(getContext().getColor(R.color.white));
-                                    paint.setTextSize(40);
-                                    paint.setAntiAlias(true);
+                                    Paint paintTxt = new Paint();
+                                    Paint paintRect = new Paint();
+                                    paintTxt.setColor(getContext().getColor(R.color.white));
+                                    paintTxt.setTextSize(40);
+                                    paintTxt.setAntiAlias(true);
+                                    paintRect.setColor(getContext().getColor(R.color.dark_red));
+                                    paintRect.setAntiAlias(true);
+                                    DecimalFormat format = new DecimalFormat("0.00");
                                     for (int i = 0; i < response.body().getPredictions().size(); i++) {
-                                        x += response.body().getPredictions().get(i).getClassType() + "\t" + response.body().getPredictions().get(i).getConfidence() + "\n";
                                         String txt = response.body().getPredictions().get(i).getClassType();
-                                        double con = response.body().getPredictions().get(i).getConfidence();
-                                        float conPer = (float) con * 100;
+                                        double confidence = response.body().getPredictions().get(i).getConfidence();
+                                        String confidenceTxt = format.format(confidence);
+                                        x += txt + "\t" + confidenceTxt + "\n";
+                                        int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
                                         float xPos = response.body().getPredictions().get(i).getX();
                                         float yPos = response.body().getPredictions().get(i).getY();
-                                        canvas.drawText(txt+" "+conPer, xPos, yPos, paint);
+                                        Rect r = new Rect((int)xPos,(int)yPos,(int)(xPos+20),(int)(yPos+20));
+                                        canvas.drawRect(r,paintRect);
+                                        canvas.drawText(txt+" "+conPer+"%", xPos-10, yPos-10, paintTxt);
                                         progress.setProgress(100,true);
                                         progress.setVisibility(View.INVISIBLE);
                                     }
                                     resultTxt.setText(x);
                                     afterImg.setImageBitmap(bitmapWithText);
                                 } catch (Exception e) {
+                                    progress.setProgress(100,true);
+                                    progress.setVisibility(View.INVISIBLE);
+                                    afterImg.setImageBitmap(null);
                                     resultTxt.setText(getString(R.string.error));
                                 }
                             }
@@ -151,6 +169,8 @@ public class UserScanFragment extends Fragment {
                                 afterImg.setImageBitmap(null);
                                 resultTxt.setText(getString(R.string.sorry_it_is_not_an_xray_image));
                             }else{
+                                progress.setProgress(100,true);
+                                progress.setVisibility(View.INVISIBLE);
                                 afterImg.setImageBitmap(null);
                                 resultTxt.setText(getString(R.string.error));
                             }

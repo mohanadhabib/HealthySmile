@@ -15,4 +15,5 @@
     <color name="white">#FFFFFF</color>
     <color name="icon_background">#76748C</color>
     <color name="shadow_color">#DD2C3552</color>
+    <color name="dark_red">#830900</color>
 </resources>
