@@ -73,6 +73,7 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(SignupActivity.this, "Please select an image first.", Toast.LENGTH_SHORT).show();
             }
             if(isNameValid && isEmailValid && isPasswordValid && isCheckBoxChecked && isProfileImageSelected){
+                progressIndicator.setProgress(0,true);
                 String nameTxt = name.getEditText().getText().toString();
                 String emailTxt = email.getEditText().getText().toString();
                 String passwordTxt = password.getEditText().getText().toString();

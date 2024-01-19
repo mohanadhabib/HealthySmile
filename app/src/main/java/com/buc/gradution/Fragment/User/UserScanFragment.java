@@ -134,9 +134,12 @@ public class UserScanFragment extends Fragment {
                                     Canvas canvas = new Canvas(bitmapWithText);
                                     Paint paintTxt = new Paint();
                                     Paint paintRect = new Paint();
-                                    paintTxt.setColor(getContext().getColor(R.color.white));
-                                    paintTxt.setTextSize(40);
+                                    Paint background = new Paint();
+                                    background.setColor(getContext().getColor(R.color.prediction_background));
+                                    paintTxt.setColor(getContext().getColor(R.color.black));
+                                    paintTxt.setTextSize(45);
                                     paintTxt.setAntiAlias(true);
+                                    paintTxt.setStyle(Paint.Style.FILL);
                                     paintRect.setColor(getContext().getColor(R.color.dark_red));
                                     paintRect.setAntiAlias(true);
                                     DecimalFormat format = new DecimalFormat("0.00");
@@ -148,9 +151,14 @@ public class UserScanFragment extends Fragment {
                                         int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
                                         float xPos = response.body().getPredictions().get(i).getX();
                                         float yPos = response.body().getPredictions().get(i).getY();
+                                        String resTxt = txt+" "+conPer+"%";
+                                        float textWidth = paintTxt.measureText(resTxt);
                                         Rect r = new Rect((int)xPos,(int)yPos,(int)(xPos+20),(int)(yPos+20));
+                                        float x0 = xPos-10;
+                                        float y0 = yPos-10;
                                         canvas.drawRect(r,paintRect);
-                                        canvas.drawText(txt+" "+conPer+"%", xPos-10, yPos-10, paintTxt);
+                                        canvas.drawRect(x0,y0-paintTxt.getTextSize(),x0+textWidth,y0,background);
+                                        canvas.drawText(resTxt, x0, y0, paintTxt);
                                         progress.setProgress(100,true);
                                         progress.setVisibility(View.INVISIBLE);
                                     }

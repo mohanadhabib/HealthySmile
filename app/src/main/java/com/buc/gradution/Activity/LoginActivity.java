@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
             boolean isEmailValid = emailValidation(email);
             boolean isPasswordValid = passwordValidation(password);
             if (isEmailValid && isPasswordValid) {
+                progressIndicator.setProgress(0,true);
                 String emailTxt = email.getEditText().getText().toString();
                 String passwordTxt = password.getEditText().getText().toString();
                 login(emailTxt,passwordTxt);
