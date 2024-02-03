@@ -1,26 +1,25 @@
 package com.buc.gradution.Adapter;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.buc.gradution.Model.UserModel;
+import com.buc.gradution.Activity.User.UserDoctorDetailsActivity;
+import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.R;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRecyclerAdapter.TopDoctorsRecyclerHolder> {
 
-    private ArrayList<UserModel> doctors = new ArrayList<>();
-    public void setDoctors(ArrayList<UserModel> doctors){
+    private ArrayList<DoctorModel> doctors = new ArrayList<>();
+    public void setDoctors(ArrayList<DoctorModel> doctors){
         this.doctors = doctors;
     }
     @NonNull
@@ -32,16 +31,22 @@ public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRe
 
     @Override
     public void onBindViewHolder(@NonNull TopDoctorsRecyclerHolder holder, int position) {
+        View root = holder.itemView;
         Picasso.get().load(doctors.get(position).getProfileImgUri()).into(holder.doctorImg);
         holder.doctorName.setText(doctors.get(position).getName());
-        holder.doctorSpec.setText(holder.itemView.getResources().getString(R.string.dummy_doctor_spec));
-        holder.starTxt.setText(holder.itemView.getResources().getString(R.string.dummy_rating));
-        holder.distance.setText(holder.itemView.getResources().getString(R.string.dummy_distance));
+        holder.doctorSpec.setText(doctors.get(position).getSpec());
+        holder.starTxt.setText(doctors.get(position).getStars());
+        holder.distance.setText(doctors.get(position).getDistance());
+        holder.itemView.setOnClickListener(v ->{
+            Intent intent = new Intent(root.getContext(), UserDoctorDetailsActivity.class);
+            intent.putExtra("doctor",doctors.get(position));
+            root.getContext().startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return doctors.size();
+        return 4;
     }
 
     static class TopDoctorsRecyclerHolder extends RecyclerView.ViewHolder{

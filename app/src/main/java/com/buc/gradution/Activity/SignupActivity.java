@@ -5,8 +5,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,9 +18,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.buc.gradution.Constant.Constant;
+import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
+import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -39,12 +41,14 @@ public class SignupActivity extends AppCompatActivity {
     private MaterialButton signupBtn;
     private CircularProgressIndicator progressIndicator;
     private AtomicReference<Uri> uri;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         initComponents();
+        context = getApplicationContext();
         uri = new AtomicReference<>();
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result -> {
             if(result.getResultCode() == RESULT_OK && result.getData() != null){
@@ -64,20 +68,25 @@ public class SignupActivity extends AppCompatActivity {
         });
         password.setEndIconOnClickListener(v -> showAndHidePassword(password));
         signupBtn.setOnClickListener(v -> {
+            progressIndicator.setProgress(0);
             boolean isNameValid = nameValidation(name);
             boolean isEmailValid = emailValidation(email);
             boolean isPasswordValid = passwordValidation(password);
             boolean isCheckBoxChecked = isCheckboxChecked(checkBox);
-            boolean isProfileImageSelected = uri.get() == null ? false : true;
-            if(isProfileImageSelected == false){
+            boolean isProfileImageSelected = uri.get() != null;
+            if(!isProfileImageSelected){
                 Toast.makeText(SignupActivity.this, "Please select an image first.", Toast.LENGTH_SHORT).show();
             }
             if(isNameValid && isEmailValid && isPasswordValid && isCheckBoxChecked && isProfileImageSelected){
-                progressIndicator.setProgress(0,true);
-                String nameTxt = name.getEditText().getText().toString();
-                String emailTxt = email.getEditText().getText().toString();
-                String passwordTxt = password.getEditText().getText().toString();
-                signup(nameTxt,emailTxt,passwordTxt);
+               if(NetworkService.isConnected(context)){
+                   String nameTxt = name.getEditText().getText().toString();
+                   String emailTxt = email.getEditText().getText().toString();
+                   String passwordTxt = password.getEditText().getText().toString();
+                   signup(nameTxt,emailTxt,passwordTxt);
+               }
+               else{
+                   NetworkService.connectionFailed(context);
+               }
             }
         });
     }
@@ -212,7 +221,14 @@ public class SignupActivity extends AppCompatActivity {
     }
     private void createUser(AuthResult authResult ,String name ,String email ,String password ,Uri uri){
         String id = authResult.getUser().getUid();
-        UserModel user = new UserModel(id,name,email,getUserType(doctorCheck),uri.toString());
+        String type = getUserType(doctorCheck);
+        UserModel user = new UserModel();
+        if(type.equals(Constant.PATIENT_TYPE)){
+            user = new UserModel(id,name,email,type,uri.toString());
+        }else if (type.equals(Constant.DOCTOR_TYPE)){
+            user = new DoctorModel(id,name,email,type,uri.toString(),"Dentist","4,5","500m","");
+        }
+        UserModel finalUser = user;
         FirebaseService.getFirebaseDatabase()
                 .getReference(getUserType(doctorCheck))
                 .child(id)
@@ -221,14 +237,13 @@ public class SignupActivity extends AppCompatActivity {
                         e -> {
                             progressIndicator.setProgress(100,true);
                             progressIndicator.setVisibility(View.INVISIBLE);
-                            writeToSharedPreferences(getUserType(doctorCheck));
                             LayoutInflater layoutInflater = LayoutInflater.from(this);
                             View layout = layoutInflater.inflate(R.layout.alert_dialog_signup,null);
                             MaterialButton login = layout.findViewById(R.id.login_button);
                             AlertDialog dialog = new MaterialAlertDialogBuilder(SignupActivity.this).create();
                             login.setOnClickListener( v -> {
                                 Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
-                                intent.putExtra("email",user.getEmail());
+                                intent.putExtra("email", finalUser.getEmail());
                                 intent.putExtra("password",password);
                                 startActivity(intent);
                                 finish();
@@ -293,16 +308,5 @@ public class SignupActivity extends AppCompatActivity {
                     progressIndicator.setIndicatorColor(getColor(R.color.main_color));
                     Toast.makeText(SignupActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 });
-    }
-    private void writeToSharedPreferences(String type){
-        SharedPreferences.Editor sharedPreference = getSharedPreferences(Constant.PREF_NAME,0).edit();
-        if(type.equals(Constant.DOCTOR_TYPE)){
-            sharedPreference.putString(Constant.TYPE,Constant.DOCTOR_TYPE);
-            sharedPreference.commit();
-        }
-        else if(type.equals(Constant.PATIENT_TYPE)){
-            sharedPreference.putString(Constant.TYPE,Constant.PATIENT_TYPE);
-            sharedPreference.commit();
-        }
     }
 }

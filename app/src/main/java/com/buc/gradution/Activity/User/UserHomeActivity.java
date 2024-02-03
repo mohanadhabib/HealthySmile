@@ -7,8 +7,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.buc.gradution.Adapter.UserHomeViewPagerAdapter;
 import com.buc.gradution.Fragment.User.UserAppointmentFragment;
@@ -77,6 +75,7 @@ public class UserHomeActivity extends AppCompatActivity {
             }
         });
     }
+
     private void initComponents(){
         viewPager = findViewById(R.id.view_pager);
         bottomNavigationView = findViewById(R.id.nav_bar);

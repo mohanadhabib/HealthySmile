@@ -66,6 +66,7 @@
             android:layout_height="match_parent"
             android:autofillHints="name"
             android:fontFamily="@font/nunito_regular"
+            android:focusableInTouchMode="false"
             android:maxLines="1"
             android:inputType="text"
             android:textSize="14sp"
@@ -172,8 +173,24 @@
         app:layout_constraintGuide_percent="0.625"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/no_item_txt"
+        android:visibility="invisible"
+        android:text="@string/no_data_found"
+        android:gravity="center"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/g3"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="18sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold"
+        android:textFontWeight="900"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/top_doctors_recycler"
+        android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@id/g3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

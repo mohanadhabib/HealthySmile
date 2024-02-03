@@ -17,4 +17,5 @@
     <color name="shadow_color">#E8E1DFDF</color>
     <color name="dark_red">#830900</color>
     <color name="prediction_background">#afb9dd</color>
+    <color name="appointment_color">#555555</color>
 </resources>

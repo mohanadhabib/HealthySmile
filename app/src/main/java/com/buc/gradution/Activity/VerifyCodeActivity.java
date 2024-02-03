@@ -3,6 +3,7 @@ package com.buc.gradution.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
+import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
@@ -31,11 +33,13 @@ public class VerifyCodeActivity extends AppCompatActivity {
     private TextInputLayout t1,t2,t3,t4,t5,t6;
     private MaterialButton verify;
     private Intent mainIntent;
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_code);
         mainIntent = getIntent();
+        context = getApplicationContext();
         initComponents();
         getDataFromResetScreen();
         getNextText(t1,t2);
@@ -57,22 +61,32 @@ public class VerifyCodeActivity extends AppCompatActivity {
                     t4.getEditText().getText().toString()+
                     t5.getEditText().getText().toString()+
                     t6.getEditText().getText().toString();
-            if(isEmail){
-                Intent intent = new Intent(VerifyCodeActivity.this, CreateNewPasswordActivity.class);
-                intent.putExtra("code",code);
-                startActivity(intent);
-            }else{
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(id,code);
-                FirebaseService.getFirebaseAuth()
-                        .signInWithCredential(credential)
-                        .addOnSuccessListener(command -> {
-                            Intent intent = new Intent(VerifyCodeActivity.this, CreateNewPasswordActivity.class);
-                            startActivity(intent);
-                        })
-                        .addOnFailureListener(e-> Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show());
+            if(NetworkService.isConnected(context)){
+                if(isEmail){
+                    Intent intent = new Intent(VerifyCodeActivity.this, CreateNewPasswordActivity.class);
+                    intent.putExtra("code",code);
+                    startActivity(intent);
+                }else{
+                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(id,code);
+                    FirebaseService.getFirebaseAuth()
+                            .signInWithCredential(credential)
+                            .addOnSuccessListener(command -> {
+                                Intent intent = new Intent(VerifyCodeActivity.this, CreateNewPasswordActivity.class);
+                                startActivity(intent);
+                            })
+                            .addOnFailureListener(e-> Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show());
+                }
+            } else{
+                NetworkService.connectionFailed(context);
             }
         });
-        resendBtn.setOnClickListener(v -> resendOTP(finalPhoneNum));
+        resendBtn.setOnClickListener(v -> {
+            if (NetworkService.isConnected(context)){
+                resendOTP(finalPhoneNum);
+            }else{
+                NetworkService.connectionFailed(context);
+            }
+        });
     }
     private void initComponents(){
         back = findViewById(R.id.back_button);

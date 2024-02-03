@@ -92,4 +92,24 @@
     <string name="a_verification_email_has_been_successfully">A Verification Email has been successfully</string>
     <string name="sent_to_you_please_check_your_mail">Sent to you ,Please Check your mail</string>
     <string name="go_to_login_page">Go To Login Page</string>
+    <string name="top_doctor">Top Doctor</string>
+    <string name="doctor_search">Doctor Search</string>
+    <string name="doctor_detail">Doctor Detail</string>
+    <string name="about">About</string>
+    <string name="pick_a_date">Pick A Date</string>
+    <string name="pick_a_time">Pick A Time</string>
+    <string name="no_date_selected">No Date Selected</string>
+    <string name="no_time_selected">No Time Selected</string>
+    <string name="selected_date_and_time">Selected Date And Time</string>
+    <string name="book_appointment">Book Appointment</string>
+    <string name="appointment_success">Appointment Success</string>
+    <string name="your_appointment_has_been_successfully">Your Appointment has been successfully</string>
+    <string name="created_you_can_have_a_consultation_session">Created, you can have a consultation session</string>
+    <string name="with_your_trusted_doctor">with your trusted doctor</string>
+    <string name="chat_doctor">Chat Doctor</string>
+    <string name="schedule">Schedule</string>
+    <string name="reschedule_txt">Reschedule</string>
+    <string name="cancel_txt">Cancel</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="no_data_found">No data found</string>
 </resources>

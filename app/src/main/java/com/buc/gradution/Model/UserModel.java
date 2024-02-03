@@ -1,8 +1,8 @@
 package com.buc.gradution.Model;
 
-import android.net.Uri;
+import java.io.Serializable;
 
-public class UserModel {
+public class UserModel implements Serializable {
     private String id;
     private String name;
     private String email;

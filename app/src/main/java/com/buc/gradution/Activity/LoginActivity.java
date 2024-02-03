@@ -3,6 +3,7 @@ package com.buc.gradution.Activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,9 +19,11 @@ import android.widget.Toast;
 import com.buc.gradution.Activity.Doctor.DoctorHomeActivity;
 import com.buc.gradution.Activity.User.UserHomeActivity;
 import com.buc.gradution.Constant.Constant;
+import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
+import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -28,6 +31,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -40,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView forgetPasswordBtn, signupBtn;
     private MaterialButton loginBtn , googleLoginBtn, facebookLoginBtn;
     private CircularProgressIndicator progressIndicator;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +52,21 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initComponents();
         getDataFromSignUp();
+        context = getApplicationContext();
         back.setOnClickListener(v -> finish());
         password.setEndIconOnClickListener(v -> showAndHidePassword(password));
         loginBtn.setOnClickListener(v -> {
+            progressIndicator.setProgress(0);
             boolean isEmailValid = emailValidation(email);
             boolean isPasswordValid = passwordValidation(password);
             if (isEmailValid && isPasswordValid) {
-                progressIndicator.setProgress(0,true);
-                String emailTxt = email.getEditText().getText().toString();
-                String passwordTxt = password.getEditText().getText().toString();
-                login(emailTxt,passwordTxt);
+                if (NetworkService.isConnected(context)) {
+                    String emailTxt = email.getEditText().getText().toString();
+                    String passwordTxt = password.getEditText().getText().toString();
+                    login(emailTxt, passwordTxt);
+                } else {
+                    NetworkService.connectionFailed(context);
+                }
             }
         });
         signupBtn.setOnClickListener(v -> {
@@ -203,7 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                             for(DataSnapshot data0 : dataSnapshot.getChildren()){
                                 UserModel user = data0.getValue(UserModel.class);
                                 if(authResult.getUser().getUid().equals(user.getId())){
-                                    writeToSharedPreferences(Constant.PATIENT_TYPE);
+                                    writeToSharedPreferences(Constant.PATIENT_TYPE,user);
                                     isRightType.set(true);
                                     homePagePopUp(UserHomeActivity.class);
                                 }
@@ -212,17 +222,15 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Error, Please Try Again.", Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                        });
+                        .addOnFailureListener(e -> Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
             }
             else if(type.equals(Constant.DOCTOR_TYPE)){
                 FirebaseService.getFirebaseDatabase().getReference(Constant.DOCTOR_TYPE).get()
                         .addOnSuccessListener(dataSnapshot -> {
                             for(DataSnapshot data0 : dataSnapshot.getChildren()){
-                                UserModel user = data0.getValue(UserModel.class);
+                                DoctorModel user = data0.getValue(DoctorModel.class);
                                 if(authResult.getUser().getUid().equals(user.getId())){
-                                    writeToSharedPreferences(Constant.DOCTOR_TYPE);
+                                    writeToSharedPreferences(Constant.DOCTOR_TYPE,user);
                                     isRightType.set(true);
                                     homePagePopUp(DoctorHomeActivity.class);
                                 }
@@ -231,9 +239,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Error, Please Try Again.", Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                        });
+                        .addOnFailureListener(e -> Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
             }
 
     }
@@ -245,8 +251,13 @@ public class LoginActivity extends AppCompatActivity {
             return Constant.PATIENT_TYPE;
         }
     }
-    private void writeToSharedPreferences(String type){
-        SharedPreferences.Editor sharedPreference = getSharedPreferences(Constant.PREF_NAME,0).edit();
+    private void writeToSharedPreferences(String type,UserModel userModel){
+        Gson gson = new Gson();
+        SharedPreferences.Editor sharedPreference = getSharedPreferences(Constant.USER_TYPE,0).edit();
+        SharedPreferences.Editor currentUser = getSharedPreferences(Constant.CURRENT_USER,0).edit();
+        String user = gson.toJson(userModel);
+        currentUser.putString(Constant.OBJECT,user);
+        currentUser.commit();
         if(type.equals(Constant.DOCTOR_TYPE)){
             sharedPreference.putString(Constant.TYPE,Constant.DOCTOR_TYPE);
             sharedPreference.commit();

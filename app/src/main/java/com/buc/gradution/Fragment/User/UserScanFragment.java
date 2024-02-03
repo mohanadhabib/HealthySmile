@@ -3,6 +3,7 @@ package com.buc.gradution.Fragment.User;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,7 @@ import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.ScanOutputModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
+import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.Service.ScanInterface;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -48,6 +50,7 @@ public class UserScanFragment extends Fragment {
     private MaterialButton submitBtn;
     private TextView resultTxt;
     private CircularProgressIndicator progress;
+    private Context context;
     private AtomicReference<Uri> uri = new AtomicReference<>();
 
     @Nullable
@@ -60,13 +63,19 @@ public class UserScanFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initComponents(view);
+        context = view.getContext();
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if(result.getResultCode() == RESULT_OK && result.getData() != null){
                 uri.set(result.getData().getData());
                 beforeImg.setImageURI(uri.get());
-                progress.setVisibility(View.VISIBLE);
-                progress.setProgress(15,true);
-                uploadImage();
+                if(NetworkService.isConnected(context)){
+                    progress.setVisibility(View.VISIBLE);
+                    progress.setProgress(15,true);
+                    uploadImage();
+                }
+                else{
+                    NetworkService.connectionFailed(context);
+                }
             }else {
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.R;
 import com.google.android.material.button.MaterialButton;
 

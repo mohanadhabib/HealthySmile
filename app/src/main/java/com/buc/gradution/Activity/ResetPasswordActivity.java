@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
+import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -34,11 +37,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private TextInputLayout emailPhone;
     private MaterialButton resetPassword;
     private CircularProgressIndicator progressIndicator;
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
         initComponents();
+        context = getApplicationContext();
         isEmailMethod = new AtomicBoolean(true);
         back.setOnClickListener(v -> finish());
         emailBtn.setOnClickListener(v -> {
@@ -65,16 +70,23 @@ public class ResetPasswordActivity extends AppCompatActivity {
         });
         resetPassword.setOnClickListener(v ->{
             if(isEmailMethod.get()){
-                String email = emailPhone.getEditText().getText().toString();
-                progressIndicator.setVisibility(View.VISIBLE);
-                progressIndicator.setProgress(50,true);
-                sendResetPasswordEmail(email);
+                if(NetworkService.isConnected(context)){
+                    String email = emailPhone.getEditText().getText().toString();
+                    sendResetPasswordEmail(email);
+                }
+                else{
+                    NetworkService.connectionFailed(context);
+                }
             }
             else{
-                String phone = emailPhone.getEditText().getText().toString();
-                progressIndicator.setVisibility(View.VISIBLE);
-                progressIndicator.setProgress(50,true);
-                sendOTP(phone);
+                if(NetworkService.isConnected(context)){
+                    String phone = emailPhone.getEditText().getText().toString();
+                    progressIndicator.setVisibility(View.VISIBLE);
+                    progressIndicator.setProgress(50,true);
+                    sendOTP(phone);
+                }else{
+                    NetworkService.connectionFailed(context);
+                }
             }
         }
         );
