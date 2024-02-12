@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.buc.gradution.Activity.User.UserDoctorDetailsActivity;
+import com.buc.gradution.View.Activity.User.UserDoctorDetailsActivity;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.R;
 import com.google.android.material.imageview.ShapeableImageView;

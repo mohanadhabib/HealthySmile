@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.buc.gradution.Model.AppointmentModel;
 import com.buc.gradution.R;
-import com.buc.gradution.Service.AppointmentInterface;
+import com.buc.gradution.Interface.AppointmentInterface;
 import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;

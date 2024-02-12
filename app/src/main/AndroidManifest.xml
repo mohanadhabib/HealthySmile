@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,50 +16,53 @@
         android:theme="@style/Theme.GradutionProject"
         tools:targetApi="31">
         <activity
-            android:name=".Activity.User.UserDoctorDetailsActivity"
+            android:name=".View.Activity.User.UserDoctorChatActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.User.UserDoctorSearchActivity"
+            android:name=".View.Activity.User.UserDoctorDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.User.UserAllDoctorActivity"
+            android:name=".View.Activity.User.UserDoctorSearchActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.Doctor.DoctorHomeActivity"
+            android:name=".View.Activity.User.UserAllDoctorActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.User.UserHomeActivity"
+            android:name=".View.Activity.Doctor.DoctorHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.User.UserHomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".Activity.CreateNewPasswordActivity"
+            android:name=".View.Activity.CreateNewPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.VerifyCodeActivity"
+            android:name=".View.Activity.VerifyCodeActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.ResetPasswordActivity"
+            android:name=".View.Activity.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.SignupActivity"
+            android:name=".View.Activity.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".View.Activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.OnboardingFourActivity"
+            android:name=".View.Activity.OnboardingFourActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.OnboardingThreeActivity"
+            android:name=".View.Activity.OnboardingThreeActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.OnboardingTwoActivity"
+            android:name=".View.Activity.OnboardingTwoActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.OnboardingOneActivity"
+            android:name=".View.Activity.OnboardingOneActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".View.Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -112,4 +112,6 @@
     <string name="cancel_txt">Cancel</string>
     <string name="confirmed">Confirmed</string>
     <string name="no_data_found">No data found</string>
+    <string name="scan_txt">Scan</string>
+    <string name="profile_txt">Profile</string>
 </resources>

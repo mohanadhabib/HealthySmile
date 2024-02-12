@@ -4,6 +4,19 @@
     android:layout_height="match_parent"
     android:background="@color/main_color"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginVertical="25dp"
+        android:layout_marginHorizontal="15dp"
+        android:text="@string/profile_txt"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="22sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <ImageView
         android:id="@+id/icon"
         app:layout_constraintTop_toTopOf="parent"
