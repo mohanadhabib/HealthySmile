@@ -11,4 +11,5 @@ public abstract class Constant {
     public static final String APPOINTMENT_LIST = "Appointment List";
     public static final String APPOINTMENTS = "Appointments";
     public static final String apiScanKey = "MS6qgKKeYSWKBqbaiV7N";
+    public static final String webId = "101328423470-pqv65ekuels41oj66neliaa3h601unc5.apps.googleusercontent.com";
 }

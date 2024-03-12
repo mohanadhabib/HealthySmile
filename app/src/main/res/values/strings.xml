@@ -114,4 +114,9 @@
     <string name="no_data_found">No data found</string>
     <string name="scan_txt">Scan</string>
     <string name="profile_txt">Profile</string>
+    <string name="type_message">Type message ...</string>
+    <string name="send">Send</string>
+    <string name="no_data_found_messages">No Data Found</string>
+    <string name="message">Message</string>
+    <string name="enter_your_phone_number">Enter your phone number</string>
 </resources>

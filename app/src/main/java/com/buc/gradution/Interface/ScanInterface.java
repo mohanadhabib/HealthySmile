@@ -7,8 +7,16 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface ScanInterface {
-        @POST("vzrad2/1")
+        // Old API url  "vzrad2/1"
+        // New API url  "xraysflow/1"
+        @POST("xraysflow/1")
         Call<ScanOutputModel> postImage(
+                @Query("api_key") String apiKey,
+                @Query("image") String image
+        );
+
+        @POST("tooth_robo/1")
+        Call<ScanOutputModel> postImageTwo(
                 @Query("api_key") String apiKey,
                 @Query("image") String image
         );

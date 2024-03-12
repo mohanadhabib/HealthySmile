@@ -1,5 +1,7 @@
 package com.buc.gradution.View.Activity;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,12 +26,18 @@ import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
@@ -53,6 +61,15 @@ public class LoginActivity extends AppCompatActivity {
         initComponents();
         getDataFromSignUp();
         context = getApplicationContext();
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), o -> {
+            if(o.getResultCode() == RESULT_OK){
+               try {
+                   firebaseAuthWithGoogle(GoogleSignIn.getSignedInAccountFromIntent(o.getData()).getResult().getIdToken());
+               }catch (Throwable e){
+                   Toast.makeText(getApplicationContext(),"Couldn't Sign in",Toast.LENGTH_SHORT).show();
+               }
+            }
+        });
         back.setOnClickListener(v -> finish());
         password.setEndIconOnClickListener(v -> showAndHidePassword(password));
         loginBtn.setOnClickListener(v -> {
@@ -78,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
             startActivity(intent);
         });
+        googleLoginBtn.setOnClickListener(v -> launcher.launch(googleSignIn()));
     }
     private void initComponents(){
         back = findViewById(R.id.back_button);
@@ -241,7 +259,6 @@ public class LoginActivity extends AppCompatActivity {
                         })
                         .addOnFailureListener(e -> Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
             }
-
     }
     private String getUserType(MaterialCheckBox checkBox){
         if(checkBox.isChecked()){
@@ -266,5 +283,46 @@ public class LoginActivity extends AppCompatActivity {
             sharedPreference.putString(Constant.TYPE,Constant.PATIENT_TYPE);
             sharedPreference.commit();
         }
+    }
+    private Intent googleSignIn(){
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(Constant.webId)
+                .requestEmail()
+                .build();
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this,googleSignInOptions);
+        return googleSignInClient.getSignInIntent();
+    }
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken,null);
+        FirebaseService.getFirebaseAuth()
+                .signInWithCredential(credential)
+                .addOnSuccessListener(v ->{
+                    FirebaseUser user = FirebaseService.getFirebaseAuth().getCurrentUser();
+                    progressIndicator.setProgress(100,true);
+                    progressIndicator.setVisibility(View.INVISIBLE);
+                    registerUserWithGoogle(user,v);
+                })
+                .addOnFailureListener(e ->{
+                    progressIndicator.setIndicatorColor(getColor(R.color.error_color));
+                    progressIndicator.setProgress(100,true);
+                    progressIndicator.setVisibility(View.INVISIBLE);
+                    progressIndicator.setIndicatorColor(getColor(R.color.main_color));
+                    Toast.makeText(LoginActivity.this,"Sorry, Couldn't login\nPlease try again", Toast.LENGTH_SHORT).show();
+                });
+        }
+    private void registerUserWithGoogle(FirebaseUser firebaseUser,AuthResult authResult) {
+        String type = getUserType(doctorCheckBox);
+        UserModel user = new UserModel();
+        if(type.equals(Constant.PATIENT_TYPE)){
+            user = new UserModel(firebaseUser.getUid(),firebaseUser.getDisplayName(),firebaseUser.getEmail(),type,firebaseUser.getPhotoUrl().toString(),firebaseUser.getPhoneNumber());
+        }else if (type.equals(Constant.DOCTOR_TYPE)){
+            user = new DoctorModel(firebaseUser.getUid(),firebaseUser.getDisplayName(),firebaseUser.getEmail(),type,firebaseUser.getPhotoUrl().toString(),firebaseUser.getPhoneNumber(),"Dentist","4,5","750m","");
+        }
+        FirebaseService.getFirebaseDatabase()
+                .getReference(getUserType(doctorCheckBox))
+                .child(user.getId())
+                .setValue(user)
+                .addOnSuccessListener(v -> searchForUser(authResult))
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_SHORT).show());
     }
 }

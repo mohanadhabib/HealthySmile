@@ -48,4 +48,71 @@
         android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messages_recycler"
+        app:layout_constraintTop_toBottomOf="@id/doctor_name"
+        app:layout_constraintBottom_toTopOf="@id/bottom_layout"
+        android:layout_marginVertical="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+    <TextView
+        android:id="@+id/no_data"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/nunito_regular"
+        android:visibility="invisible"
+        android:text="@string/no_data_found_messages"
+        android:textSize="18sp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:weightSum="4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/type_message"
+            android:layout_weight="2.5"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxBackgroundColor="@color/transparent"
+            app:boxStrokeColor="@color/grey_stroke"
+            app:boxStrokeWidth="1.5dp"
+            android:hint="@string/type_message"
+            app:hintTextColor="@color/grey"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/nunito_regular"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="14sp"
+                android:textColor="@color/grey"
+                android:textFontWeight="800" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/send_message"
+            android:layout_weight="1.5"
+            android:padding="15dp"
+            android:layout_marginStart="15dp"
+            app:cornerRadius="20dp"
+            android:text="@string/send"
+            android:textColor="@color/background_color"
+            android:fontFamily="@font/nunito_regular"
+            android:textFontWeight="600"
+            android:textSize="16sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

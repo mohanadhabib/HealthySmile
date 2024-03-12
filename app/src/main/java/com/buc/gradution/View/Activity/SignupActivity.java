@@ -22,20 +22,28 @@ import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.MultiFactorSession;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SignupActivity extends AppCompatActivity {
     private ImageView back;
     private ShapeableImageView profileImg;
-    private TextInputLayout name , email ,password;
+    private TextInputLayout name , email ,password ,phone;
     private MaterialCheckBox checkBox,doctorCheck;
     private MaterialButton signupBtn;
     private CircularProgressIndicator progressIndicator;
@@ -72,16 +80,19 @@ public class SignupActivity extends AppCompatActivity {
             boolean isEmailValid = emailValidation(email);
             boolean isPasswordValid = passwordValidation(password);
             boolean isCheckBoxChecked = isCheckboxChecked(checkBox);
+            boolean isPhoneValid = phoneValidation(phone);
             boolean isProfileImageSelected = uri.get() != null;
             if(!isProfileImageSelected){
                 Toast.makeText(SignupActivity.this, "Please select an image first.", Toast.LENGTH_SHORT).show();
             }
-            if(isNameValid && isEmailValid && isPasswordValid && isCheckBoxChecked && isProfileImageSelected){
+            if(isNameValid && isEmailValid && isPasswordValid && isPhoneValid && isCheckBoxChecked && isProfileImageSelected){
                 if(NetworkService.isConnected(context)){
                     String nameTxt = name.getEditText().getText().toString();
+                    String sanitizedNameTxt = sanitizeName(nameTxt);
                     String emailTxt = email.getEditText().getText().toString();
                     String passwordTxt = password.getEditText().getText().toString();
-                    signup(nameTxt,emailTxt,passwordTxt);
+                    String phoneTxt = "+2" + phone.getEditText().getText().toString();
+                    signup(sanitizedNameTxt,emailTxt,passwordTxt,phoneTxt);
                 }
                 else{
                     NetworkService.connectionFailed(context);
@@ -95,6 +106,7 @@ public class SignupActivity extends AppCompatActivity {
         name = findViewById(R.id.name_layout);
         email = findViewById(R.id.email_layout);
         password = findViewById(R.id.password_layout);
+        phone = findViewById(R.id.phone_layout);
         doctorCheck = findViewById(R.id.doctor);
         checkBox = findViewById(R.id.checkbox);
         signupBtn = findViewById(R.id.signup_button);
@@ -131,6 +143,16 @@ public class SignupActivity extends AppCompatActivity {
         }
         return isValid;
     }
+    private String sanitizeName(String name){
+        StringBuilder sanitized = new StringBuilder();
+        for(int i = 0 ; i < name.length(); i++){
+            char ch = name.charAt(i);
+            if(Character.isLetter(ch)|| ch ==' '){
+                sanitized.append(ch);
+            }
+        }
+        return sanitized.toString();
+    }
     private boolean emailValidation(TextInputLayout email){
         boolean isValid = false;
         if(email.getEditText().getText().toString().isEmpty()){
@@ -155,6 +177,34 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
         if(email.getError() == null){
+            isValid = true;
+        }
+        return isValid;
+    }
+    private boolean phoneValidation(TextInputLayout phone){
+        boolean isValid = false;
+        if (phone.getEditText().getText().toString().isEmpty()){
+            phone.setError("Phone is mandatory");
+        }
+        else if(phone.getEditText().getText().toString().length() != 11){
+            phone.setError("Wrong phone number");
+        }
+        phone.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!s.toString().isEmpty()){
+                    phone.setError(null);
+                }
+                else if(s.toString().length() == 11){
+                    phone.setError(null);
+                }
+            }
+        });
+        if(phone.getError() == null){
             isValid = true;
         }
         return isValid;
@@ -218,14 +268,14 @@ public class SignupActivity extends AppCompatActivity {
             password.getEditText().setSelection(position);
         }
     }
-    private void createUser(AuthResult authResult ,String name ,String email ,String password ,Uri uri){
+    private void createUser(AuthResult authResult ,String name ,String email ,String password ,Uri uri,String phone){
         String id = authResult.getUser().getUid();
         String type = getUserType(doctorCheck);
         UserModel user = new UserModel();
         if(type.equals(Constant.PATIENT_TYPE)){
-            user = new UserModel(id,name,email,type,uri.toString());
+            user = new UserModel(id,name,email,type,uri.toString(),phone);
         }else if (type.equals(Constant.DOCTOR_TYPE)){
-            user = new DoctorModel(id,name,email,type,uri.toString(),"Dentist","4,5","500m","");
+            user = new DoctorModel(id,name,email,type,uri.toString(),phone,"Dentist","4,5","750m","");
         }
         UserModel finalUser = user;
         FirebaseService.getFirebaseDatabase()
@@ -234,21 +284,22 @@ public class SignupActivity extends AppCompatActivity {
                 .setValue(user)
                 .addOnSuccessListener(
                         e -> {
-                            progressIndicator.setProgress(100,true);
-                            progressIndicator.setVisibility(View.INVISIBLE);
-                            LayoutInflater layoutInflater = LayoutInflater.from(this);
+                            LayoutInflater layoutInflater = LayoutInflater.from(SignupActivity.this);
                             View layout = layoutInflater.inflate(R.layout.alert_dialog_signup,null);
                             MaterialButton login = layout.findViewById(R.id.login_button);
                             AlertDialog dialog = new MaterialAlertDialogBuilder(SignupActivity.this).create();
                             login.setOnClickListener( v -> {
-                                Intent intent = new Intent(SignupActivity.this,LoginActivity.class);
-                                intent.putExtra("email", finalUser.getEmail());
+                                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                intent.putExtra("email", email);
                                 intent.putExtra("password",password);
                                 startActivity(intent);
                                 finish();
                             });
                             dialog.setView(layout);
                             dialog.show();
+                            //progressIndicator.setProgress(100,true);
+                            //progressIndicator.setVisibility(View.INVISIBLE);
+                            //secondFactorVerify(authResult,phone,email,password);
                         }
                 )
                 .addOnFailureListener(e -> {
@@ -259,14 +310,14 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, "Couldn't save user info", Toast.LENGTH_SHORT).show();
                 });
     }
-    private void signup(String name , String email , String password){
+    private void signup(String name , String email , String password,String phone){
         progressIndicator.setVisibility(View.VISIBLE);
         progressIndicator.setProgress(10,true);
         FirebaseService.getFirebaseAuth()
                 .createUserWithEmailAndPassword(email,password)
                 .addOnSuccessListener(authResult -> {
                     progressIndicator.setProgress(30,true);
-                    uploadProfileImg(authResult,name,email,password,uri.get());
+                    uploadProfileImg(authResult,name,email,password,uri.get(),phone);
                 })
                 .addOnFailureListener(e -> {
                     progressIndicator.setIndicatorColor(getColor(R.color.error_color));
@@ -276,7 +327,7 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, "Sorry, Couldn't create account\nPlease try again", Toast.LENGTH_SHORT).show();
                 });
     }
-    private void uploadProfileImg(AuthResult authResult,String name,String email,String password,Uri imageUri){
+    private void uploadProfileImg(AuthResult authResult,String name,String email,String password,Uri imageUri,String phone){
         FirebaseService.getFirebaseStorage()
                 .getReference(authResult.getUser().getUid())
                 .child("profile image")
@@ -290,7 +341,7 @@ public class SignupActivity extends AppCompatActivity {
                             .getDownloadUrl()
                             .addOnSuccessListener(uri -> {
                                 progressIndicator.setProgress(70,true);
-                                createUser(authResult,name,email,password,uri);
+                                createUser(authResult,name,email,password,uri,phone);
                             })
                             .addOnFailureListener(e -> {
                                 progressIndicator.setIndicatorColor(getColor(R.color.error_color));
@@ -307,5 +358,47 @@ public class SignupActivity extends AppCompatActivity {
                     progressIndicator.setIndicatorColor(getColor(R.color.main_color));
                     Toast.makeText(SignupActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+    private void secondFactorVerify(AuthResult authResult,String phone,String email,String password){
+        PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks =
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(PhoneAuthCredential credential) {
+                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onVerificationFailed(FirebaseException e) {
+                        Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
+                        super.onCodeSent(verificationId, token);
+                        progressIndicator.setProgress(70,true);
+                        Intent intent = new Intent(getApplicationContext(), VerifySignUpCodeActivity.class);
+                        intent.putExtra("id",verificationId);
+                        intent.putExtra("phone",phone);
+                        intent.putExtra("email",email);
+                        intent.putExtra("password",password);
+                        startActivity(intent);
+                    }
+                };
+        authResult.getUser().getMultiFactor().getSession()
+                .addOnCompleteListener(
+                        new OnCompleteListener<MultiFactorSession>() {
+                            @Override
+                            public void onComplete(Task<MultiFactorSession> task) {
+                                if (task.isSuccessful()) {
+                                    MultiFactorSession multiFactorSession = task.getResult();
+                                    PhoneAuthOptions phoneAuthOptions =
+                                            PhoneAuthOptions.newBuilder()
+                                                    .setPhoneNumber(phone)
+                                                    .setTimeout(30L, TimeUnit.SECONDS)
+                                                    .setMultiFactorSession(multiFactorSession)
+                                                    .setCallbacks(callbacks)
+                                                    .build();
+                                    PhoneAuthProvider.verifyPhoneNumber(phoneAuthOptions);
+                                }
+                            }
+                        });
     }
 }

@@ -32,6 +32,7 @@ import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.Interface.ScanInterface;
 import com.buc.gradution.Service.RetrofitService;
+import com.buc.gradution.View.Activity.SecondModelTestActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
@@ -39,12 +40,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserScanFragment extends Fragment {
+    private ScanOutputModel scanModelOne,scanModelTwo;
     private ImageView beforeImg, afterImg;
     private MaterialButton submitBtn;
     private TextView resultTxt;
@@ -127,35 +130,46 @@ public class UserScanFragment extends Fragment {
             progress.setProgress(75,true);
             ScanInterface scan = RetrofitService.getRetrofit("https://outline.roboflow.com/")
                     .create(ScanInterface.class);
-            scan.postImage(Constant.apiScanKey, url)
-                    .enqueue(new Callback<ScanOutputModel>() {
-                        @Override
-                        public void onResponse(Call<ScanOutputModel> call, Response<ScanOutputModel> response) {
-                            if(response.isSuccessful() && response.body().getPredictions().size() != 0){
-                                try {
-                                    progress.setProgress(85,true);
-                                    String x = "";
-                                    Bitmap bitmapWithText = createBitmapFromUri(uri.get()).copy(Bitmap.Config.ARGB_8888, true);
-                                    Canvas canvas = new Canvas(bitmapWithText);
-                                    Paint paintTxt = new Paint();
-                                    Paint paintRect = new Paint();
-                                    Paint background = new Paint();
-                                    background.setColor(getContext().getColor(R.color.prediction_background));
-                                    paintTxt.setColor(getContext().getColor(R.color.black));
-                                    paintTxt.setTextSize(45);
-                                    paintTxt.setAntiAlias(true);
-                                    paintTxt.setStyle(Paint.Style.FILL);
-                                    paintRect.setColor(getContext().getColor(R.color.dark_red));
-                                    paintRect.setAntiAlias(true);
-                                    DecimalFormat format = new DecimalFormat("0.00");
-                                    for (int i = 0; i < response.body().getPredictions().size(); i++) {
-                                        String txt = response.body().getPredictions().get(i).getClassType();
-                                        double confidence = response.body().getPredictions().get(i).getConfidence();
-                                        String confidenceTxt = format.format(confidence);
+            scanModelOne = scan.postImage(Constant.apiScanKey, url)
+                    .execute().body();
+            scanModelTwo = scan.postImageTwo(Constant.apiScanKey,url)
+                    .execute().body();
+            getTotalData();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void getTotalData(){
+                        try {
+                            progress.setProgress(85,true);
+                            String x = "";
+                            Bitmap bitmapWithText = createBitmapFromUri(uri.get()).copy(Bitmap.Config.ARGB_8888, true);
+                            Canvas canvas = new Canvas(bitmapWithText);
+                            Paint paintTxt = new Paint();
+                            Paint paintRect = new Paint();
+                            Paint background = new Paint();
+                            background.setColor(getContext().getColor(R.color.prediction_background));
+                            paintTxt.setColor(getContext().getColor(R.color.black));
+                            paintTxt.setTextSize(45);
+                            paintTxt.setAntiAlias(true);
+                            paintTxt.setStyle(Paint.Style.FILL);
+                            paintRect.setColor(getContext().getColor(R.color.dark_red));
+                            paintRect.setAntiAlias(true);
+                            DecimalFormat format = new DecimalFormat("0.00");
+                            for (int i = 0; i < scanModelOne.getPredictions().size(); i++) {
+                                float xPos = scanModelOne.getPredictions().get(i).getX();
+                                float yPos = scanModelOne.getPredictions().get(i).getY();
+                                for (int j = 0; j < scanModelTwo.getPredictions().size(); j++){
+                                    float xPos2 = scanModelTwo.getPredictions().get(j).getX();
+                                    float yPos2 = scanModelTwo.getPredictions().get(j).getY();
+                                    if(xPos == xPos2 && yPos == yPos2){
+                                        String txt = scanModelOne.getPredictions().get(i).getClassType();
+                                        double confidence = scanModelOne.getPredictions().get(i).getConfidence();
+                                        double confidence2 = scanModelTwo.getPredictions().get(j).getConfidence();
+                                        double avgConfidence = (confidence + confidence2) / 2;
+                                        String confidenceTxt = format.format(avgConfidence);
                                         x += txt + "\t" + confidenceTxt + "\n";
                                         int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
-                                        float xPos = response.body().getPredictions().get(i).getX();
-                                        float yPos = response.body().getPredictions().get(i).getY();
                                         String resTxt = txt+" "+conPer+"%";
                                         float textWidth = paintTxt.measureText(resTxt);
                                         Rect r = new Rect((int)xPos,(int)yPos,(int)(xPos+20),(int)(yPos+20));
@@ -164,42 +178,19 @@ public class UserScanFragment extends Fragment {
                                         canvas.drawRect(r,paintRect);
                                         canvas.drawRect(x0,y0-paintTxt.getTextSize(),x0+textWidth,y0,background);
                                         canvas.drawText(resTxt, x0, y0, paintTxt);
-                                        progress.setProgress(100,true);
-                                        progress.setVisibility(View.INVISIBLE);
                                     }
-                                    resultTxt.setText(x);
-                                    afterImg.setImageBitmap(bitmapWithText);
-                                } catch (Exception e) {
-                                    progress.setProgress(100,true);
-                                    progress.setVisibility(View.INVISIBLE);
-                                    afterImg.setImageBitmap(null);
-                                    resultTxt.setText(getString(R.string.error));
                                 }
-                            }
-                            else if (response.body().getPredictions().size() == 0){
                                 progress.setProgress(100,true);
                                 progress.setVisibility(View.INVISIBLE);
-                                afterImg.setImageBitmap(null);
-                                resultTxt.setText(getString(R.string.sorry_it_is_not_an_xray_image));
-                            }else{
-                                progress.setProgress(100,true);
-                                progress.setVisibility(View.INVISIBLE);
-                                afterImg.setImageBitmap(null);
-                                resultTxt.setText(getString(R.string.error));
+                                resultTxt.setText(x);
+                                afterImg.setImageBitmap(bitmapWithText);
                             }
-                        }
-                        @Override
-                        public void onFailure(Call<ScanOutputModel> call, Throwable t) {
-                            progress.setIndicatorColor(getContext().getColor(R.color.error_color));
+                        } catch (Exception e) {
                             progress.setProgress(100,true);
                             progress.setVisibility(View.INVISIBLE);
-                            progress.setIndicatorColor(getContext().getColor(R.color.main_color));
-                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            afterImg.setImageBitmap(null);
+                            resultTxt.setText(getString(R.string.error));
                         }
-                    });
-        } catch (Exception e) {
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     private Bitmap createBitmapFromUri(Uri uri) {

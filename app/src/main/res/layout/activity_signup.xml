@@ -32,13 +32,13 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/img0"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"
+        app:layout_constraintGuide_percent="0.05"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/img1"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.255"
+        app:layout_constraintGuide_percent="0.20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <androidx.constraintlayout.widget.Guideline
@@ -74,12 +74,12 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g1"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3"
+        app:layout_constraintGuide_percent="0.325"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/name_layout"
-        app:layout_constraintTop_toBottomOf="@id/g1"
+        app:layout_constraintTop_toBottomOf="@id/img1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:boxCornerRadiusTopStart="20dp"
@@ -112,10 +112,45 @@
             android:inputType="text"
             android:textFontWeight="800" />
     </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/phone_layout"
+        app:layout_constraintTop_toBottomOf="@id/g1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:boxCornerRadiusTopStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:boxBackgroundColor="@color/grey_background"
+        app:boxStrokeColor="@color/grey_stroke"
+        app:startIconDrawable="@drawable/ic_phone"
+        app:startIconTint="@color/main_color"
+        app:boxStrokeWidth="1.5dp"
+        android:hint="@string/enter_your_phone_number"
+        app:hintTextColor="@color/grey"
+        app:errorEnabled="true"
+        app:errorTextColor="@color/error_color"
+        app:boxStrokeErrorColor="@color/error_color"
+        app:errorIconTint="@color/error_color"
+        app:cursorErrorColor="@color/error_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints="name"
+            android:fontFamily="@font/nunito_regular"
+            android:textSize="16sp"
+            android:textColor="@color/grey"
+            android:maxLines="1"
+            android:inputType="phone"
+            android:textFontWeight="800" />
+    </com.google.android.material.textfield.TextInputLayout>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g2"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.425"
+        app:layout_constraintGuide_percent="0.45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <com.google.android.material.textfield.TextInputLayout
@@ -156,7 +191,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g3"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55"
+        app:layout_constraintGuide_percent="0.575"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <com.google.android.material.textfield.TextInputLayout
@@ -200,7 +235,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g4"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.675"
+        app:layout_constraintGuide_percent="0.695 "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -228,7 +263,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g5"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.740"
+        app:layout_constraintGuide_percent="0.75"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -292,7 +327,7 @@
         android:layout_height="wrap_content" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g6"
-        app:layout_constraintGuide_percent="0.825"
+        app:layout_constraintGuide_percent="0.845"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

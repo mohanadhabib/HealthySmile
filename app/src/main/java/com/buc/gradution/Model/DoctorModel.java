@@ -10,8 +10,9 @@ public class DoctorModel extends UserModel implements Serializable {
     public DoctorModel(){
 
     }
-    public DoctorModel(String id , String name , String email , String type , String profileImgUri, String spec , String stars , String distance , String about){
-        super(id,name,email,type,profileImgUri);
+
+    public DoctorModel(String id, String name, String email, String type, String profileImgUri, String phoneNumber, String spec, String stars, String distance, String about) {
+        super(id, name, email, type, profileImgUri, phoneNumber);
         this.spec = spec;
         this.stars = stars;
         this.distance = distance;
@@ -49,4 +50,5 @@ public class DoctorModel extends UserModel implements Serializable {
     public void setAbout(String about) {
         this.about = about;
     }
+
 }

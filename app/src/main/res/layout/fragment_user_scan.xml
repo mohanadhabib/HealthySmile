@@ -36,6 +36,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g3"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g1"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.35"
@@ -47,30 +53,34 @@
         app:layout_constraintBottom_toTopOf="@id/g1"
         app:layout_constraintStart_toEndOf="@id/vg0"
         app:layout_constraintEnd_toStartOf="@id/vg1"
+        android:layout_marginVertical="25dp"
         android:layout_width="0dp"
         android:layout_height="0dp"/>
-    <TextView
-        android:id="@+id/result"
-        android:textColor="@color/text_color"
-        android:textSize="14sp"
-        android:textFontWeight="900"
-        android:fontFamily="@font/nunito"
+    <ScrollView
         app:layout_constraintTop_toBottomOf="@id/g1"
-        app:layout_constraintStart_toStartOf="@id/vg0"
-        app:layout_constraintEnd_toEndOf="@id/vg1"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintBottom_toTopOf="@id/g2"
+        app:layout_constraintStart_toEndOf="@id/vg0"
+        app:layout_constraintEnd_toStartOf="@id/vg1"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
+        <TextView
+            android:id="@+id/result"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            android:textFontWeight="900"
+            android:fontFamily="@font/nunito"
+            app:layout_constraintTop_toBottomOf="@id/g1"
+            app:layout_constraintStart_toStartOf="@id/vg0"
+            app:layout_constraintEnd_toEndOf="@id/vg1"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g2"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.55"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/g3"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <ImageView
@@ -79,6 +89,7 @@
         app:layout_constraintBottom_toTopOf="@id/g3"
         app:layout_constraintStart_toEndOf="@id/vg0"
         app:layout_constraintEnd_toStartOf="@id/vg1"
+        android:layout_marginVertical="25dp"
         android:layout_width="0dp"
         android:layout_height="0dp"/>
     <com.google.android.material.button.MaterialButton
@@ -98,9 +109,10 @@
         android:layout_height="wrap_content" />
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress"
-        app:layout_constraintTop_toBottomOf="@id/result"
-        app:layout_constraintStart_toStartOf="@id/submit_img_button"
-        app:layout_constraintEnd_toEndOf="@id/submit_img_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:indicatorColor="@color/main_color"
         android:visibility="invisible"
         android:layout_width="wrap_content"

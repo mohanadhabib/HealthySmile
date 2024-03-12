@@ -8,16 +8,19 @@ public class UserModel implements Serializable {
     private String email;
     private String type;
     private String profileImgUri;
+    private String phoneNumber;
 
     public UserModel(){
 
     }
-    public UserModel(String id , String name , String email , String type , String profileImgUri){
+
+    public UserModel(String id, String name, String email, String type, String profileImgUri, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.type = type;
         this.profileImgUri = profileImgUri;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getId() {
@@ -51,4 +54,12 @@ public class UserModel implements Serializable {
     public String getProfileImgUri() {return profileImgUri;}
 
     public void setProfileImgUri(String profileImgUri) {this.profileImgUri = profileImgUri;}
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }
