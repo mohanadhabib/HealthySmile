@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.buc.gradution.View.Activity.User.UserAllDoctorActivity;
 import com.buc.gradution.View.Activity.User.UserDoctorSearchActivity;
-import com.buc.gradution.Adapter.TopDoctorsRecyclerAdapter;
+import com.buc.gradution.Adapter.User.TopDoctorsRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.R;

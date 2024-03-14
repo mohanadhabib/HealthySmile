@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.buc.gradution.Adapter.UserDoctorMessageRecyclerAdapter;
+import com.buc.gradution.Adapter.User.UserDoctorMessageRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.MessageModel;
@@ -80,15 +80,24 @@ public class UserDoctorChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
     }
     private void sendMessageToDB(String message){
-        MessageModel messageModel = new MessageModel(doctor.getName(),user.getName(),message,doctor.getId(),user.getId(),doctor.getEmail(),user.getEmail(),doctor.getProfileImgUri(),user.getId(),doctor.getId());
+        MessageModel messageModel = new MessageModel(doctor.getName(),user.getName(),message,doctor.getId(),user.getId(),doctor.getEmail(),user.getEmail(),doctor.getProfileImgUri(),user.getProfileImgUri(),user.getId(),doctor.getId());
         String ref = doctor.getId();
-        FirebaseService.getFirebaseDatabase().getReference("Message").child(user.getId())
+        FirebaseService.getFirebaseDatabase().getReference("Message-User").child(user.getId())
                 .child(doctor.getId())
                 .push()
                 .setValue(messageModel)
                 .addOnSuccessListener(x ->{
-                    typeMessage.getEditText().getText().clear();
-                    getMessages(ref);
+                    FirebaseService.getFirebaseDatabase().getReference("Message-Doctor").child(doctor.getId())
+                            .child(user.getId())
+                            .push()
+                            .setValue(messageModel)
+                            .addOnSuccessListener(v ->{
+                                typeMessage.getEditText().getText().clear();
+                                getMessages(ref);
+                            })
+                            .addOnFailureListener(e ->{
+                                Toast.makeText(getApplicationContext(),"Sorry, Couldn't send message",Toast.LENGTH_SHORT).show();
+                            });
                 })
                 .addOnFailureListener(e ->{
                     Toast.makeText(getApplicationContext(),"Sorry, Couldn't send message",Toast.LENGTH_SHORT).show();

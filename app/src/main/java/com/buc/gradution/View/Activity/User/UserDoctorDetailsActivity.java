@@ -128,7 +128,7 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                 if(appointment != null){
                     String ref = appointment.getUserId() + appointment.getDoctorId();
                     appointment = new AppointmentModel(appointment.getUserId(),
-                            appointment.getUserName(), appointment.getUserEmail(), appointment.getDoctorId(),
+                            appointment.getUserName(), appointment.getUserEmail(),appointment.getUserImg(), appointment.getDoctorId(),
                             appointment.getDoctorName(),appointment.getDoctorEmail(),appointment.getDoctorImg(),
                             appointment.getDoctorSpec(), appointmentDate,appointmentTime,
                             appointment.getStars(),appointment.getDistance(),appointment.getAboutDoctor());
@@ -152,7 +152,7 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                 }else{
                     String ref = user.getId() + doctor.getId();
                     AppointmentModel appointment = new AppointmentModel(user.getId(),
-                            user.getName(), user.getEmail(), doctor.getId(),
+                            user.getName(), user.getEmail(),user.getProfileImgUri(), doctor.getId(),
                             doctor.getName(),doctor.getEmail(),doctor.getProfileImgUri(),
                             doctor.getSpec(), appointmentDate,appointmentTime,
                             doctor.getStars(),doctor.getDistance(),doctor.getAbout());

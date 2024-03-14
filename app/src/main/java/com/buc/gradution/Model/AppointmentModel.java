@@ -6,6 +6,7 @@ public class AppointmentModel implements Serializable {
     private String userId;
     private String userName;
     private String userEmail;
+    private String userImg;
     private String doctorId;
     private String doctorName;
     private String doctorEmail;
@@ -20,10 +21,11 @@ public class AppointmentModel implements Serializable {
 
     }
 
-    public AppointmentModel(String userId, String userName, String userEmail, String doctorId, String doctorName, String doctorEmail, String doctorImg, String doctorSpec, String appointmentDate, String appointmentTime, String stars, String distance, String aboutDoctor) {
+    public AppointmentModel(String userId, String userName, String userEmail, String userImg, String doctorId, String doctorName, String doctorEmail, String doctorImg, String doctorSpec, String appointmentDate, String appointmentTime, String stars, String distance, String aboutDoctor) {
         this.userId = userId;
         this.userName = userName;
         this.userEmail = userEmail;
+        this.userImg = userImg;
         this.doctorId = doctorId;
         this.doctorName = doctorName;
         this.doctorEmail = doctorEmail;
@@ -62,6 +64,14 @@ public class AppointmentModel implements Serializable {
 
     public String getDoctorId() {
         return doctorId;
+    }
+
+    public String getUserImg() {
+        return userImg;
+    }
+
+    public void setUserImg(String userImg) {
+        this.userImg = userImg;
     }
 
     public void setDoctorId(String doctorId) {

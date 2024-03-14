@@ -1,4 +1,5 @@
-package com.buc.gradution.Adapter;
+package com.buc.gradution.Adapter.User;
+
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRecyclerAdapter.TopDoctorsRecyclerHolder> {
+public class AllDoctorsRecyclerAdapter extends RecyclerView.Adapter<AllDoctorsRecyclerAdapter.AllDoctorsRecyclerHolder> {
 
     private ArrayList<DoctorModel> doctors = new ArrayList<>();
     public void setDoctors(ArrayList<DoctorModel> doctors){
@@ -24,13 +25,13 @@ public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRe
     }
     @NonNull
     @Override
-    public TopDoctorsRecyclerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_top_doctors_item,parent,false);
-        return new TopDoctorsRecyclerHolder(view);
+    public AllDoctorsRecyclerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_all_doctors_item,parent,false);
+        return new AllDoctorsRecyclerHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TopDoctorsRecyclerHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AllDoctorsRecyclerHolder holder, int position) {
         View root = holder.itemView;
         Picasso.get().load(doctors.get(position).getProfileImgUri()).into(holder.doctorImg);
         holder.doctorName.setText(doctors.get(position).getName());
@@ -46,13 +47,14 @@ public class TopDoctorsRecyclerAdapter extends RecyclerView.Adapter<TopDoctorsRe
 
     @Override
     public int getItemCount() {
-        return 4;
+        return doctors.size();
     }
 
-    static class TopDoctorsRecyclerHolder extends RecyclerView.ViewHolder{
+    static class AllDoctorsRecyclerHolder extends RecyclerView.ViewHolder {
         protected ShapeableImageView doctorImg;
         protected TextView doctorName,doctorSpec,starTxt,distance;
-        public TopDoctorsRecyclerHolder(@NonNull View itemView) {
+
+        public AllDoctorsRecyclerHolder(@NonNull View itemView) {
             super(itemView);
             doctorImg = itemView.findViewById(R.id.doctor_img);
             doctorName = itemView.findViewById(R.id.doctor_name);

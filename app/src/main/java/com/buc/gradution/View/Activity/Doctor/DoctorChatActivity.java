@@ -1,4 +1,4 @@
-package com.buc.gradution.View.Activity.User;
+package com.buc.gradution.View.Activity.Doctor;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.buc.gradution.Adapter.User.UserDoctorMessageRecyclerAdapter;
+import com.buc.gradution.Adapter.Doctor.DoctorUserMessageRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.MessageModel;
@@ -28,29 +28,29 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class UserChatActivity extends AppCompatActivity {
+public class DoctorChatActivity extends AppCompatActivity {
     private DoctorModel doctor;
     private UserModel user;
     private ImageView back,phone,video;
-    private TextView doctorName,noData;
+    private TextView patientName,noData;
     private RecyclerView recyclerView;
     private TextInputLayout typeMessage;
     private MaterialButton sendMessage;
-    private UserDoctorMessageRecyclerAdapter adapter;
+    private DoctorUserMessageRecyclerAdapter adapter;
     private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_chat);
+        setContentView(R.layout.activity_doctor_chat);
         initComponents();
         String json = getSharedPreferences(Constant.CURRENT_USER,0).getString(Constant.OBJECT,"");
-        doctor = (DoctorModel) getIntent().getSerializableExtra(Constant.OBJECT);
-        user = gson.fromJson(json,UserModel.class);
+        user = (UserModel) getIntent().getSerializableExtra(Constant.OBJECT);
+        doctor = gson.fromJson(json,DoctorModel.class);
         back.setOnClickListener(v -> {
             finish();
         });
-        doctorName.setText(doctor.getName());
+        patientName.setText(user.getName());
         sendMessage.setOnClickListener(v ->{
             String message = typeMessage.getEditText().getText().toString();
             if(!message.isEmpty()){
@@ -62,14 +62,14 @@ public class UserChatActivity extends AppCompatActivity {
                 }
             }
         });
-        adapter = new UserDoctorMessageRecyclerAdapter(user);
+        adapter = new DoctorUserMessageRecyclerAdapter(doctor);
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
-        getMessageFirstTime(doctor.getId());
+        getMessageFirstTime(user.getId());
     }
     private void sendMessageToDB(String message){
-        MessageModel messageModel = new MessageModel(doctor.getName(),user.getName(),message,doctor.getId(),user.getId(),doctor.getEmail(),user.getEmail(),doctor.getProfileImgUri(),user.getProfileImgUri(),user.getId(),doctor.getId());
-        String ref = doctor.getId();
+        MessageModel messageModel = new MessageModel(doctor.getName(),user.getName(),message,user.getId(),doctor.getId(),doctor.getEmail(),user.getEmail(),doctor.getProfileImgUri(),user.getProfileImgUri(),user.getId(),doctor.getId());
+        String ref = user.getId();
         FirebaseService.getFirebaseDatabase().getReference("Message-User").child(user.getId())
                 .child(doctor.getId())
                 .push()
@@ -92,7 +92,7 @@ public class UserChatActivity extends AppCompatActivity {
                 });
     }
     private void getMessages(String ref){
-        FirebaseService.getFirebaseDatabase().getReference("Message-User").child(user.getId())
+        FirebaseService.getFirebaseDatabase().getReference("Message-Doctor").child(doctor.getId())
                 .child(ref)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -114,7 +114,7 @@ public class UserChatActivity extends AppCompatActivity {
                 });
     }
     private void getMessageFirstTime(String ref){
-        FirebaseService.getFirebaseDatabase().getReference("Message-User").child(user.getId())
+        FirebaseService.getFirebaseDatabase().getReference("Message-Doctor").child(doctor.getId())
                 .child(ref)
                 .get()
                 .addOnSuccessListener(snapshot ->{
@@ -133,7 +133,7 @@ public class UserChatActivity extends AppCompatActivity {
     }
     private void initComponents(){
         back = findViewById(R.id.back);
-        doctorName = findViewById(R.id.doctor_name);
+        patientName = findViewById(R.id.patient_name);
         video = findViewById(R.id.video_call);
         phone = findViewById(R.id.phone_call);
         noData = findViewById(R.id.no_data);

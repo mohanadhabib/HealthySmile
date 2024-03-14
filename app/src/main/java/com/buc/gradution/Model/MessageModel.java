@@ -10,13 +10,14 @@ public class MessageModel {
     private String doctorEmail;
     private String userEmail;
     private String doctorImg;
+    private String userImg;
     private String userId;
     private String doctorId;
     public MessageModel(){
 
     }
 
-    public MessageModel(String doctorName, String userName, String message, String receiverId, String senderId, String doctorEmail, String userEmail, String doctorImg, String userId, String doctorId) {
+    public MessageModel(String doctorName, String userName, String message, String receiverId, String senderId, String doctorEmail, String userEmail, String doctorImg, String userImg, String userId, String doctorId) {
         this.doctorName = doctorName;
         this.userName = userName;
         this.message = message;
@@ -25,6 +26,7 @@ public class MessageModel {
         this.doctorEmail = doctorEmail;
         this.userEmail = userEmail;
         this.doctorImg = doctorImg;
+        this.userImg = userImg;
         this.userId = userId;
         this.doctorId = doctorId;
     }
@@ -93,6 +95,13 @@ public class MessageModel {
         this.doctorImg = doctorImg;
     }
 
+    public String getUserImg() {
+        return userImg;
+    }
+
+    public void setUserImg(String userImg) {
+        this.userImg = userImg;
+    }
     public String getUserId() {
         return userId;
     }

@@ -8,7 +8,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.buc.gradution.Adapter.UserHomeViewPagerAdapter;
+import com.buc.gradution.Adapter.User.UserHomeViewPagerAdapter;
 import com.buc.gradution.View.Fragment.User.UserAppointmentFragment;
 import com.buc.gradution.View.Fragment.User.UserChatFragment;
 import com.buc.gradution.View.Fragment.User.UserHomeFragment;

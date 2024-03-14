@@ -1,16 +1,10 @@
-package com.buc.gradution.View.Fragment.User;
+package com.buc.gradution.View.Fragment.Doctor;
 
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -20,7 +14,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.buc.gradution.Constant.Constant;
+import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
@@ -35,30 +37,31 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
-public class UserProfileFragment extends Fragment {
+public class DoctorProfileFragment extends Fragment {
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
     private TextView userName;
     private LinearLayout savedLayout,appointmentLayout,paymentLayout,faqLayout,logOutLayout;
     private Context context;
-    private UserModel user;
-    public UserProfileFragment (ViewPager2 viewPager, BottomNavigationView bottomNavigationView){
+    private DoctorModel doctor;
+    public DoctorProfileFragment (ViewPager2 viewPager, BottomNavigationView bottomNavigationView){
         this.viewPager = viewPager;
         this.bottomNavigationView = bottomNavigationView;
     }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_user_profile,container,false);
+        return inflater.inflate(R.layout.fragment_doctor_profile,container,false);
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initComponents(view);
         getUserInfo();
         context = view.getContext();
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result->{
             if(result.getResultCode() == getActivity().RESULT_OK && result.getData() != null){
                 updateImage(result.getData().getData());
                 profileImg.setImageURI(result.getData().getData());
@@ -72,7 +75,7 @@ public class UserProfileFragment extends Fragment {
             launcher.launch(intent);
         });
         appointmentLayout.setOnClickListener(v ->{
-            viewPager.setCurrentItem(3,false);
+            viewPager.setCurrentItem(0,false);
             bottomNavigationView.setSelectedItemId(R.id.appointment);
         });
         logOutLayout.setOnClickListener(v -> {
@@ -120,24 +123,24 @@ public class UserProfileFragment extends Fragment {
     private void getUserInfo(){
         Gson gson = new Gson();
         String json = getActivity().getSharedPreferences(Constant.CURRENT_USER,0).getString(Constant.OBJECT,"");
-        user = gson.fromJson(json, UserModel.class);
-        Picasso.get().load(user.getProfileImgUri()).into(profileImg);
-        userName.setText(user.getName());
+        doctor = gson.fromJson(json, DoctorModel.class);
+        Picasso.get().load(doctor.getProfileImgUri()).into(profileImg);
+        userName.setText(doctor.getName());
     }
     private void updateImage(Uri uri){
-        FirebaseService.getFirebaseStorage().getReference(user.getId()).child("profile image")
+        FirebaseService.getFirebaseStorage().getReference(doctor.getId()).child("profile image")
                 .putFile(uri)
                 .addOnSuccessListener(v -> updateUser())
                 .addOnFailureListener(e -> Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }
     private void updateUser(){
         FirebaseService.getFirebaseStorage()
-                .getReference(user.getId())
+                .getReference(doctor.getId())
                 .child("profile image")
                 .getDownloadUrl()
                 .addOnSuccessListener(uri ->{
-                    user.setProfileImgUri(uri.toString());
-                    FirebaseService.getFirebaseDatabase().getReference(user.getType()).child(user.getId()).setValue(user);
+                    doctor.setProfileImgUri(uri.toString());
+                    FirebaseService.getFirebaseDatabase().getReference(doctor.getType()).child(doctor.getId()).setValue(doctor);
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }

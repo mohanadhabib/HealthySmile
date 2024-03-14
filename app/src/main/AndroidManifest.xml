@@ -16,6 +16,12 @@
         android:theme="@style/Theme.GradutionProject"
         tools:targetApi="31">
         <activity
+            android:name=".View.Activity.User.UserGuideActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activity.Doctor.DoctorChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".View.Activity.VerifySignUpCodeActivity"
             android:exported="false" />
         <activity

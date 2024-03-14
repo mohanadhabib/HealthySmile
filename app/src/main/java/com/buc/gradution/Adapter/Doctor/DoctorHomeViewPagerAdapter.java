@@ -1,4 +1,4 @@
-package com.buc.gradution.Adapter;
+package com.buc.gradution.Adapter.Doctor;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -8,10 +8,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
 
-public class UserHomeViewPagerAdapter extends FragmentStateAdapter{
+public class DoctorHomeViewPagerAdapter extends FragmentStateAdapter {
     private final ArrayList<Fragment> fragments;
 
-    public UserHomeViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<Fragment> fragments) {
+    public DoctorHomeViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<Fragment> fragments) {
         super(fragmentManager, lifecycle);
         this.fragments = fragments;
     }

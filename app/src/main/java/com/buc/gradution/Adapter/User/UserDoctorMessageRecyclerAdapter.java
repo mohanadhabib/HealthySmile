@@ -1,4 +1,4 @@
-package com.buc.gradution.Adapter;
+package com.buc.gradution.Adapter.User;
 
 
 import android.view.LayoutInflater;

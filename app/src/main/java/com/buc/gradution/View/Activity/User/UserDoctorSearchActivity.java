@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.buc.gradution.Adapter.AllDoctorsRecyclerAdapter;
+import com.buc.gradution.Adapter.User.AllDoctorsRecyclerAdapter;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.NetworkService;

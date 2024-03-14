@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.buc.gradution.View.Activity.User.UserDoctorDetailsActivity;
-import com.buc.gradution.Adapter.UserAppointmentsRecyclerAdapter;
+import com.buc.gradution.Adapter.User.UserAppointmentsRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.AppointmentModel;
 import com.buc.gradution.R;
@@ -88,7 +88,9 @@ public class UserAppointmentFragment extends Fragment {
                         appointments = new ArrayList<>();
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                             appointment = dataSnapshot.getValue(AppointmentModel.class);
-                            appointments.add(appointment);
+                            if(appointment.getUserId().equals(FirebaseService.getFirebaseAuth().getCurrentUser().getUid())){
+                                appointments.add(appointment);
+                            }
                         }
                         adapter = new UserAppointmentsRecyclerAdapter(new AppointmentInterface() {
                             @Override

@@ -115,9 +115,11 @@
     <string name="no_data_found">لا يوجد تاريخ</string>
     <string name="scan_txt">فحص</string>
     <string name="profile_txt">ملفى الشخصى</string>
-    <string name="type_message">Type message ...</string>
+    <string name="type_message">اكتب رسالة ...</string>
     <string name="send">ارسال</string>
     <string name="no_data_found_messages">لا يوجد بيانات</string>
     <string name="message">رسائلي</string>
     <string name="enter_your_phone_number">ادخل رقم هاتفك</string>
+    <string name="no_appointments_yet">لا يوجد مواعيد</string>
+    <string name="no_messages_yet">لا يوجد رسائل</string>
 </resources>
