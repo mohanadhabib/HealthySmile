@@ -66,6 +66,7 @@ public class DoctorChatActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
         getMessageFirstTime(user.getId());
+        getMessages(user.getId());
     }
     private void sendMessageToDB(String message){
         MessageModel messageModel = new MessageModel(doctor.getName(),user.getName(),message,user.getId(),doctor.getId(),doctor.getEmail(),user.getEmail(),doctor.getProfileImgUri(),user.getProfileImgUri(),user.getId(),doctor.getId());
@@ -94,7 +95,7 @@ public class DoctorChatActivity extends AppCompatActivity {
     private void getMessages(String ref){
         FirebaseService.getFirebaseDatabase().getReference("Message-Doctor").child(doctor.getId())
                 .child(ref)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ArrayList<MessageModel> messages = new ArrayList<>();

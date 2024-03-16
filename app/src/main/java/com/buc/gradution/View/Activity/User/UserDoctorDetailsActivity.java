@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserDoctorDetailsActivity extends AppCompatActivity {
@@ -150,31 +151,7 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                                 Toast.makeText(UserDoctorDetailsActivity.this, "Sorry, Couldn't make your appointment\nPlease try again later", Toast.LENGTH_SHORT).show();
                             });
                 }else{
-                    String ref = user.getId() + doctor.getId();
-                    AppointmentModel appointment = new AppointmentModel(user.getId(),
-                            user.getName(), user.getEmail(),user.getProfileImgUri(), doctor.getId(),
-                            doctor.getName(),doctor.getEmail(),doctor.getProfileImgUri(),
-                            doctor.getSpec(), appointmentDate,appointmentTime,
-                            doctor.getStars(),doctor.getDistance(),doctor.getAbout());
-                    FirebaseService.getFirebaseDatabase().getReference(Constant.APPOINTMENT)
-                            .child(ref)
-                            .setValue(appointment)
-                            .addOnSuccessListener(s -> {
-                                storeAppointmentsInStorage();
-                                View view = LayoutInflater.from(UserDoctorDetailsActivity.this).inflate(R.layout.alert_dialog_appointment_success,null);
-                                AlertDialog alertDialog = new MaterialAlertDialogBuilder(UserDoctorDetailsActivity.this).create();
-                                alertDialog.setView(view);
-                                alertDialog.show();
-                                MaterialButton chatDoctor = view.findViewById(R.id.chat_doctor_btn);
-                                chatDoctor.setOnClickListener(v -> {
-                                    Intent intent0 = new Intent(UserDoctorDetailsActivity.this,UserDoctorChatActivity.class);
-                                    intent0.putExtra(Constant.OBJECT,doctor);
-                                    startActivity(intent0);
-                                });
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(UserDoctorDetailsActivity.this, "Sorry, Couldn't make your appointment\nPlease try again later", Toast.LENGTH_SHORT).show();
-                            });
+                    checkOtherAppointments(doctor.getId(),appointmentDate,appointmentTime);
                 }
             }else{
                 NetworkService.connectionFailed(getApplicationContext());
@@ -198,6 +175,56 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
+                });
+    }
+    private void checkOtherAppointments(String doctorId,String appointmentDate,String appointmentTime) {
+        AtomicBoolean isAvailable = new AtomicBoolean(true);
+        FirebaseService.getFirebaseDatabase()
+                .getReference(Constant.APPOINTMENT)
+                .get()
+                .addOnSuccessListener(dataSnapshot -> {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                        AppointmentModel appointmentModel = dataSnapshot1.getValue(AppointmentModel.class);
+                        if (appointmentModel.getDoctorId().equals(doctorId) &&
+                                appointmentModel.getAppointmentDate().equals(appointmentDate) &&
+                                appointmentModel.getAppointmentTime().equals(appointmentTime)) {
+                            isAvailable.set(false);
+                            break;
+                        }
+                    }
+                    if (isAvailable.get()){
+                        makeAppointment(appointmentDate,appointmentTime);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Sorry, This date and time is already booked", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void makeAppointment(String appointmentDate,String appointmentTime){
+        String ref = user.getId() + doctor.getId();
+        AppointmentModel appointment = new AppointmentModel(user.getId(),
+                user.getName(), user.getEmail(),user.getProfileImgUri(), doctor.getId(),
+                doctor.getName(),doctor.getEmail(),doctor.getProfileImgUri(),
+                doctor.getSpec(), appointmentDate,appointmentTime,
+                doctor.getStars(),doctor.getDistance(),doctor.getAbout());
+        FirebaseService.getFirebaseDatabase().getReference(Constant.APPOINTMENT)
+                .child(ref)
+                .setValue(appointment)
+                .addOnSuccessListener(s -> {
+                    storeAppointmentsInStorage();
+                    View view = LayoutInflater.from(UserDoctorDetailsActivity.this).inflate(R.layout.alert_dialog_appointment_success,null);
+                    AlertDialog alertDialog = new MaterialAlertDialogBuilder(UserDoctorDetailsActivity.this).create();
+                    alertDialog.setView(view);
+                    alertDialog.show();
+                    MaterialButton chatDoctor = view.findViewById(R.id.chat_doctor_btn);
+                    chatDoctor.setOnClickListener(v -> {
+                        Intent intent0 = new Intent(UserDoctorDetailsActivity.this,UserDoctorChatActivity.class);
+                        intent0.putExtra(Constant.OBJECT,doctor);
+                        startActivity(intent0);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(UserDoctorDetailsActivity.this, "Sorry, Couldn't make your appointment\nPlease try again later", Toast.LENGTH_SHORT).show();
                 });
     }
 }

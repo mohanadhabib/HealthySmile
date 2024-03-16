@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +31,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class UserChatActivity extends AppCompatActivity {
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private DoctorModel doctor;
     private UserModel user;
     private ImageView back,phone,video;
@@ -66,6 +69,7 @@ public class UserChatActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
         getMessageFirstTime(doctor.getId());
+        getMessages(doctor.getId());
     }
     private void sendMessageToDB(String message){
         MessageModel messageModel = new MessageModel(doctor.getName(),user.getName(),message,doctor.getId(),user.getId(),doctor.getEmail(),user.getEmail(),doctor.getProfileImgUri(),user.getProfileImgUri(),user.getId(),doctor.getId());
@@ -94,7 +98,7 @@ public class UserChatActivity extends AppCompatActivity {
     private void getMessages(String ref){
         FirebaseService.getFirebaseDatabase().getReference("Message-User").child(user.getId())
                 .child(ref)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ArrayList<MessageModel> messages = new ArrayList<>();

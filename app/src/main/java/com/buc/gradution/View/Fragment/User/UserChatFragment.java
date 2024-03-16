@@ -44,7 +44,7 @@ public class UserChatFragment extends Fragment {
         UserModel user = gson.fromJson(json,UserModel.class);
         FirebaseService.getFirebaseDatabase().getReference("Message-User")
                 .child(user.getId())
-                .addListenerForSingleValueEvent(
+                .addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

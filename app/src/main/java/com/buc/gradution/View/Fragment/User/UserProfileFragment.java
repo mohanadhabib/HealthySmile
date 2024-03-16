@@ -1,6 +1,5 @@
 package com.buc.gradution.View.Fragment.User;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,6 +25,7 @@ import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.OnboardingFourActivity;
+import com.buc.gradution.View.Activity.User.UserGuideActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -100,11 +100,9 @@ public class UserProfileFragment extends Fragment {
         faqLayout.setOnClickListener(v -> {
             boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
             if(isEnglish){
-                DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                Uri uri = Uri.parse("https://downgit.github.io/#/home?url=https://github.com/mohanadhabib/HealthySmile/blob/master/Healthy%20Smile%20User%20Guide%20-%20English.pdf");
-                DownloadManager.Request request = new DownloadManager.Request(uri);
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                manager.enqueue(request);
+                Intent intent = new Intent(getActivity().getApplicationContext(), UserGuideActivity.class);
+                intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
+                startActivity(intent);
             }
         });
     }

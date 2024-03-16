@@ -48,7 +48,7 @@ public class DoctorChatFragment extends Fragment {
         DoctorModel doctor = gson.fromJson(json,DoctorModel.class);
         FirebaseService.getFirebaseDatabase().getReference("Message-Doctor")
                 .child(doctor.getId())
-                .addListenerForSingleValueEvent(
+                .addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
