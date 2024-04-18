@@ -122,4 +122,5 @@
     <string name="enter_your_phone_number">ادخل رقم هاتفك</string>
     <string name="no_appointments_yet">لا يوجد مواعيد</string>
     <string name="no_messages_yet">لا يوجد رسائل</string>
+    <string name="chat_with_gemini">Chat With Gemini</string>
 </resources>

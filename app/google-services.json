@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "101328423470-c8bm6v78s9f9cv2c3isv5movqgv8jpnc.apps.googleusercontent.com",
+          "client_id": "101328423470-561bdrffbk46uefaptjbh09jtv6okvsg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.buc.gradution",
-            "certificate_hash": "e9f5a9cb31c078f6dba530b4177f4df7a481dc55"
+            "certificate_hash": "fb097118f39876a4185ae86044c414f77d907aae"
           }
         },
         {

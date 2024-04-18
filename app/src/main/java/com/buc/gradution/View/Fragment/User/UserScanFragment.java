@@ -32,7 +32,6 @@ import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.Interface.ScanInterface;
 import com.buc.gradution.Service.RetrofitService;
-import com.buc.gradution.View.Activity.SecondModelTestActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
@@ -40,14 +39,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserScanFragment extends Fragment {
-    private ScanOutputModel scanModelOne,scanModelTwo;
+    private ScanOutputModel scanModelOne;
     private ImageView beforeImg, afterImg;
     private MaterialButton submitBtn;
     private TextView resultTxt;
@@ -127,14 +126,22 @@ public class UserScanFragment extends Fragment {
 
     private void getInference(String url) {
         try {
+            // https://outline.roboflow.com/
             progress.setProgress(75,true);
-            ScanInterface scan = RetrofitService.getRetrofit("https://outline.roboflow.com/")
+            ScanInterface scan = RetrofitService.getRetrofit("https://detect.roboflow.com/")
                     .create(ScanInterface.class);
-            scanModelOne = scan.postImage(Constant.apiScanKey, url)
-                    .execute().body();
-            scanModelTwo = scan.postImageTwo(Constant.apiScanKey,url)
-                    .execute().body();
-            getTotalData();
+            scan.postImage(Constant.apiScanKey, url)
+                    .enqueue(new Callback<ScanOutputModel>() {
+                        @Override
+                        public void onResponse(Call<ScanOutputModel> call, Response<ScanOutputModel> response) {
+                            scanModelOne = response.body();
+                            getTotalData();
+                        }
+                        @Override
+                        public void onFailure(Call<ScanOutputModel> call, Throwable t) {
+                            Toast.makeText(getActivity().getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
         } catch (Exception e) {
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -159,32 +166,24 @@ public class UserScanFragment extends Fragment {
                             for (int i = 0; i < scanModelOne.getPredictions().size(); i++) {
                                 float xPos = scanModelOne.getPredictions().get(i).getX();
                                 float yPos = scanModelOne.getPredictions().get(i).getY();
-                                for (int j = 0; j < scanModelTwo.getPredictions().size(); j++){
-                                    float xPos2 = scanModelTwo.getPredictions().get(j).getX();
-                                    float yPos2 = scanModelTwo.getPredictions().get(j).getY();
-                                    if(xPos == xPos2 && yPos == yPos2){
-                                        String txt = scanModelOne.getPredictions().get(i).getClassType();
-                                        double confidence = scanModelOne.getPredictions().get(i).getConfidence();
-                                        double confidence2 = scanModelTwo.getPredictions().get(j).getConfidence();
-                                        double avgConfidence = (confidence + confidence2) / 2;
-                                        String confidenceTxt = format.format(avgConfidence);
-                                        x += txt + "\t" + confidenceTxt + "\n";
-                                        int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
-                                        String resTxt = txt+" "+conPer+"%";
-                                        float textWidth = paintTxt.measureText(resTxt);
-                                        Rect r = new Rect((int)xPos,(int)yPos,(int)(xPos+20),(int)(yPos+20));
-                                        float x0 = xPos-10;
-                                        float y0 = yPos-10;
-                                        canvas.drawRect(r,paintRect);
-                                        canvas.drawRect(x0,y0-paintTxt.getTextSize(),x0+textWidth,y0,background);
-                                        canvas.drawText(resTxt, x0, y0, paintTxt);
-                                    }
-                                }
+                                String txt = scanModelOne.getPredictions().get(i).getClassType();
+                                double confidence = scanModelOne.getPredictions().get(i).getConfidence();
+                                String confidenceTxt = format.format(confidence);
+                                x += txt + "\t" + confidenceTxt + "\n";
+                                int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
+                                String resTxt = txt+" "+conPer+"%";
+                                float textWidth = paintTxt.measureText(resTxt);
+                                Rect r = new Rect((int)xPos,(int)yPos,(int)(xPos+20),(int)(yPos+20));
+                                float x0 = xPos-10;
+                                float y0 = yPos-10;
+                                canvas.drawRect(r,paintRect);
+                                canvas.drawRect(x0,y0-paintTxt.getTextSize(),x0+textWidth,y0,background);
+                                canvas.drawText(resTxt, x0, y0, paintTxt);
+                            }
                                 progress.setProgress(100,true);
                                 progress.setVisibility(View.INVISIBLE);
                                 resultTxt.setText(x);
                                 afterImg.setImageBitmap(bitmapWithText);
-                            }
                         } catch (Exception e) {
                             progress.setProgress(100,true);
                             progress.setVisibility(View.INVISIBLE);

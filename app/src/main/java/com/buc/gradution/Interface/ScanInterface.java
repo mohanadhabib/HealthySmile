@@ -9,14 +9,8 @@ import retrofit2.http.Query;
 public interface ScanInterface {
         // Old API url  "vzrad2/1"
         // New API url  "xraysflow/1"
-        @POST("xraysflow/1")
+        @POST("dental_diseases/2")
         Call<ScanOutputModel> postImage(
-                @Query("api_key") String apiKey,
-                @Query("image") String image
-        );
-
-        @POST("tooth_robo/1")
-        Call<ScanOutputModel> postImageTwo(
                 @Query("api_key") String apiKey,
                 @Query("image") String image
         );

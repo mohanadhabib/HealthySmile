@@ -10,6 +10,11 @@ public abstract class Constant {
     public static final String OBJECT = "Object";
     public static final String APPOINTMENT_LIST = "Appointment List";
     public static final String APPOINTMENTS = "Appointments";
+    public static final String GEMINI_SHARED_PREFERENCES = "Gemini Shared Preferences";
+    public static final String GEMINI_HISTORY = "Gemini History";
+    public static final String MESSAGES_SHARED_PREFERENCES = "Messages Shared Preferences";
+    public static final String MESSAGES_HISTORY = "Messages History";
     public static final String apiScanKey = "MS6qgKKeYSWKBqbaiV7N";
+    public static final String geminiApiKey = "AIzaSyBAETClT_PMhBZrD7KrGFrEt3hUY07Qxfw";
     public static final String webId = "101328423470-pqv65ekuels41oj66neliaa3h601unc5.apps.googleusercontent.com";
 }

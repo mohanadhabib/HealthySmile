@@ -123,4 +123,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_appointments_yet">No Appointments Yet</string>
     <string name="no_messages_yet">No Messages Yet</string>
+    <string name="chat_with_gemini">Chat With Gemini</string>
 </resources>

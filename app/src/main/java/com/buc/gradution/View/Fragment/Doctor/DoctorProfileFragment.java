@@ -23,11 +23,11 @@ import android.widget.Toast;
 
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
-import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.OnboardingFourActivity;
+import com.buc.gradution.View.Activity.AiChatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -42,7 +42,7 @@ public class DoctorProfileFragment extends Fragment {
     private BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
     private TextView userName;
-    private LinearLayout savedLayout,appointmentLayout,paymentLayout,faqLayout,logOutLayout;
+    private LinearLayout savedLayout,appointmentLayout, geminiChatLayout,faqLayout,logOutLayout;
     private Context context;
     private DoctorModel doctor;
     public DoctorProfileFragment (ViewPager2 viewPager, BottomNavigationView bottomNavigationView){
@@ -110,13 +110,17 @@ public class DoctorProfileFragment extends Fragment {
                 manager.enqueue(request);
             }
         });
+        geminiChatLayout.setOnClickListener(v ->{
+            Intent intent = new Intent(getActivity().getApplicationContext(), AiChatActivity.class);
+            startActivity(intent);
+        });
     }
     private void initComponents(View view){
         profileImg = view.findViewById(R.id.profile_img);
         userName = view.findViewById(R.id.user_name);
         savedLayout = view.findViewById(R.id.layout_saved);
         appointmentLayout = view.findViewById(R.id.layout_appointment);
-        paymentLayout = view.findViewById(R.id.layout_payment);
+        geminiChatLayout = view.findViewById(R.id.layout_gemini);
         faqLayout = view.findViewById(R.id.layout_faq);
         logOutLayout = view.findViewById(R.id.layout_logout);
     }

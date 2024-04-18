@@ -191,7 +191,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <LinearLayout
-            android:id="@+id/layout_payment"
+            android:id="@+id/layout_gemini"
             android:clickable="true"
             app:layout_constraintTop_toBottomOf="@id/gi2"
             android:orientation="horizontal"
@@ -206,7 +206,7 @@
                 android:layout_height="45dp"/>
             <TextView
                 android:textColor="@color/text_color"
-                android:text="@string/payment_method"
+                android:text="@string/chat_with_gemini"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textFontWeight="900"
@@ -221,7 +221,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <com.google.android.material.divider.MaterialDivider
-            app:layout_constraintTop_toBottomOf="@id/layout_payment"
+            app:layout_constraintTop_toBottomOf="@id/layout_gemini"
             app:dividerColor="@color/grey"
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"

@@ -25,6 +25,7 @@ import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.OnboardingFourActivity;
+import com.buc.gradution.View.Activity.AiChatActivity;
 import com.buc.gradution.View.Activity.User.UserGuideActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
@@ -40,7 +41,7 @@ public class UserProfileFragment extends Fragment {
     private BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
     private TextView userName;
-    private LinearLayout savedLayout,appointmentLayout,paymentLayout,faqLayout,logOutLayout;
+    private LinearLayout savedLayout,appointmentLayout, geminiChatLayout,faqLayout,logOutLayout;
     private Context context;
     private UserModel user;
     public UserProfileFragment (ViewPager2 viewPager, BottomNavigationView bottomNavigationView){
@@ -105,13 +106,17 @@ public class UserProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        geminiChatLayout.setOnClickListener(v ->{
+            Intent intent = new Intent(getActivity().getApplicationContext(), AiChatActivity.class);
+            startActivity(intent);
+        });
     }
     private void initComponents(View view){
         profileImg = view.findViewById(R.id.profile_img);
         userName = view.findViewById(R.id.user_name);
         savedLayout = view.findViewById(R.id.layout_saved);
         appointmentLayout = view.findViewById(R.id.layout_appointment);
-        paymentLayout = view.findViewById(R.id.layout_payment);
+        geminiChatLayout = view.findViewById(R.id.layout_gemini);
         faqLayout = view.findViewById(R.id.layout_faq);
         logOutLayout = view.findViewById(R.id.layout_logout);
     }
