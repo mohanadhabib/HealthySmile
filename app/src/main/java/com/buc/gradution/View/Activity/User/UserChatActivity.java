@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -34,7 +35,7 @@ public class UserChatActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private DoctorModel doctor;
     private UserModel user;
-    private ImageView back,phone,video;
+    private ImageView back,menu,phone,video;
     private TextView doctorName,noData;
     private RecyclerView recyclerView;
     private TextInputLayout typeMessage;
@@ -64,6 +65,11 @@ public class UserChatActivity extends AppCompatActivity {
                     NetworkService.connectionFailed(getApplicationContext());
                 }
             }
+        });
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), UserDoctorNotesActivity.class);
+            intent.putExtra("doctor",doctor);
+            startActivity(intent);
         });
         adapter = new UserDoctorMessageRecyclerAdapter(user);
         recyclerView.setVisibility(View.VISIBLE);
@@ -144,5 +150,6 @@ public class UserChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.messages_recycler);
         typeMessage = findViewById(R.id.type_message);
         sendMessage = findViewById(R.id.send_message);
+        menu = findViewById(R.id.menu);
     }
 }

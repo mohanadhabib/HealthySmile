@@ -16,6 +16,13 @@
         android:theme="@style/Theme.GradutionProject"
         tools:targetApi="31">
         <activity
+            android:name=".View.Activity.User.UserDoctorNotesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.GradutionProject" />
+        <activity
+            android:name=".View.Activity.Doctor.DoctorNotesActivity"
+            android:exported="false" />
+        <activity
             android:name=".View.Activity.AiChatActivity"
             android:exported="false" />
         <activity

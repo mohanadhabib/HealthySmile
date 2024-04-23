@@ -17,5 +17,6 @@
     <color name="shadow_color">#DD2C3552</color>
     <color name="dark_red">#830900</color>
     <color name="prediction_background">#afb9dd</color>
+    <color name="prediction_ai_response">#66AFB9DD</color>
     <color name="appointment_color">#555555</color>
 </resources>

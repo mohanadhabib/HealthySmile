@@ -1,16 +1,19 @@
 package com.buc.gradution.Adapter.Doctor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.buc.gradution.Model.AppointmentModel;
 import com.buc.gradution.R;
+import com.buc.gradution.View.Activity.Doctor.DoctorNotesActivity;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -39,6 +42,11 @@ public class DoctorAppointmentsRecyclerAdapter extends RecyclerView.Adapter<Doct
         holder.date.setText(appointments.get(position).getAppointmentDate());
         holder.time.setText(appointments.get(position).getAppointmentTime());
         Picasso.get().load(appointments.get(position).getUserImg()).into(holder.userImg);
+        holder.appointmentLayout.setOnClickListener(v ->{
+            Intent intent = new Intent(context.getApplicationContext(), DoctorNotesActivity.class);
+            intent.putExtra("appointment",appointments.get(position));
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -46,6 +54,7 @@ public class DoctorAppointmentsRecyclerAdapter extends RecyclerView.Adapter<Doct
         return appointments.size();
     }
     static class DoctorAppointmentRecyclerHolder extends RecyclerView.ViewHolder{
+        private ConstraintLayout appointmentLayout;
         private TextView userName,date,time;
         private ShapeableImageView userImg;
 
@@ -55,6 +64,7 @@ public class DoctorAppointmentsRecyclerAdapter extends RecyclerView.Adapter<Doct
             date = itemView.findViewById(R.id.date);
             time = itemView.findViewById(R.id.time);
             userImg = itemView.findViewById(R.id.user_img);
+            appointmentLayout = itemView.findViewById(R.id.appointment_layout);
         }
     }
 }
