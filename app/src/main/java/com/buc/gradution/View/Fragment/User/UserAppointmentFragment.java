@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.View.Activity.User.UserDoctorDetailsActivity;
 import com.buc.gradution.Adapter.User.UserAppointmentsRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
@@ -35,6 +36,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class UserAppointmentFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Gson gson = new Gson();
     private RecyclerView recyclerView;
@@ -87,7 +89,11 @@ public class UserAppointmentFragment extends Fragment {
                         AppointmentModel appointment;
                         appointments = new ArrayList<>();
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            appointment = dataSnapshot.getValue(AppointmentModel.class);
+                            try {
+                                appointment = security.decryptAppointment(dataSnapshot.getValue().toString());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                             if(appointment.getUserId().equals(FirebaseService.getFirebaseAuth().getCurrentUser().getUid())){
                                 appointments.add(appointment);
                             }
@@ -124,7 +130,11 @@ public class UserAppointmentFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         AppointmentModel appointment1;
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            appointment1 = dataSnapshot.getValue(AppointmentModel.class);
+                            try {
+                                appointment1 = security.decryptAppointment(dataSnapshot.getValue().toString());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                             appointments.add(appointment1);
                         }
                         updateDataInStorage(appointments);

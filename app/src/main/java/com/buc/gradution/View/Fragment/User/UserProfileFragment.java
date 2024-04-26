@@ -22,6 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.OnboardingFourActivity;
@@ -37,6 +38,7 @@ import com.squareup.picasso.Picasso;
 import java.util.Locale;
 
 public class UserProfileFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
@@ -99,11 +101,16 @@ public class UserProfileFragment extends Fragment {
             cancel.setOnClickListener(b -> alertDialog.cancel());
         });
         faqLayout.setOnClickListener(v -> {
-            boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
-            if(isEnglish){
-                Intent intent = new Intent(getActivity().getApplicationContext(), UserGuideActivity.class);
-                intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
-                startActivity(intent);
+            if(NetworkService.isConnected(context)){
+                boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
+                if(isEnglish){
+                    Intent intent = new Intent(context, UserGuideActivity.class);
+                    intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
+                    startActivity(intent);
+                }
+            }
+            else{
+                NetworkService.connectionFailed(context);
             }
         });
         geminiChatLayout.setOnClickListener(v ->{
@@ -140,7 +147,13 @@ public class UserProfileFragment extends Fragment {
                 .getDownloadUrl()
                 .addOnSuccessListener(uri ->{
                     user.setProfileImgUri(uri.toString());
-                    FirebaseService.getFirebaseDatabase().getReference(user.getType()).child(user.getId()).setValue(user);
+                    String data;
+                    try {
+                         data = security.encrypt(user);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    FirebaseService.getFirebaseDatabase().getReference(user.getType()).child(user.getId()).setValue(data);
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }

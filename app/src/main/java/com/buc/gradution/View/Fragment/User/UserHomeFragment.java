@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.View.Activity.User.UserAllDoctorActivity;
 import com.buc.gradution.View.Activity.User.UserDoctorSearchActivity;
 import com.buc.gradution.Adapter.User.TopDoctorsRecyclerAdapter;
@@ -36,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class UserHomeFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private ImageView notification;
     private TextInputLayout doctorSearch;
@@ -111,7 +113,12 @@ public class UserHomeFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 doctors = new ArrayList<>();
                                 for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                                    DoctorModel doctor = snapshot1.getValue(DoctorModel.class);
+                                    DoctorModel doctor;
+                                    try {
+                                        doctor = security.decryptDoctor(snapshot1.getValue().toString());
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
                                     doctors.add(doctor);
                                 }
                                 adapter = new TopDoctorsRecyclerAdapter();

@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.OnboardingFourActivity;
@@ -38,6 +39,7 @@ import com.squareup.picasso.Picasso;
 import java.util.Locale;
 
 public class DoctorProfileFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
@@ -144,7 +146,13 @@ public class DoctorProfileFragment extends Fragment {
                 .getDownloadUrl()
                 .addOnSuccessListener(uri ->{
                     doctor.setProfileImgUri(uri.toString());
-                    FirebaseService.getFirebaseDatabase().getReference(doctor.getType()).child(doctor.getId()).setValue(doctor);
+                    String data;
+                    try {
+                        data = security.encrypt(doctor);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    FirebaseService.getFirebaseDatabase().getReference(doctor.getType()).child(doctor.getId()).setValue(data);
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }

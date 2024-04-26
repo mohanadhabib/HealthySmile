@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     tools:context=".View.Activity.OnboardingFourActivity">
+    <ImageView
+        android:id="@+id/user_guide"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/theme"
+        app:layout_constraintTop_toTopOf="@id/user_guide"
+        app:layout_constraintBottom_toBottomOf="@id/user_guide"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp"
+        android:checked="false"
+        app:thumbIcon="@drawable/ic_light_mode"
+        app:thumbTint="@color/background_color"
+        app:thumbIconTint="@color/main_color"
+        app:trackTint="@color/main_color"
+        app:trackDecorationTint="@color/main_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g1"
         android:layout_width="wrap_content"
@@ -115,4 +138,40 @@
         app:cornerRadius="20dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/language"
+        app:layout_constraintTop_toBottomOf="@id/signUp"
+        app:layout_constraintStart_toStartOf="@id/signUp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/english"
+            app:layout_constraintTop_toTopOf="@id/language"
+            app:layout_constraintBottom_toBottomOf="@id/language"
+            app:layout_constraintStart_toEndOf="@id/language"
+            android:layout_marginStart="20dp"
+            android:text="@string/english"
+            android:textColor="@color/main_color"
+            android:textSize="16sp"
+            android:textFontWeight="600"
+            android:fontFamily="@font/nunito_regular"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/arabic"
+            app:layout_constraintTop_toTopOf="@id/english"
+            app:layout_constraintBottom_toBottomOf="@id/english"
+            app:layout_constraintStart_toEndOf="@id/english"
+            android:layout_marginStart="20dp"
+            android:text="@string/arabic"
+            android:textColor="@color/main_color"
+            android:textSize="16sp"
+            android:textFontWeight="600"
+            android:fontFamily="@font/nunito_regular"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

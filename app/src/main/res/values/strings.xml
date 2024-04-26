@@ -127,4 +127,11 @@
     <string name="type_your_notes_here">Type Your Notes Here...</string>
     <string name="notes">Notes:</string>
     <string name="your_doctors_notes">Your Doctor Notes</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="loading">Loading...</string>
+    <string name="code">Code</string>
+    <string name="_20">+2</string>
+    <string name="star_txt">*</string>
+    <string name="mandatory">Mandatory</string>
 </resources>

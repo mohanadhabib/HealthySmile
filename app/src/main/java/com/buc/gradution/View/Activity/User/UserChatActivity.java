@@ -20,6 +20,7 @@ import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.MessageModel;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 
 public class UserChatActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private DoctorModel doctor;
     private UserModel user;
     private ImageView back,menu,phone,video;
@@ -59,7 +61,11 @@ public class UserChatActivity extends AppCompatActivity {
             String message = typeMessage.getEditText().getText().toString();
             if(!message.isEmpty()){
                 if(NetworkService.isConnected(getApplicationContext())){
-                    sendMessageToDB(message);
+                    try {
+                        sendMessageToDB(message);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 else{
                     NetworkService.connectionFailed(getApplicationContext());
@@ -77,18 +83,19 @@ public class UserChatActivity extends AppCompatActivity {
         getMessageFirstTime(doctor.getId());
         getMessages(doctor.getId());
     }
-    private void sendMessageToDB(String message){
+    private void sendMessageToDB(String message) throws Exception {
         MessageModel messageModel = new MessageModel(doctor.getName(),user.getName(),message,doctor.getId(),user.getId(),doctor.getEmail(),user.getEmail(),doctor.getProfileImgUri(),user.getProfileImgUri(),user.getId(),doctor.getId());
         String ref = doctor.getId();
+        String data = security.encrypt(messageModel);
         FirebaseService.getFirebaseDatabase().getReference("Message-User").child(user.getId())
                 .child(doctor.getId())
                 .push()
-                .setValue(messageModel)
+                .setValue(data)
                 .addOnSuccessListener(x ->{
                     FirebaseService.getFirebaseDatabase().getReference("Message-Doctor").child(doctor.getId())
                             .child(user.getId())
                             .push()
-                            .setValue(messageModel)
+                            .setValue(data)
                             .addOnSuccessListener(v ->{
                                 typeMessage.getEditText().getText().clear();
                                 getMessages(ref);
@@ -109,7 +116,12 @@ public class UserChatActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ArrayList<MessageModel> messages = new ArrayList<>();
                         for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                            MessageModel message = snapshot1.getValue(MessageModel.class);
+                            MessageModel message = null;
+                            try {
+                                message = security.decryptMessage(snapshot1.getValue().toString());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                             messages.add(message);
                         }
                         adapter.setMessages(messages);
@@ -130,7 +142,12 @@ public class UserChatActivity extends AppCompatActivity {
                 .addOnSuccessListener(snapshot ->{
                     ArrayList<MessageModel> messages = new ArrayList<>();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                        MessageModel message = snapshot1.getValue(MessageModel.class);
+                        MessageModel message = null;
+                        try {
+                            message = security.decryptMessage(snapshot1.getValue().toString());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         messages.add(message);
                     }
                     adapter.setMessages(messages);

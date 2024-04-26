@@ -11,7 +11,7 @@
     <string name="login_to_enjoy_the_features_we_ve">قم بالتسجيل للاستمتاع بالمزايا التي</string>
     <string name="provided_and_stay_healthy">نوفرها و ابقي سليما</string>
     <string name="login">تسجيل دخول</string>
-    <string name="sign_up">تسجيل مستخدم جديد</string>
+    <string name="sign_up">تسجيل مستخدم</string>
     <string name="enter_your_email">ادخل بريدك الالكتروني</string>
     <string name="enter_your_password">ادخل كلمه المرور</string>
     <string name="forgot_password">نسيت كلمه المرور ؟</string>
@@ -128,4 +128,11 @@
     <string name="type_your_notes_here">اكتب ملاحظااتك هنا ...</string>
     <string name="notes">ملاحظات:</string>
     <string name="your_doctors_notes">ملاحظات طبيبك</string>
+    <string name="english">الانجليزيه</string>
+    <string name="arabic">العربيه</string>
+    <string name="loading">يتم التحميل...</string>
+    <string name="code">الرمز</string>
+    <string name="_20">+2</string>
+    <string name="star_txt">*</string>
+    <string name="mandatory">اجباري</string>
 </resources>

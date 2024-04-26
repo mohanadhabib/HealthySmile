@@ -29,6 +29,30 @@
         android:textColor="@color/text_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/user_guide"
+        app:layout_constraintTop_toTopOf="@id/theme"
+        app:layout_constraintBottom_toBottomOf="@id/theme"
+        app:layout_constraintEnd_toStartOf="@id/theme"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/theme"
+        app:layout_constraintTop_toTopOf="@id/login_header"
+        app:layout_constraintBottom_toBottomOf="@id/login_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:checked="false"
+        app:thumbIcon="@drawable/ic_light_mode"
+        app:thumbTint="@color/background_color"
+        app:thumbIconTint="@color/main_color"
+        app:trackTint="@color/main_color"
+        app:trackDecorationTint="@color/main_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/img0"
         android:orientation="horizontal"
@@ -77,11 +101,23 @@
         app:layout_constraintGuide_percent="0.325"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/star0"
+        app:layout_constraintTop_toBottomOf="@id/profile_img"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/star_txt"
+        android:textColor="@color/error_color"
+        android:textSize="18sp"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/name_layout"
         app:layout_constraintTop_toBottomOf="@id/img1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="5dp"
         app:boxCornerRadiusTopStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
@@ -112,52 +148,108 @@
             android:inputType="text"
             android:textFontWeight="800" />
     </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/phone_layout"
+    <TextView
+        android:id="@+id/star1"
         app:layout_constraintTop_toBottomOf="@id/g1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:boxCornerRadiusTopStart="20dp"
-        app:boxCornerRadiusTopEnd="20dp"
-        app:boxCornerRadiusBottomStart="20dp"
-        app:boxCornerRadiusBottomEnd="20dp"
-        app:boxBackgroundColor="@color/grey_background"
-        app:boxStrokeColor="@color/grey_stroke"
-        app:startIconDrawable="@drawable/ic_phone"
-        app:startIconTint="@color/main_color"
-        app:boxStrokeWidth="1.5dp"
-        android:hint="@string/enter_your_phone_number"
-        app:hintTextColor="@color/grey"
-        app:errorEnabled="true"
-        app:errorTextColor="@color/error_color"
-        app:boxStrokeErrorColor="@color/error_color"
-        app:errorIconTint="@color/error_color"
-        app:cursorErrorColor="@color/error_color"
-        android:layout_width="0dp"
+        android:text="@string/star_txt"
+        android:textColor="@color/error_color"
+        android:textSize="18sp"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/g1"
+        android:weightSum="3"
+        android:layout_marginStart="5dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/phone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:autofillHints="name"
-            android:fontFamily="@font/nunito_regular"
-            android:textSize="16sp"
-            android:textColor="@color/grey"
-            android:maxLines="1"
-            android:inputType="phone"
-            android:textFontWeight="800" />
-    </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/code_layout"
+            android:layout_weight="0.75"
+            android:layout_marginEnd="5dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxBackgroundColor="@color/grey_background"
+            app:boxStrokeColor="@color/grey_stroke"
+            app:boxStrokeWidth="1.5dp"
+            android:hint="@string/code"
+            app:hintTextColor="@color/grey"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/code"
+                android:text="@string/_20"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="16sp"
+                android:textColor="@color/grey"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textFontWeight="800" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phone_layout"
+            android:layout_weight="2.25"
+            android:layout_marginStart="5dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxBackgroundColor="@color/grey_background"
+            app:boxStrokeColor="@color/grey_stroke"
+            app:startIconDrawable="@drawable/ic_phone"
+            app:startIconTint="@color/main_color"
+            app:boxStrokeWidth="1.5dp"
+            android:hint="@string/enter_your_phone_number"
+            app:hintTextColor="@color/grey"
+            app:errorEnabled="true"
+            app:errorTextColor="@color/error_color"
+            app:boxStrokeErrorColor="@color/error_color"
+            app:errorIconTint="@color/error_color"
+            app:cursorErrorColor="@color/error_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/phone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="phone"
+                android:fontFamily="@font/nunito_regular"
+                android:textSize="16sp"
+                android:textColor="@color/grey"
+                android:maxLines="1"
+                android:inputType="phone"
+                android:textFontWeight="800" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g2"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.45"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/star2"
+        app:layout_constraintTop_toBottomOf="@id/g2"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/star_txt"
+        android:textColor="@color/error_color"
+        android:textSize="18sp"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_layout"
         app:layout_constraintTop_toBottomOf="@id/g2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="5dp"
         app:boxCornerRadiusTopStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
@@ -194,11 +286,23 @@
         app:layout_constraintGuide_percent="0.575"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/star3"
+        app:layout_constraintTop_toBottomOf="@id/g3"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/star_txt"
+        android:textColor="@color/error_color"
+        android:textSize="18sp"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_layout"
         app:layout_constraintTop_toBottomOf="@id/g3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="5dp"
         app:boxCornerRadiusTopStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
@@ -235,7 +339,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g4"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.695 "
+        app:layout_constraintGuide_percent="0.695"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -277,10 +381,20 @@
         app:buttonTint="@color/transparent"
         android:background="@drawable/background_checkbox" />
     <TextView
+        android:id="@+id/star"
+        app:layout_constraintTop_toBottomOf="@id/g5"
+        app:layout_constraintEnd_toStartOf="@id/txt1"
+        android:text="@string/star_txt"
+        android:textColor="@color/error_color"
+        android:textSize="18sp"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
         android:id="@+id/txt1"
         app:layout_constraintTop_toTopOf="@id/checkbox"
-        app:layout_constraintStart_toEndOf="@id/checkbox"
-        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="@id/txt0"
         android:text="@string/i_agree_to_the_healthy_smile"
         android:textColor="@color/text_color"
         android:textSize="14sp"
@@ -327,7 +441,7 @@
         android:layout_height="wrap_content" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g6"
-        app:layout_constraintGuide_percent="0.845"
+        app:layout_constraintGuide_percent="0.83"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -352,6 +466,19 @@
         app:layout_constraintEnd_toEndOf="@id/signup_button"
         app:indicatorColor="@color/main_color"
         android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/loading_txt"
+        app:layout_constraintStart_toStartOf="@id/progress"
+        app:layout_constraintEnd_toEndOf="@id/progress"
+        app:layout_constraintTop_toBottomOf="@id/progress"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        android:visibility="invisible"
+        android:text="@string/loading"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

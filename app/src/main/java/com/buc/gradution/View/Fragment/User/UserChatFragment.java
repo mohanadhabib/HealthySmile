@@ -1,8 +1,5 @@
 package com.buc.gradution.View.Fragment.User;
 
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.Network;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,16 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.buc.gradution.Adapter.User.UserAIChatsRecyclerAdapter;
 import com.buc.gradution.Adapter.User.UserChatsRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.MessageModel;
-import com.buc.gradution.Model.UserAiChatMessageModel;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
-import com.buc.gradution.Service.NetworkService;
-import com.google.common.reflect.TypeToken;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -33,6 +27,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class UserChatFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private RecyclerView recyclerView;
     private Gson gson = new Gson();
     private ArrayList<MessageModel> messages;
@@ -60,7 +55,12 @@ public class UserChatFragment extends Fragment {
                                     int i = 0;
                                     for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
                                         if (i == dataSnapshot1.getChildrenCount() - 1) {
-                                            MessageModel messageModel = dataSnapshot2.getValue(MessageModel.class);
+                                            MessageModel messageModel;
+                                            try {
+                                                messageModel = security.decryptMessage(dataSnapshot2.getValue().toString());
+                                            } catch (Exception e) {
+                                                throw new RuntimeException(e);
+                                            }
                                             messages.add(messageModel);
                                             //addMessagesToHistory();
                                             adapter.setMessages(messages);

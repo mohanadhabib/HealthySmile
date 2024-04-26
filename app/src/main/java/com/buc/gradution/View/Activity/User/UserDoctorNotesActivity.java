@@ -4,26 +4,19 @@ import android.os.Bundle;
 
 import com.buc.gradution.Adapter.User.UserDoctorNotesRecyclerAdapter;
 import com.buc.gradution.Model.DoctorModel;
-import com.buc.gradution.Model.MessageModel;
 import com.buc.gradution.Model.NotesModel;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.buc.gradution.databinding.ActivityUserDoctorNotesBinding;
 
 import com.buc.gradution.R;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class UserDoctorNotesActivity extends AppCompatActivity {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private DoctorModel doctor;
     private ImageView back;
     private RecyclerView recyclerView;
@@ -44,9 +38,7 @@ public class UserDoctorNotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_doctor_notes);
         initComponents();
         doctor = (DoctorModel) getIntent().getSerializableExtra("doctor");
-        back.setOnClickListener(v ->{
-            finish();
-        });
+        back.setOnClickListener(v -> finish());
         getNotes();
     }
     private void initComponents(){
@@ -63,7 +55,12 @@ public class UserDoctorNotesActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                            NotesModel note = snapshot1.getValue(NotesModel.class);
+                            NotesModel note;
+                            try {
+                                note = security.decryptNote(snapshot1.getValue().toString());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                             notes.add(note);
                         }
                         adapter.setNotes(notes);

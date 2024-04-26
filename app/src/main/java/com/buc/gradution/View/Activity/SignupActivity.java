@@ -3,9 +3,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,20 +18,22 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.buc.gradution.View.Activity.User.UserGuideActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
@@ -37,16 +43,23 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SignupActivity extends AppCompatActivity {
+    private final FirebaseSecurity security = new FirebaseSecurity();
+    private ImageView userGuide;
+    private MaterialSwitch themeSwitch;
     private ImageView back;
     private ShapeableImageView profileImg;
-    private TextInputLayout name , email ,password ,phone;
+    private TextInputLayout name , email ,password ,phone ,code;
     private MaterialCheckBox checkBox,doctorCheck;
     private MaterialButton signupBtn;
+    private TextView loading;
     private CircularProgressIndicator progressIndicator;
+    private Boolean isDarkTheme;
+    private SharedPreferences.Editor themeEditor;
     private AtomicReference<Uri> uri;
     private Context context;
 
@@ -56,14 +69,50 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         initComponents();
         context = getApplicationContext();
+        Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getResources().getResourcePackageName(R.drawable.ic_user_profile_image)+'/'+getResources().getResourceTypeName(R.drawable.ic_user_profile_image)+'/'+getResources().getResourceEntryName(R.drawable.ic_user_profile_image));
         uri = new AtomicReference<>();
+        uri.set(imageUri);
+        isDarkTheme = getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).getBoolean(Constant.CURRENT_THEME,false);
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result -> {
             if(result.getResultCode() == RESULT_OK && result.getData() != null){
                 profileImg.setImageURI(result.getData().getData());
                 profileImg.setImageTintMode(null);
                 uri.set(result.getData().getData());
             }else{
-                Toast.makeText(SignupActivity.this, "Please select an image", Toast.LENGTH_SHORT).show();
+                profileImg.setImageResource(R.drawable.ic_user);
+                uri.set(imageUri);
+            }
+        });
+        if (isDarkTheme){
+            themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.ic_dark_mode));
+        }else{
+            themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.ic_light_mode));
+        }
+        themeSwitch.setChecked(isDarkTheme);
+        userGuide.setOnClickListener(v ->{
+            if(NetworkService.isConnected(getApplicationContext())){
+                boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
+                if(isEnglish){
+                    Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
+                    intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
+                    startActivity(intent);
+                }
+            }
+            else{
+                NetworkService.connectionFailed(getApplicationContext());
+            }
+        });
+        themeSwitch.setOnClickListener(v -> {
+            themeEditor = getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).edit();
+            isDarkTheme = !isDarkTheme;
+            themeEditor.putBoolean(Constant.CURRENT_THEME,isDarkTheme);
+            themeEditor.commit();
+            themeSwitch.setChecked(isDarkTheme);
+            if(isDarkTheme){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
         back.setOnClickListener(v -> finish());
@@ -81,17 +130,13 @@ public class SignupActivity extends AppCompatActivity {
             boolean isPasswordValid = passwordValidation(password);
             boolean isCheckBoxChecked = isCheckboxChecked(checkBox);
             boolean isPhoneValid = phoneValidation(phone);
-            boolean isProfileImageSelected = uri.get() != null;
-            if(!isProfileImageSelected){
-                Toast.makeText(SignupActivity.this, "Please select an image first.", Toast.LENGTH_SHORT).show();
-            }
-            if(isNameValid && isEmailValid && isPasswordValid && isPhoneValid && isCheckBoxChecked && isProfileImageSelected){
+            if(isNameValid && isEmailValid && isPasswordValid && isPhoneValid && isCheckBoxChecked ){
                 if(NetworkService.isConnected(context)){
                     String nameTxt = name.getEditText().getText().toString();
                     String sanitizedNameTxt = sanitizeName(nameTxt);
                     String emailTxt = email.getEditText().getText().toString();
                     String passwordTxt = password.getEditText().getText().toString();
-                    String phoneTxt = "+2" + phone.getEditText().getText().toString();
+                    String phoneTxt = code.getEditText().getText().toString() + phone.getEditText().getText().toString();
                     signup(sanitizedNameTxt,emailTxt,passwordTxt,phoneTxt);
                 }
                 else{
@@ -101,6 +146,8 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
     private void initComponents(){
+        userGuide = findViewById(R.id.user_guide);
+        themeSwitch = findViewById(R.id.theme);
         back = findViewById(R.id.back_button);
         profileImg = findViewById(R.id.profile_img);
         name = findViewById(R.id.name_layout);
@@ -111,6 +158,8 @@ public class SignupActivity extends AppCompatActivity {
         checkBox = findViewById(R.id.checkbox);
         signupBtn = findViewById(R.id.signup_button);
         progressIndicator = findViewById(R.id.progress);
+        loading = findViewById(R.id.loading_txt);
+        code = findViewById(R.id.code_layout);
     }
     private boolean nameValidation(TextInputLayout name){
         boolean isValid = false;
@@ -268,22 +317,29 @@ public class SignupActivity extends AppCompatActivity {
             password.getEditText().setSelection(position);
         }
     }
-    private void createUser(AuthResult authResult ,String name ,String email ,String password ,Uri uri,String phone){
+    private void createUser(AuthResult authResult ,String name ,String email ,String password ,Uri uri,String phone) throws Exception {
         String id = authResult.getUser().getUid();
         String type = getUserType(doctorCheck);
-        UserModel user = new UserModel();
+        UserModel user;
+        DoctorModel doctor;
+        String data = "";
         if(type.equals(Constant.PATIENT_TYPE)){
             user = new UserModel(id,name,email,type,uri.toString(),phone);
+            data = security.encrypt(user);
         }else if (type.equals(Constant.DOCTOR_TYPE)){
-            user = new DoctorModel(id,name,email,type,uri.toString(),phone,"Dentist","4,5","750m","");
+            doctor = new DoctorModel(id,name,email,type,uri.toString(),phone,"Dentist","4,5","750m","A Dentist");
+            data = security.encrypt(doctor);
         }
-        UserModel finalUser = user;
         FirebaseService.getFirebaseDatabase()
                 .getReference(getUserType(doctorCheck))
                 .child(id)
-                .setValue(user)
+                .setValue(data)
                 .addOnSuccessListener(
                         e -> {
+                            progressIndicator.setProgress(100,true);
+                            progressIndicator.setVisibility(View.INVISIBLE);
+                            loading.setVisibility(View.INVISIBLE);
+                            signupBtn.setClickable(true);
                             LayoutInflater layoutInflater = LayoutInflater.from(SignupActivity.this);
                             View layout = layoutInflater.inflate(R.layout.alert_dialog_signup,null);
                             MaterialButton login = layout.findViewById(R.id.login_button);
@@ -297,12 +353,11 @@ public class SignupActivity extends AppCompatActivity {
                             });
                             dialog.setView(layout);
                             dialog.show();
-                            //progressIndicator.setProgress(100,true);
-                            //progressIndicator.setVisibility(View.INVISIBLE);
-                            //secondFactorVerify(authResult,phone,email,password);
                         }
                 )
                 .addOnFailureListener(e -> {
+                    signupBtn.setClickable(true);
+                    loading.setVisibility(View.INVISIBLE);
                     progressIndicator.setIndicatorColor(getColor(R.color.error_color));
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
@@ -310,7 +365,9 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, "Couldn't save user info", Toast.LENGTH_SHORT).show();
                 });
     }
-    private void signup(String name , String email , String password,String phone){
+    private void signup(String name , String email , String password , String phone){
+        signupBtn.setClickable(false);
+        loading.setVisibility(View.VISIBLE);
         progressIndicator.setVisibility(View.VISIBLE);
         progressIndicator.setProgress(10,true);
         FirebaseService.getFirebaseAuth()
@@ -320,6 +377,8 @@ public class SignupActivity extends AppCompatActivity {
                     uploadProfileImg(authResult,name,email,password,uri.get(),phone);
                 })
                 .addOnFailureListener(e -> {
+                    signupBtn.setClickable(true);
+                    loading.setVisibility(View.INVISIBLE);
                     progressIndicator.setIndicatorColor(getColor(R.color.error_color));
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
@@ -341,9 +400,15 @@ public class SignupActivity extends AppCompatActivity {
                             .getDownloadUrl()
                             .addOnSuccessListener(uri -> {
                                 progressIndicator.setProgress(70,true);
-                                createUser(authResult,name,email,password,uri,phone);
+                                try {
+                                    createUser(authResult,name,email,password,uri,phone);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
                             })
                             .addOnFailureListener(e -> {
+                                signupBtn.setClickable(true);
+                                loading.setVisibility(View.INVISIBLE);
                                 progressIndicator.setIndicatorColor(getColor(R.color.error_color));
                                 progressIndicator.setProgress(100,true);
                                 progressIndicator.setVisibility(View.INVISIBLE);
@@ -352,6 +417,8 @@ public class SignupActivity extends AppCompatActivity {
                             });
                 })
                 .addOnFailureListener(e -> {
+                    signupBtn.setClickable(true);
+                    loading.setVisibility(View.INVISIBLE);
                     progressIndicator.setIndicatorColor(getColor(R.color.error_color));
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
@@ -384,20 +451,17 @@ public class SignupActivity extends AppCompatActivity {
                 };
         authResult.getUser().getMultiFactor().getSession()
                 .addOnCompleteListener(
-                        new OnCompleteListener<MultiFactorSession>() {
-                            @Override
-                            public void onComplete(Task<MultiFactorSession> task) {
-                                if (task.isSuccessful()) {
-                                    MultiFactorSession multiFactorSession = task.getResult();
-                                    PhoneAuthOptions phoneAuthOptions =
-                                            PhoneAuthOptions.newBuilder()
-                                                    .setPhoneNumber(phone)
-                                                    .setTimeout(30L, TimeUnit.SECONDS)
-                                                    .setMultiFactorSession(multiFactorSession)
-                                                    .setCallbacks(callbacks)
-                                                    .build();
-                                    PhoneAuthProvider.verifyPhoneNumber(phoneAuthOptions);
-                                }
+                        task -> {
+                            if (task.isSuccessful()) {
+                                MultiFactorSession multiFactorSession = task.getResult();
+                                PhoneAuthOptions phoneAuthOptions =
+                                        PhoneAuthOptions.newBuilder()
+                                                .setPhoneNumber(phone)
+                                                .setTimeout(30L, TimeUnit.SECONDS)
+                                                .setMultiFactorSession(multiFactorSession)
+                                                .setCallbacks(callbacks)
+                                                .build();
+                                PhoneAuthProvider.verifyPhoneNumber(phoneAuthOptions);
                             }
                         });
     }

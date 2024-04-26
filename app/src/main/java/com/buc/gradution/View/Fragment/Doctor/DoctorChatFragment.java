@@ -19,6 +19,7 @@ import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.MessageModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +29,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class DoctorChatFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private TextView noMessagesText;
     private RecyclerView recyclerView;
     private ArrayList<MessageModel> messages;
@@ -57,7 +59,12 @@ public class DoctorChatFragment extends Fragment {
                                     int i = 0;
                                     for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
                                         if (i == dataSnapshot1.getChildrenCount() - 1) {
-                                            MessageModel messageModel = dataSnapshot2.getValue(MessageModel.class);
+                                            MessageModel messageModel;
+                                            try {
+                                                messageModel = security.decryptMessage(dataSnapshot2.getValue().toString());
+                                            } catch (Exception e) {
+                                                throw new RuntimeException(e);
+                                            }
                                             noMessagesText.setVisibility(View.INVISIBLE);
                                             messages.add(messageModel);
                                             adapter.setMessages(messages);

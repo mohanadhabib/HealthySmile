@@ -21,6 +21,7 @@ import com.buc.gradution.Adapter.Doctor.DoctorAppointmentsRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.AppointmentModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class DoctorAppointmentFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView noAppointmentText;
     private RecyclerView recyclerView;
@@ -71,7 +73,11 @@ public class DoctorAppointmentFragment extends Fragment {
                         AppointmentModel appointment;
                         appointments = new ArrayList<>();
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            appointment = dataSnapshot.getValue(AppointmentModel.class);
+                            try {
+                                appointment = security.decryptAppointment(dataSnapshot.getValue().toString());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                             if(appointment.getDoctorId().equals(FirebaseService.getFirebaseAuth().getCurrentUser().getUid())){
                                 noAppointmentText.setVisibility(View.INVISIBLE);
                                 appointments.add(appointment);

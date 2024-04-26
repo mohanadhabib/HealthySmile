@@ -18,6 +18,7 @@ import com.buc.gradution.Model.AppointmentModel;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
@@ -36,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserDoctorDetailsActivity extends AppCompatActivity {
-
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private ImageView back;
     private ShapeableImageView doctorImg;
     private TextView doctorName,doctorSpec,stars,distance,about,date,time;
@@ -57,7 +58,13 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
         back.setOnClickListener(v -> finish());
         datePicker.setOnClickListener(v -> pickDate());
         timePicker.setOnClickListener(v -> pickTime());
-        bookAppointment.setOnClickListener(v -> bookAnAppointment());
+        bookAppointment.setOnClickListener(v -> {
+            try {
+                bookAnAppointment();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
     private void getView(){
         if(intent.getSerializableExtra(Constant.APPOINTMENT) != null){
@@ -115,7 +122,7 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
             date.setText(dateTxt.get());
         });
     }
-    private void bookAnAppointment(){
+    private void bookAnAppointment() throws Exception {
         String appointmentDate = date.getText().toString();
         String appointmentTime = time.getText().toString();
         if (appointmentDate.equals(getString(R.string.no_date_selected))&&appointmentTime.equals(getString(R.string.no_time_selected))){
@@ -133,9 +140,10 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                             appointment.getDoctorName(),appointment.getDoctorEmail(),appointment.getDoctorImg(),
                             appointment.getDoctorSpec(), appointmentDate,appointmentTime,
                             appointment.getStars(),appointment.getDistance(),appointment.getAboutDoctor());
+                    String data = security.encrypt(appointment);
                     FirebaseService.getFirebaseDatabase().getReference(Constant.APPOINTMENT)
                             .child(ref)
-                            .setValue(appointment)
+                            .setValue(data)
                             .addOnSuccessListener(s -> {
                                 storeAppointmentsInStorage();
                                 View view = LayoutInflater.from(UserDoctorDetailsActivity.this).inflate(R.layout.alert_dialog_appointment_success,null);
@@ -147,9 +155,7 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
 
                                 });
                             })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(UserDoctorDetailsActivity.this, "Sorry, Couldn't make your appointment\nPlease try again later", Toast.LENGTH_SHORT).show();
-                            });
+                            .addOnFailureListener(e -> Toast.makeText(UserDoctorDetailsActivity.this, "Sorry, Couldn't make your appointment\nPlease try again later", Toast.LENGTH_SHORT).show());
                 }else{
                     checkOtherAppointments(doctor.getId(),appointmentDate,appointmentTime);
                 }
@@ -165,7 +171,12 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         appointments = new ArrayList<>();
                         for(DataSnapshot dataSnapshot0 : snapshot.getChildren()){
-                            AppointmentModel appointment = dataSnapshot0.getValue(AppointmentModel.class);
+                            AppointmentModel appointment;
+                            try {
+                                appointment = security.decryptAppointment(dataSnapshot0.getValue().toString());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                             appointments.add(appointment);
                         }
                         SharedPreferences.Editor shared = getSharedPreferences(Constant.APPOINTMENT_LIST,0).edit();
@@ -184,7 +195,12 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(dataSnapshot -> {
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        AppointmentModel appointmentModel = dataSnapshot1.getValue(AppointmentModel.class);
+                        AppointmentModel appointmentModel;
+                        try {
+                            appointmentModel = security.decryptAppointment(dataSnapshot1.getValue().toString());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         if (appointmentModel.getDoctorId().equals(doctorId) &&
                                 appointmentModel.getAppointmentDate().equals(appointmentDate) &&
                                 appointmentModel.getAppointmentTime().equals(appointmentTime)) {
@@ -193,23 +209,28 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                         }
                     }
                     if (isAvailable.get()){
-                        makeAppointment(appointmentDate,appointmentTime);
+                        try {
+                            makeAppointment(appointmentDate,appointmentTime);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "Sorry, This date and time is already booked", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-    private void makeAppointment(String appointmentDate,String appointmentTime){
+    private void makeAppointment(String appointmentDate,String appointmentTime) throws Exception {
         String ref = user.getId() + doctor.getId();
         AppointmentModel appointment = new AppointmentModel(user.getId(),
                 user.getName(), user.getEmail(),user.getProfileImgUri(), doctor.getId(),
                 doctor.getName(),doctor.getEmail(),doctor.getProfileImgUri(),
                 doctor.getSpec(), appointmentDate,appointmentTime,
                 doctor.getStars(),doctor.getDistance(),doctor.getAbout());
+        String data = security.encrypt(appointment);
         FirebaseService.getFirebaseDatabase().getReference(Constant.APPOINTMENT)
                 .child(ref)
-                .setValue(appointment)
+                .setValue(data)
                 .addOnSuccessListener(s -> {
                     storeAppointmentsInStorage();
                     View view = LayoutInflater.from(UserDoctorDetailsActivity.this).inflate(R.layout.alert_dialog_appointment_success,null);
@@ -223,8 +244,6 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                         startActivity(intent0);
                     });
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(UserDoctorDetailsActivity.this, "Sorry, Couldn't make your appointment\nPlease try again later", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(UserDoctorDetailsActivity.this, "Sorry, Couldn't make your appointment\nPlease try again later", Toast.LENGTH_SHORT).show());
     }
 }

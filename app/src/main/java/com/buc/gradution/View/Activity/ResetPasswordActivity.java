@@ -8,10 +8,10 @@ import androidx.appcompat.content.res.AppCompatResources;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.buc.gradution.R;
@@ -34,9 +34,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private AtomicBoolean isEmailMethod;
     private ImageView back;
     private TextView emailBtn,phoneBtn;
-    private TextInputLayout emailPhone;
+    private TextInputLayout email,phone,code;
     private MaterialButton resetPassword;
     private CircularProgressIndicator progressIndicator;
+    private LinearLayout phoneCode;
     private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,33 +46,36 @@ public class ResetPasswordActivity extends AppCompatActivity {
         initComponents();
         context = getApplicationContext();
         isEmailMethod = new AtomicBoolean(true);
+        if(isEmailMethod.get()){
+            email.setVisibility(View.VISIBLE);
+            phoneCode.setVisibility(View.INVISIBLE);
+        }else{
+            email.setVisibility(View.INVISIBLE);
+            phoneCode.setVisibility(View.VISIBLE);
+        }
         back.setOnClickListener(v -> finish());
         emailBtn.setOnClickListener(v -> {
             isEmailMethod.set(true);
+            email.setVisibility(View.VISIBLE);
+            phoneCode.setVisibility(View.INVISIBLE);
             phoneBtn.setBackground(null);
             phoneBtn.setTextColor(getColor(R.color.grey));
             emailBtn.setBackground(AppCompatResources.getDrawable(ResetPasswordActivity.this,R.drawable.background_forget_button));
             emailBtn.setTextColor(getColor(R.color.main_color));
-            emailPhone.setStartIconDrawable(AppCompatResources.getDrawable(ResetPasswordActivity.this,R.drawable.ic_email));
-            emailPhone.setHint(getString(R.string.enter_your_email));
-            emailPhone.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
-            emailPhone.setAutofillHints(View.AUTOFILL_HINT_EMAIL_ADDRESS);
         });
         phoneBtn.setOnClickListener(v -> {
             isEmailMethod.set(false);
+            email.setVisibility(View.INVISIBLE);
+            phoneCode.setVisibility(View.VISIBLE);
             phoneBtn.setBackground(AppCompatResources.getDrawable(ResetPasswordActivity.this,R.drawable.background_forget_button));
             phoneBtn.setTextColor(getColor(R.color.main_color));
             emailBtn.setBackground(null);
             emailBtn.setTextColor(getColor(R.color.grey));
-            emailPhone.setStartIconDrawable(AppCompatResources.getDrawable(ResetPasswordActivity.this,R.drawable.ic_phone));
-            emailPhone.setHint(getString(R.string.enter_your_phone));
-            emailPhone.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
-            emailPhone.setAutofillHints(View.AUTOFILL_HINT_PHONE);
         });
         resetPassword.setOnClickListener(v ->{
             if(isEmailMethod.get()){
                 if(NetworkService.isConnected(context)){
-                    String email = emailPhone.getEditText().getText().toString();
+                    String email = this.email.getEditText().getText().toString();
                     sendResetPasswordEmail(email);
                 }
                 else{
@@ -80,10 +84,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
             }
             else{
                 if(NetworkService.isConnected(context)){
-                    String phone = emailPhone.getEditText().getText().toString();
+                    String codePhoneTxt = code.getEditText().getText().toString() + phone.getEditText().getText().toString();
                     progressIndicator.setVisibility(View.VISIBLE);
                     progressIndicator.setProgress(50,true);
-                    sendOTP(phone);
+                    sendOTP(codePhoneTxt);
                 }else{
                     NetworkService.connectionFailed(context);
                 }
@@ -95,9 +99,12 @@ public class ResetPasswordActivity extends AppCompatActivity {
         back  = findViewById(R.id.back_button);
         emailBtn = findViewById(R.id.email_btn);
         phoneBtn = findViewById(R.id.phone_btn);
-        emailPhone = findViewById(R.id.email_phone_layout);
+        email = findViewById(R.id.email_layout);
         resetPassword = findViewById(R.id.reset_password_btn);
         progressIndicator = findViewById(R.id.progress);
+        phone = findViewById(R.id.phone_layout);
+        code = findViewById(R.id.code_layout);
+        phoneCode = findViewById(R.id.phone_code_layout);
     }
     private void sendResetPasswordEmail(String email){
         FirebaseService.getFirebaseAuth().sendPasswordResetEmail(email)
@@ -111,7 +118,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     alertDialog.setView(view);
                     alertDialog.show();
                     goToLoginPage.setOnClickListener(v ->{
-                        Intent intent = new Intent(ResetPasswordActivity.this, OnboardingFourActivity.class);
+                        Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
                     });

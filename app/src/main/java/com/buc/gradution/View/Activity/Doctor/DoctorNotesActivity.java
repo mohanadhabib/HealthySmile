@@ -9,11 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.buc.gradution.Model.AppointmentModel;
 import com.buc.gradution.Model.NotesModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class DoctorNotesActivity extends AppCompatActivity {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private ImageView back;
     private TextInputLayout notesLayout;
     private MaterialButton sendBtn;
@@ -28,7 +30,11 @@ public class DoctorNotesActivity extends AppCompatActivity {
         back.setOnClickListener(v -> finish());
         sendBtn.setOnClickListener(v ->{
             if(!validateInputLayout()){
-                sendNotesToDB(appointmentModel);
+                try {
+                    sendNotesToDB(appointmentModel);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
@@ -41,16 +47,17 @@ public class DoctorNotesActivity extends AppCompatActivity {
     private boolean validateInputLayout(){
         return notesLayout.getEditText().getText().toString().isEmpty();
     }
-    private void sendNotesToDB(AppointmentModel appointment){
+    private void sendNotesToDB(AppointmentModel appointment) throws Exception {
         String notes = notesLayout.getEditText().getText().toString();
         notesModel = new NotesModel(appointment.getUserId(),appointment.getUserName(),appointment.getUserEmail(),appointment.getUserImg(),appointment.getDoctorId(),appointment.getDoctorName(),appointment.getDoctorEmail(),appointment.getDoctorImg(),appointment.getDoctorSpec(),appointment.getAppointmentDate(),appointment.getAppointmentTime(),appointment.getStars(),appointment.getDistance(),appointment.getAboutDoctor(),notes);
         String patientRef = notesModel.getUserId();
         String doctorRef = notesModel.getDoctorId();
+        String data = security.encrypt(notesModel);
         FirebaseService.getFirebaseDatabase().getReference("Notes")
                 .child(patientRef)
                 .child(doctorRef)
                 .push()
-                .setValue(notesModel)
+                .setValue(data)
                 .addOnSuccessListener(v -> {
                     notesLayout.getEditText().setText("");
                     Toast.makeText(getApplicationContext(), "Notes have been successfully added", Toast.LENGTH_SHORT).show();

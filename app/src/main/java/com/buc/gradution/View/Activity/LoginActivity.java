@@ -4,6 +4,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.View.Activity.Doctor.DoctorHomeActivity;
+import com.buc.gradution.View.Activity.User.UserGuideActivity;
 import com.buc.gradution.View.Activity.User.UserHomeActivity;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
@@ -32,6 +36,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
@@ -41,17 +46,23 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private String emailTxt, passwordTxt;
+    private ImageView userGuide;
+    private MaterialSwitch themeSwitch;
     private ImageView back;
     private TextInputLayout email , password;
     private MaterialCheckBox doctorCheckBox;
     private TextView forgetPasswordBtn, signupBtn;
     private MaterialButton loginBtn , googleLoginBtn, facebookLoginBtn;
     private CircularProgressIndicator progressIndicator;
+    private Boolean isDarkTheme;
+    private SharedPreferences.Editor themeEditor;
     private Context context;
 
     @Override
@@ -61,13 +72,46 @@ public class LoginActivity extends AppCompatActivity {
         initComponents();
         getDataFromSignUp();
         context = getApplicationContext();
+        isDarkTheme = getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).getBoolean(Constant.CURRENT_THEME,false);
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), o -> {
             if(o.getResultCode() == RESULT_OK){
-               try {
-                   firebaseAuthWithGoogle(GoogleSignIn.getSignedInAccountFromIntent(o.getData()).getResult().getIdToken());
-               }catch (Throwable e){
-                   Toast.makeText(getApplicationContext(),"Couldn't Sign in",Toast.LENGTH_SHORT).show();
-               }
+                try {
+                    firebaseAuthWithGoogle(GoogleSignIn.getSignedInAccountFromIntent(o.getData()).getResult().getIdToken());
+                }catch (Throwable e){
+                    Toast.makeText(getApplicationContext(),"Couldn't Sign in",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        if (isDarkTheme){
+            themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.ic_dark_mode));
+        }else{
+            themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.ic_light_mode));
+        }
+        themeSwitch.setChecked(isDarkTheme);
+        userGuide.setOnClickListener(v ->{
+            if(NetworkService.isConnected(getApplicationContext())){
+                boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
+                if(isEnglish){
+                    Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
+                    intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
+                    startActivity(intent);
+                }
+            }
+            else{
+                NetworkService.connectionFailed(getApplicationContext());
+            }
+        });
+        themeSwitch.setOnClickListener(v -> {
+            themeEditor = getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).edit();
+            isDarkTheme = !isDarkTheme;
+            themeEditor.putBoolean(Constant.CURRENT_THEME,isDarkTheme);
+            themeEditor.commit();
+            themeSwitch.setChecked(isDarkTheme);
+            if(isDarkTheme){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
         back.setOnClickListener(v -> finish());
@@ -98,6 +142,8 @@ public class LoginActivity extends AppCompatActivity {
         googleLoginBtn.setOnClickListener(v -> launcher.launch(googleSignIn()));
     }
     private void initComponents(){
+        userGuide = findViewById(R.id.user_guide);
+        themeSwitch = findViewById(R.id.theme);
         back = findViewById(R.id.back_button);
         email = findViewById(R.id.email_layout);
         password = findViewById(R.id.password_layout);
@@ -229,7 +275,12 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseService.getFirebaseDatabase().getReference(Constant.PATIENT_TYPE).get()
                         .addOnSuccessListener(dataSnapshot -> {
                             for(DataSnapshot data0 : dataSnapshot.getChildren()){
-                                UserModel user = data0.getValue(UserModel.class);
+                                UserModel user;
+                                try {
+                                    user = security.decryptUser(data0.getValue().toString());
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
                                 if(authResult.getUser().getUid().equals(user.getId())){
                                     writeToSharedPreferences(Constant.PATIENT_TYPE,user);
                                     isRightType.set(true);
@@ -246,7 +297,12 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseService.getFirebaseDatabase().getReference(Constant.DOCTOR_TYPE).get()
                         .addOnSuccessListener(dataSnapshot -> {
                             for(DataSnapshot data0 : dataSnapshot.getChildren()){
-                                DoctorModel user = data0.getValue(DoctorModel.class);
+                                DoctorModel user;
+                                try {
+                                    user = security.decryptDoctor(data0.getValue().toString());
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
                                 if(authResult.getUser().getUid().equals(user.getId())){
                                     writeToSharedPreferences(Constant.DOCTOR_TYPE,user);
                                     isRightType.set(true);
@@ -300,7 +356,11 @@ public class LoginActivity extends AppCompatActivity {
                     FirebaseUser user = FirebaseService.getFirebaseAuth().getCurrentUser();
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
-                    registerUserWithGoogle(user,v);
+                    try {
+                        registerUserWithGoogle(user,v);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 })
                 .addOnFailureListener(e ->{
                     progressIndicator.setIndicatorColor(getColor(R.color.error_color));
@@ -310,18 +370,22 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this,"Sorry, Couldn't login\nPlease try again", Toast.LENGTH_SHORT).show();
                 });
         }
-    private void registerUserWithGoogle(FirebaseUser firebaseUser,AuthResult authResult) {
+    private void registerUserWithGoogle(FirebaseUser firebaseUser,AuthResult authResult) throws Exception {
         String type = getUserType(doctorCheckBox);
         UserModel user = new UserModel();
+        DoctorModel doctor =  new DoctorModel();
+        String data = "";
         if(type.equals(Constant.PATIENT_TYPE)){
             user = new UserModel(firebaseUser.getUid(),firebaseUser.getDisplayName(),firebaseUser.getEmail(),type,firebaseUser.getPhotoUrl().toString(),firebaseUser.getPhoneNumber());
+            data = security.encrypt(user);
         }else if (type.equals(Constant.DOCTOR_TYPE)){
-            user = new DoctorModel(firebaseUser.getUid(),firebaseUser.getDisplayName(),firebaseUser.getEmail(),type,firebaseUser.getPhotoUrl().toString(),firebaseUser.getPhoneNumber(),"Dentist","4,5","750m","");
+            doctor = new DoctorModel(firebaseUser.getUid(),firebaseUser.getDisplayName(),firebaseUser.getEmail(),type,firebaseUser.getPhotoUrl().toString(),firebaseUser.getPhoneNumber(),"Dentist","4,5","750m","");
+            data = security.encrypt(doctor);
         }
         FirebaseService.getFirebaseDatabase()
                 .getReference(getUserType(doctorCheckBox))
                 .child(user.getId())
-                .setValue(user)
+                .setValue(data)
                 .addOnSuccessListener(v -> searchForUser(authResult))
                 .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_SHORT).show());
     }
