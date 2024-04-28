@@ -2,6 +2,7 @@ package com.buc.gradution.View.Fragment.User;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -28,6 +31,7 @@ import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.OnboardingFourActivity;
 import com.buc.gradution.View.Activity.AiChatActivity;
 import com.buc.gradution.View.Activity.User.UserGuideActivity;
+import com.buc.gradution.View.Activity.User.UserHomeActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -39,11 +43,13 @@ import java.util.Locale;
 
 public class UserProfileFragment extends Fragment {
     private final FirebaseSecurity security = new FirebaseSecurity();
-    private ViewPager2 viewPager;
-    private BottomNavigationView bottomNavigationView;
+    private final ViewPager2 viewPager;
+    private final BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
-    private TextView userName;
+    private TextView userName,englishBtn , arabicBtn;
     private LinearLayout savedLayout,appointmentLayout, geminiChatLayout,faqLayout,logOutLayout;
+    private SharedPreferences.Editor editor;
+    private boolean isLangChanged = false;
     private Context context;
     private UserModel user;
     public UserProfileFragment (ViewPager2 viewPager, BottomNavigationView bottomNavigationView){
@@ -61,6 +67,7 @@ public class UserProfileFragment extends Fragment {
         initComponents(view);
         getUserInfo();
         context = view.getContext();
+        editor = context.getSharedPreferences(Constant.LANGUAGE_SHARED_PREFERENCES,0).edit();
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result->{
             if(result.getResultCode() == getActivity().RESULT_OK && result.getData() != null){
                 updateImage(result.getData().getData());
@@ -68,6 +75,14 @@ public class UserProfileFragment extends Fragment {
             }else{
                 Toast.makeText(getContext(), "Please select an image ", Toast.LENGTH_SHORT).show();
             }
+        });
+        englishBtn.setOnClickListener(v ->{
+            LocaleListCompat locale = LocaleListCompat.forLanguageTags("en");
+            AppCompatDelegate.setApplicationLocales(locale);
+        });
+        arabicBtn.setOnClickListener(v ->{
+            LocaleListCompat locale = LocaleListCompat.forLanguageTags("ar");
+            AppCompatDelegate.setApplicationLocales(locale);
         });
         profileImg.setOnClickListener(v->{
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -122,6 +137,8 @@ public class UserProfileFragment extends Fragment {
         });
     }
     private void initComponents(View view){
+        englishBtn = view.findViewById(R.id.english);
+        arabicBtn = view.findViewById(R.id.arabic);
         profileImg = view.findViewById(R.id.profile_img);
         userName = view.findViewById(R.id.user_name);
         savedLayout = view.findViewById(R.id.layout_saved);

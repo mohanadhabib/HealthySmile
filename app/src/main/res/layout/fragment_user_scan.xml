@@ -5,18 +5,6 @@
     android:paddingTop="25dp"
     android:paddingHorizontal="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        android:id="@+id/txt0"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/scan_txt"
-        android:fontFamily="@font/nunito_regular"
-        android:textSize="22sp"
-        android:textColor="@color/text_color"
-        android:textStyle="bold"
-        android:textFontWeight="900"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vg0"
         android:orientation="vertical"
@@ -29,16 +17,35 @@
         app:layout_constraintGuide_percent="0.85"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/txt0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/scan_txt"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="22sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/hint_txt"
+        app:layout_constraintTop_toBottomOf="@id/txt0"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp"
+        android:text="@string/tips_for_capture_image_n_n_light_it_up_natural_light_is_best_but_avoid_harsh_shadows_indoors_use_bright_white_light_skip_the_flash_it_creates_glare_n_steady_does_it_hold_your_phone_still_or_use_a_tripod_for_sharp_focused_pics_n_focus_on_your_smile_make_sure_your_teeth_are_the_stars_no_fingers_hair_or_other_objects_blocking_the_view_n_multiple_angles_capture_close_up_shots_from_the_front_back_and_sides_of_the_teeth_you_re_concerned_about_n_show_your_smile_gently_pull_back_your_lips_and_keep_your_mouth_slightly_open_for_a_clear_view_smile_naturally_n_clean_and_clear_brush_your_teeth_beforehand_to_remove_anything_hiding_your_pearly_whites"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="12sp"
+        android:textColor="@color/text_color"
+        android:textStyle="normal"
+        android:textFontWeight="800"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g0"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.05"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/g3"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
@@ -56,8 +63,29 @@
         android:layout_marginVertical="25dp"
         android:layout_width="0dp"
         android:layout_height="0dp"/>
-    <ScrollView
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g3"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.65"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/after_img"
         app:layout_constraintTop_toBottomOf="@id/g1"
+        app:layout_constraintBottom_toTopOf="@id/g3"
+        app:layout_constraintStart_toEndOf="@id/vg0"
+        app:layout_constraintEnd_toStartOf="@id/vg1"
+        android:layout_marginVertical="25dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g2"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ScrollView
+        app:layout_constraintTop_toBottomOf="@id/g3"
         app:layout_constraintBottom_toTopOf="@id/g2"
         app:layout_constraintStart_toEndOf="@id/vg0"
         app:layout_constraintEnd_toStartOf="@id/vg1"
@@ -77,24 +105,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </ScrollView>
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/g2"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <ImageView
-        android:id="@+id/after_img"
-        app:layout_constraintTop_toBottomOf="@id/g2"
-        app:layout_constraintBottom_toTopOf="@id/g3"
-        app:layout_constraintStart_toEndOf="@id/vg0"
-        app:layout_constraintEnd_toStartOf="@id/vg1"
-        android:layout_marginVertical="25dp"
-        android:layout_width="0dp"
-        android:layout_height="0dp"/>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/submit_img_button"
-        app:layout_constraintTop_toBottomOf="@id/g3"
+        app:layout_constraintTop_toBottomOf="@id/g2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/capture_img_button"
@@ -122,7 +135,7 @@
         android:layout_height="wrap_content"/>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/capture_img_button"
-        app:layout_constraintTop_toBottomOf="@id/g3"
+        app:layout_constraintTop_toBottomOf="@id/g2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/submit_img_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -144,6 +157,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:indicatorColor="@color/main_color"
         android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/loading_txt"
+        app:layout_constraintStart_toStartOf="@id/progress"
+        app:layout_constraintEnd_toEndOf="@id/progress"
+        app:layout_constraintTop_toBottomOf="@id/progress"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        android:visibility="invisible"
+        android:text="@string/loading"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView

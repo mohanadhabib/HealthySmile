@@ -35,7 +35,7 @@ public class UserDoctorChatActivity extends AppCompatActivity {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private DoctorModel doctor;
     private UserModel user;
-    private ImageView back,phone,video;
+    private ImageView back;
     private TextView doctorName,noData;
     private RecyclerView recyclerView;
     private TextInputLayout typeMessage;
@@ -93,22 +93,16 @@ public class UserDoctorChatActivity extends AppCompatActivity {
                 .child(doctor.getId())
                 .push()
                 .setValue(data)
-                .addOnSuccessListener(x ->{
-                    FirebaseService.getFirebaseDatabase().getReference("Message-Doctor").child(doctor.getId())
-                            .child(user.getId())
-                            .push()
-                            .setValue(data)
-                            .addOnSuccessListener(v ->{
-                                typeMessage.getEditText().getText().clear();
-                                getMessages(ref);
-                            })
-                            .addOnFailureListener(e ->{
-                                Toast.makeText(getApplicationContext(),"Sorry, Couldn't send message",Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .addOnFailureListener(e ->{
-                    Toast.makeText(getApplicationContext(),"Sorry, Couldn't send message",Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(x -> FirebaseService.getFirebaseDatabase().getReference("Message-Doctor").child(doctor.getId())
+                        .child(user.getId())
+                        .push()
+                        .setValue(data)
+                        .addOnSuccessListener(v ->{
+                            typeMessage.getEditText().getText().clear();
+                            getMessages(ref);
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"Sorry, Couldn't send message",Toast.LENGTH_SHORT).show()))
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),"Sorry, Couldn't send message",Toast.LENGTH_SHORT).show());
     }
     private void getMessages(String ref){
         FirebaseService.getFirebaseDatabase().getReference("Message-User").child(user.getId())
@@ -118,7 +112,7 @@ public class UserDoctorChatActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ArrayList<MessageModel> messages = new ArrayList<>();
                         for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                            MessageModel message = null;
+                            MessageModel message;
                             try {
                                 message = security.decryptMessage(snapshot1.getValue().toString());
                             } catch (Exception e) {
@@ -127,6 +121,7 @@ public class UserDoctorChatActivity extends AppCompatActivity {
                             messages.add(message);
                         }
                         adapter.setMessages(messages);
+                        noData.setVisibility(View.INVISIBLE);
                         recyclerView.setAdapter(adapter);
                         recyclerView.scrollToPosition(messages.size()-1);
                     }
@@ -140,8 +135,6 @@ public class UserDoctorChatActivity extends AppCompatActivity {
     private void initComponents(){
         back = findViewById(R.id.back);
         doctorName = findViewById(R.id.doctor_name);
-        video = findViewById(R.id.video_call);
-        phone = findViewById(R.id.phone_call);
         noData = findViewById(R.id.no_data);
         recyclerView = findViewById(R.id.messages_recycler);
         typeMessage = findViewById(R.id.type_message);

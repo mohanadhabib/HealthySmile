@@ -1,5 +1,6 @@
 package com.buc.gradution.View.Fragment.Doctor;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,8 @@ import com.buc.gradution.Model.MessageModel;
 import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
+import com.buc.gradution.View.Activity.AiChatActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 public class DoctorChatFragment extends Fragment {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private TextView noMessagesText;
+    private FloatingActionButton chatBtn;
     private RecyclerView recyclerView;
     private ArrayList<MessageModel> messages;
     private DoctorChatsRecyclerAdapter adapter;
@@ -48,6 +52,10 @@ public class DoctorChatFragment extends Fragment {
         Gson gson = new Gson();
         String json = view.getContext().getSharedPreferences(Constant.CURRENT_USER,0).getString(Constant.OBJECT,"");
         DoctorModel doctor = gson.fromJson(json,DoctorModel.class);
+        chatBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity().getApplicationContext(), AiChatActivity.class);
+            startActivity(intent);
+        });
         FirebaseService.getFirebaseDatabase().getReference("Message-Doctor")
                 .child(doctor.getId())
                 .addValueEventListener(
@@ -86,5 +94,6 @@ public class DoctorChatFragment extends Fragment {
     private void initComponents(View view){
         noMessagesText = view.findViewById(R.id.no_messages_text);
         recyclerView = view.findViewById(R.id.recycler_view);
+        chatBtn = view.findViewById(R.id.chat_btn);
     }
 }

@@ -46,13 +46,15 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
     private UserModel user;
     private AppointmentModel appointment;
     private ArrayList<AppointmentModel> appointments;
+    private final AtomicReference<Boolean> hasAppointment = new AtomicReference<>();
     private Intent intent;
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_doctor_details);
         initComponents();
+        hasAppointment.set(false);
         intent = getIntent();
         getView();
         back.setOnClickListener(v -> finish());
@@ -63,6 +65,16 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                 bookAnAppointment();
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            }
+        });
+        chatButton.setOnClickListener(v -> {
+            if(hasAppointment.get()){
+                Intent intent0 = new Intent(UserDoctorDetailsActivity.this,UserDoctorChatActivity.class);
+                intent0.putExtra(Constant.OBJECT,doctor);
+                startActivity(intent0);
+            }
+            else{
+                Toast.makeText(getApplicationContext(),"Please make appointment first",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -233,6 +245,7 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
                 .setValue(data)
                 .addOnSuccessListener(s -> {
                     storeAppointmentsInStorage();
+                    hasAppointment.set(true);
                     View view = LayoutInflater.from(UserDoctorDetailsActivity.this).inflate(R.layout.alert_dialog_appointment_success,null);
                     AlertDialog alertDialog = new MaterialAlertDialogBuilder(UserDoctorDetailsActivity.this).create();
                     alertDialog.setView(view);

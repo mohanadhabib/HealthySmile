@@ -52,10 +52,10 @@ public class UserScanFragment extends Fragment {
     private ScanOutputModel scanXray,scanPhoto;
     private ImageView beforeImg, afterImg;
     private MaterialButton submitBtn,captureBtn;
-    private TextView resultTxt,noImageTxt;
+    private TextView resultTxt,noImageTxt,hintText,loadingTxt;
     private CircularProgressIndicator progress;
     private Context context;
-    private AtomicReference<Uri> uri = new AtomicReference<>();
+    private final AtomicReference<Uri> uri = new AtomicReference<>();
 
     @Nullable
     @Override
@@ -74,8 +74,10 @@ public class UserScanFragment extends Fragment {
                 beforeImg.setImageURI(uri.get());
                 if(NetworkService.isConnected(context)){
                     progress.setVisibility(View.VISIBLE);
+                    loadingTxt.setVisibility(View.VISIBLE);
                     progress.setProgress(15,true);
                     noImageTxt.setVisibility(View.INVISIBLE);
+                    hintText.setVisibility(View.INVISIBLE);
                     uploadXRayImage();
                 }
                 else{
@@ -83,6 +85,7 @@ public class UserScanFragment extends Fragment {
                 }
             }else {
                 noImageTxt.setVisibility(View.VISIBLE);
+                hintText.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
@@ -94,6 +97,7 @@ public class UserScanFragment extends Fragment {
                 beforeImg.setImageURI(uri.get());
                 if(NetworkService.isConnected(context)){
                     progress.setVisibility(View.VISIBLE);
+                    loadingTxt.setVisibility(View.VISIBLE);
                     progress.setProgress(15,true);
                     noImageTxt.setVisibility(View.INVISIBLE);
                     uploadPhotoImage();
@@ -103,6 +107,7 @@ public class UserScanFragment extends Fragment {
                 }
             }else {
                 noImageTxt.setVisibility(View.VISIBLE);
+                hintText.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
@@ -130,6 +135,8 @@ public class UserScanFragment extends Fragment {
         afterImg = view.findViewById(R.id.after_img);
         progress = view.findViewById(R.id.progress);
         noImageTxt = view.findViewById(R.id.no_image_text);
+        hintText = view.findViewById(R.id.hint_txt);
+        loadingTxt = view.findViewById(R.id.loading_txt);
     }
     private void uploadXRayImage() {
         String id = FirebaseService.getFirebaseAuth().getCurrentUser().getUid();
@@ -150,6 +157,7 @@ public class UserScanFragment extends Fragment {
                                 progress.setIndicatorColor(getContext().getColor(R.color.error_color));
                                 progress.setProgress(100,true);
                                 progress.setVisibility(View.INVISIBLE);
+                                loadingTxt.setVisibility(View.INVISIBLE);
                                 progress.setIndicatorColor(getContext().getColor(R.color.main_color));
                                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
@@ -175,6 +183,7 @@ public class UserScanFragment extends Fragment {
                                 progress.setIndicatorColor(getContext().getColor(R.color.error_color));
                                 progress.setProgress(100,true);
                                 progress.setVisibility(View.INVISIBLE);
+                                loadingTxt.setVisibility(View.INVISIBLE);
                                 progress.setIndicatorColor(getContext().getColor(R.color.main_color));
                                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
@@ -236,44 +245,50 @@ public class UserScanFragment extends Fragment {
     private void createScanOutput(Bitmap image,ScanOutputModel scanModel) {
         try {
             String x = "";
-            Canvas canvas = new Canvas(image);
-            Paint paintTxt = new Paint();
-            Paint paintRect = new Paint();
-            Paint background = new Paint();
-            background.setColor(getContext().getColor(R.color.prediction_background));
-            paintTxt.setColor(getContext().getColor(R.color.black));
-            paintTxt.setTextSize(18);
-            paintTxt.setAntiAlias(true);
-            paintTxt.setStyle(Paint.Style.FILL);
-            paintRect.setColor(getContext().getColor(R.color.dark_red));
-            paintRect.setAntiAlias(true);
-            DecimalFormat format = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.US);
-            format.applyPattern("###.##");
-            for (int i = 0; i < scanModel.getPredictions().size(); i++) {
-                float xPos = scanModel.getPredictions().get(i).getX();
-                float yPos = scanModel.getPredictions().get(i).getY();
-                String txt = scanModel.getPredictions().get(i).getClassType();
-                double confidence = scanModel.getPredictions().get(i).getConfidence();
-                String confidenceTxt = format.format(confidence);
-                int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
-                x += txt + " " + conPer +"%" + "\n";
-                String resTxt = txt + " " + conPer + "%";
-                float textWidth = paintTxt.measureText(resTxt);
-                Rect r = new Rect((int) xPos, (int) yPos, (int) (xPos + 10), (int) (yPos + 10));
-                float x0 = xPos - 10;
-                float y0 = yPos - 10;
-                canvas.drawRect(r, paintRect);
-                canvas.drawRect(x0, y0 - paintTxt.getTextSize(), x0 + textWidth, y0, background);
-                canvas.drawText(resTxt, x0, y0, paintTxt);
+            if(scanModel.getPredictions().isEmpty()){
+                Toast.makeText(context, "Error,it isn't teeth image", Toast.LENGTH_SHORT).show();
+            }else{
+                Canvas canvas = new Canvas(image);
+                Paint paintTxt = new Paint();
+                Paint paintRect = new Paint();
+                Paint background = new Paint();
+                background.setColor(getContext().getColor(R.color.prediction_background));
+                paintTxt.setColor(getContext().getColor(R.color.black));
+                paintTxt.setTextSize(18);
+                paintTxt.setAntiAlias(true);
+                paintTxt.setStyle(Paint.Style.FILL);
+                paintRect.setColor(getContext().getColor(R.color.dark_red));
+                paintRect.setAntiAlias(true);
+                DecimalFormat format = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.US);
+                format.applyPattern("###.##");
+                for (int i = 0; i < scanModel.getPredictions().size(); i++) {
+                    float xPos = scanModel.getPredictions().get(i).getX();
+                    float yPos = scanModel.getPredictions().get(i).getY();
+                    String txt = scanModel.getPredictions().get(i).getClassType();
+                    double confidence = scanModel.getPredictions().get(i).getConfidence();
+                    String confidenceTxt = format.format(confidence);
+                    int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
+                    x += txt + " " + conPer +"%" + "\n";
+                    String resTxt = txt + " " + conPer + "%";
+                    float textWidth = paintTxt.measureText(resTxt);
+                    Rect r = new Rect((int) xPos, (int) yPos, (int) (xPos + 10), (int) (yPos + 10));
+                    float x0 = xPos - 10;
+                    float y0 = yPos - 10;
+                    canvas.drawRect(r, paintRect);
+                    canvas.drawRect(x0, y0 - paintTxt.getTextSize(), x0 + textWidth, y0, background);
+                    canvas.drawText(resTxt, x0, y0, paintTxt);
+                }
             }
             progress.setProgress(100, true);
             progress.setVisibility(View.INVISIBLE);
+            loadingTxt.setVisibility(View.INVISIBLE);
             resultTxt.setText(x);
             afterImg.setImageBitmap(image);
         }
         catch(Exception e){
             progress.setProgress(100, true);
             progress.setVisibility(View.INVISIBLE);
+            loadingTxt.setVisibility(View.INVISIBLE);
             afterImg.setImageBitmap(null);
             resultTxt.setText(getString(R.string.error));
         }
@@ -304,3 +319,13 @@ public class UserScanFragment extends Fragment {
         return Uri.parse(path);
     }
 }
+
+/*
+* - Light it Up: Natural light is best, but avoid harsh shadows. Indoors, use bright white light. Skip the flash, it creates glare.
+- Steady Does It: Hold your phone still or use a tripod for sharp, focused pics.
+- Focus on Your Smile: Make sure your teeth are the stars! No fingers, hair, or other objects blocking the view.
+- Multiple Angles: Capture close-up shots from the front, back, and sides of the teeth you're concerned about.
+- Show Your Smile: Gently pull back your lips and keep your mouth slightly open for a clear view. Smile naturally!
+- Clean and Clear: Brush your teeth beforehand to remove anything hiding your pearly whites.
+*
+* */

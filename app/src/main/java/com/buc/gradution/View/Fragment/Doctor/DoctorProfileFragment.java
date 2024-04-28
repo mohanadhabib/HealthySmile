@@ -11,6 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -40,10 +42,10 @@ import java.util.Locale;
 
 public class DoctorProfileFragment extends Fragment {
     private final FirebaseSecurity security = new FirebaseSecurity();
-    private ViewPager2 viewPager;
-    private BottomNavigationView bottomNavigationView;
+    private final ViewPager2 viewPager;
+    private final BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
-    private TextView userName;
+    private TextView userName,englishBtn , arabicBtn;
     private LinearLayout savedLayout,appointmentLayout, geminiChatLayout,faqLayout,logOutLayout;
     private Context context;
     private DoctorModel doctor;
@@ -70,6 +72,14 @@ public class DoctorProfileFragment extends Fragment {
             }else{
                 Toast.makeText(getContext(), "Please select an image ", Toast.LENGTH_SHORT).show();
             }
+        });
+        englishBtn.setOnClickListener(v ->{
+            LocaleListCompat locale = LocaleListCompat.forLanguageTags("en");
+            AppCompatDelegate.setApplicationLocales(locale);
+        });
+        arabicBtn.setOnClickListener(v ->{
+            LocaleListCompat locale = LocaleListCompat.forLanguageTags("ar");
+            AppCompatDelegate.setApplicationLocales(locale);
         });
         profileImg.setOnClickListener(v->{
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -118,6 +128,8 @@ public class DoctorProfileFragment extends Fragment {
         });
     }
     private void initComponents(View view){
+        englishBtn = view.findViewById(R.id.english);
+        arabicBtn = view.findViewById(R.id.arabic);
         profileImg = view.findViewById(R.id.profile_img);
         userName = view.findViewById(R.id.user_name);
         savedLayout = view.findViewById(R.id.layout_saved);

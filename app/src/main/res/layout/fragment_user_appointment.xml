@@ -17,17 +17,9 @@
         android:textFontWeight="900"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <ImageView
-        android:id="@+id/notification"
-        app:layout_constraintTop_toTopOf="@id/txt0"
-        app:layout_constraintBottom_toBottomOf="@id/txt0"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        app:layout_constraintTop_toBottomOf="@id/notification"
+        app:layout_constraintTop_toBottomOf="@id/txt0"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="25dp"
         android:layout_width="match_parent"

@@ -33,13 +33,13 @@ public class DoctorChatActivity extends AppCompatActivity {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private DoctorModel doctor;
     private UserModel user;
-    private ImageView back,phone,video;
+    private ImageView back;
     private TextView patientName,noData;
     private RecyclerView recyclerView;
     private TextInputLayout typeMessage;
     private MaterialButton sendMessage;
     private DoctorUserMessageRecyclerAdapter adapter;
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,8 +142,6 @@ public class DoctorChatActivity extends AppCompatActivity {
     private void initComponents(){
         back = findViewById(R.id.back);
         patientName = findViewById(R.id.patient_name);
-        video = findViewById(R.id.video_call);
-        phone = findViewById(R.id.phone_call);
         noData = findViewById(R.id.no_data);
         recyclerView = findViewById(R.id.messages_recycler);
         typeMessage = findViewById(R.id.type_message);

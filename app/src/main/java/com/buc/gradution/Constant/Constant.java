@@ -16,6 +16,8 @@ public abstract class Constant {
     public static final String GEMINI_HISTORY = "Gemini History";
     public static final String MESSAGES_SHARED_PREFERENCES = "Messages Shared Preferences";
     public static final String MESSAGES_HISTORY = "Messages History";
+    public static final String LANGUAGE_SHARED_PREFERENCES = "Language Shared Preferences";
+    public static final String LANGUAGE_STATE = "Language";
     public static final String THEME_SHARED_PREFERENCES = "Theme Shared Preferences";
     public static final String CURRENT_THEME = "Current Theme";
     public static final String ENCRYPTION_KEY = "a4sv28r19nset6ca20n7cge6xlnv4310";

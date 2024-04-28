@@ -141,4 +141,21 @@
     <string name="password_should_contains_at_least_8_characters">يجب ان تحتوي كلمه السر علي 8 احرف علي الاقل</string>
     <string name="upload_image_or_capture_na_real_one_to_see_diseases">قم برفع صوره او التقط \nواحده لرؤيه النتائج</string>
     <string name="no_notes_yet">لا توجد ملاحظات حتي الان</string>
+    <string name="chat_with_ai">تحدث مع Ai</string>
+    <string name="tips_for_capture_image_n_n_light_it_up_natural_light_is_best_but_avoid_harsh_shadows_indoors_use_bright_white_light_skip_the_flash_it_creates_glare_n_steady_does_it_hold_your_phone_still_or_use_a_tripod_for_sharp_focused_pics_n_focus_on_your_smile_make_sure_your_teeth_are_the_stars_no_fingers_hair_or_other_objects_blocking_the_view_n_multiple_angles_capture_close_up_shots_from_the_front_back_and_sides_of_the_teeth_you_re_concerned_about_n_show_your_smile_gently_pull_back_your_lips_and_keep_your_mouth_slightly_open_for_a_clear_view_smile_naturally_n_clean_and_clear_brush_your_teeth_beforehand_to_remove_anything_hiding_your_pearly_whites">نصائح لالتقاط صور رائعة لأسنانك: \n\n
+الإضاءة:
+ * استخدم الضوء الطبيعي كلما أمكن ذلك، ولكن تجنب الظلال القاسية.
+ * إذا كنت في الداخل، استخدم ضوءًا أبيض ساطعًا وتجنب استخدام الفلاش.\n
+الثبات:
+ * أمسك هاتفك بثبات أو استخدم حامل ثلاثي القوائم لضمان وضوح الصور وتركيزها.\n
+التركيز:
+ * تأكد من أن أسنانك هي النقطة الأساسية في الصورة.
+ \n* تجنب وجود أصابع أو شعر أو أي أشياء أخرى تحجب الرؤية.
+الزوايا:
+ * التقط صورًا مقربة من زوايا مختلفة، بما في ذلك الجوانب الأمامية والخلفية والجوانب لأسنانك التي تهمك.\n
+ابتسامتك:
+ * قم بسحب شفتيك برفق وابق فمك مفتوحًا قليلاً للحصول على رؤية واضحة.
+ \n* ابتسم بشكل طبيعي لمظهر أكثر استرخاءً.
+النظافة:
+ * قم بتنظيف أسنانك قبل التقاط الصور لإزالة أي شيء قد يخفي أسنانك البيضاء.</string>
 </resources>

@@ -62,17 +62,13 @@ public class UserAppointmentFragment extends Fragment {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
-                handler.post(()-> {
-                    getAppointmentsFromDB();
-                });
+                handler.post(()-> getAppointmentsFromDB());
             }
 
             @Override
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
-               handler.post(()-> {
-                   getAppointmentFromStorage();
-               });
+               handler.post(()-> getAppointmentFromStorage());
             }
         });
     }
