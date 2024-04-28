@@ -54,6 +54,7 @@ public class SignupActivity extends AppCompatActivity {
     private ImageView back;
     private ShapeableImageView profileImg;
     private TextInputLayout name , email ,password ,phone ,code;
+    private TextView nameHint , emailHint, phoneHint, passwordHint;
     private MaterialCheckBox checkBox,doctorCheck;
     private MaterialButton signupBtn;
     private TextView loading;
@@ -69,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         initComponents();
         context = getApplicationContext();
-        Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getResources().getResourcePackageName(R.drawable.ic_user_profile_image)+'/'+getResources().getResourceTypeName(R.drawable.ic_user_profile_image)+'/'+getResources().getResourceEntryName(R.drawable.ic_user_profile_image));
+        Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getResources().getResourcePackageName(R.drawable.user)+'/'+getResources().getResourceTypeName(R.drawable.user)+'/'+getResources().getResourceEntryName(R.drawable.user));
         uri = new AtomicReference<>();
         uri.set(imageUri);
         isDarkTheme = getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).getBoolean(Constant.CURRENT_THEME,false);
@@ -79,7 +80,7 @@ public class SignupActivity extends AppCompatActivity {
                 profileImg.setImageTintMode(null);
                 uri.set(result.getData().getData());
             }else{
-                profileImg.setImageResource(R.drawable.ic_user);
+                profileImg.setImageResource(R.drawable.user);
                 uri.set(imageUri);
             }
         });
@@ -92,11 +93,14 @@ public class SignupActivity extends AppCompatActivity {
         userGuide.setOnClickListener(v ->{
             if(NetworkService.isConnected(getApplicationContext())){
                 boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
+                Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
                 if(isEnglish){
-                    Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
                     intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
-                    startActivity(intent);
                 }
+                else {
+                    intent.putExtra("url","https://drive.google.com/file/d/15y9mimifNeyOhWzold7kcXYSGb533s0E/view?usp=drivesdk");
+                }
+                startActivity(intent);
             }
             else{
                 NetworkService.connectionFailed(getApplicationContext());
@@ -160,15 +164,23 @@ public class SignupActivity extends AppCompatActivity {
         progressIndicator = findViewById(R.id.progress);
         loading = findViewById(R.id.loading_txt);
         code = findViewById(R.id.code_layout);
+        nameHint = findViewById(R.id.name_hint);
+        emailHint = findViewById(R.id.email_hint);
+        phoneHint = findViewById(R.id.phone_hint);
+        passwordHint = findViewById(R.id.password_hint);
     }
     private boolean nameValidation(TextInputLayout name){
         boolean isValid = false;
         if(name.getEditText().getText().toString().isEmpty()){
+            name.setErrorEnabled(true);
+            nameHint.setVisibility(View.INVISIBLE);
             name.setError(getString(R.string.name_is_mandatory));
         }
         else if(name.getEditText().getText().toString().charAt(0) < 65 ||
                 name.getEditText().getText().toString().charAt(0) > 122 ||
                 (name.getEditText().getText().toString().charAt(0) > 90 && name.getEditText().getText().toString().charAt(0) < 97 )) {
+            name.setErrorEnabled(true);
+            nameHint.setVisibility(View.INVISIBLE);
             name.setError(getString(R.string.name_must_start_with_letter));
         }
         name.getEditText().addTextChangedListener(new TextWatcher() {
@@ -179,10 +191,14 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(!s.toString().isEmpty()){
+                    name.setErrorEnabled(false);
+                    nameHint.setVisibility(View.VISIBLE);
                     name.setError(null);
                 }
-                else if((s.toString().charAt(0) >= 65 && s.toString().charAt(0) <= 90 ) ||
-                        (s.toString().charAt(0) >= 97 && s.toString().charAt(0) <= 122 )){
+                if((!s.toString().isEmpty() && s.toString().charAt(0) >= 65 && s.toString().charAt(0) <= 90 ) ||
+                        (!s.toString().isEmpty() && s.toString().charAt(0) >= 97 && s.toString().charAt(0) <= 122 )){
+                    name.setErrorEnabled(false);
+                    nameHint.setVisibility(View.VISIBLE);
                     name.setError(null);
                 }
             }
@@ -205,9 +221,13 @@ public class SignupActivity extends AppCompatActivity {
     private boolean emailValidation(TextInputLayout email){
         boolean isValid = false;
         if(email.getEditText().getText().toString().isEmpty()){
+            email.setErrorEnabled(true);
+            emailHint.setVisibility(View.INVISIBLE);
             email.setError(getString(R.string.email_is_mandatory));
         }
         else if(!email.getEditText().getText().toString().contains("@")){
+            email.setErrorEnabled(true);
+            emailHint.setVisibility(View.INVISIBLE);
             email.setError(getString(R.string.wrong_email_format));
         }
         email.getEditText().addTextChangedListener(new TextWatcher() {
@@ -218,9 +238,13 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(!s.toString().isEmpty()){
+                    email.setErrorEnabled(false);
+                    emailHint.setVisibility(View.VISIBLE);
                     email.setError(null);
                 }
                 else if(s.toString().contains("@")){
+                    email.setErrorEnabled(false);
+                    emailHint.setVisibility(View.VISIBLE);
                     email.setError(null);
                 }
             }
@@ -233,9 +257,13 @@ public class SignupActivity extends AppCompatActivity {
     private boolean phoneValidation(TextInputLayout phone){
         boolean isValid = false;
         if (phone.getEditText().getText().toString().isEmpty()){
+            phone.setErrorEnabled(true);
+            phoneHint.setVisibility(View.INVISIBLE);
             phone.setError("Phone is mandatory");
         }
         else if(phone.getEditText().getText().toString().length() != 11){
+            phone.setErrorEnabled(true);
+            phoneHint.setVisibility(View.INVISIBLE);
             phone.setError("Wrong phone number");
         }
         phone.getEditText().addTextChangedListener(new TextWatcher() {
@@ -246,9 +274,13 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(!s.toString().isEmpty()){
+                    phone.setErrorEnabled(false);
+                    phoneHint.setVisibility(View.VISIBLE);
                     phone.setError(null);
                 }
                 else if(s.toString().length() == 11){
+                    phone.setErrorEnabled(false);
+                    phoneHint.setVisibility(View.VISIBLE);
                     phone.setError(null);
                 }
             }
@@ -261,9 +293,13 @@ public class SignupActivity extends AppCompatActivity {
     private boolean passwordValidation(TextInputLayout password){
         boolean isValid = false;
         if(password.getEditText().getText().toString().isEmpty()){
+            password.setErrorEnabled(true);
+            passwordHint.setVisibility(View.INVISIBLE);
             password.setError(getString(R.string.password_is_mandatory));
         }
         else if(password.getEditText().getText().toString().length() < 8){
+            password.setErrorEnabled(true);
+            passwordHint.setVisibility(View.INVISIBLE);
             password.setError(getString(R.string.weak_password_password_must_be_at_least_8_letters));
         }
         password.getEditText().addTextChangedListener(new TextWatcher() {
@@ -274,9 +310,13 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(!s.toString().isEmpty()){
+                    password.setErrorEnabled(false);
+                    passwordHint.setVisibility(View.VISIBLE);
                     password.setError(null);
                 }
                 else if(s.toString().length() > 8){
+                    password.setErrorEnabled(false);
+                    passwordHint.setVisibility(View.VISIBLE);
                     password.setError(null);
                 }
             }

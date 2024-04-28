@@ -54,11 +54,12 @@ public class LoginActivity extends AppCompatActivity {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private String emailTxt, passwordTxt;
     private ImageView userGuide;
+    private TextView loading;
     private MaterialSwitch themeSwitch;
     private ImageView back;
     private TextInputLayout email , password;
     private MaterialCheckBox doctorCheckBox;
-    private TextView forgetPasswordBtn, signupBtn;
+    private TextView forgetPasswordBtn, signupBtn , emailHint , passwordHint ;
     private MaterialButton loginBtn , googleLoginBtn, facebookLoginBtn;
     private CircularProgressIndicator progressIndicator;
     private Boolean isDarkTheme;
@@ -91,11 +92,14 @@ public class LoginActivity extends AppCompatActivity {
         userGuide.setOnClickListener(v ->{
             if(NetworkService.isConnected(getApplicationContext())){
                 boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
+                Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
                 if(isEnglish){
-                    Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
                     intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
-                    startActivity(intent);
                 }
+                else {
+                    intent.putExtra("url","https://drive.google.com/file/d/15y9mimifNeyOhWzold7kcXYSGb533s0E/view?usp=drivesdk");
+                }
+                startActivity(intent);
             }
             else{
                 NetworkService.connectionFailed(getApplicationContext());
@@ -142,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
         googleLoginBtn.setOnClickListener(v -> launcher.launch(googleSignIn()));
     }
     private void initComponents(){
+        loading = findViewById(R.id.loading_txt);
         userGuide = findViewById(R.id.user_guide);
         themeSwitch = findViewById(R.id.theme);
         back = findViewById(R.id.back_button);
@@ -154,6 +159,8 @@ public class LoginActivity extends AppCompatActivity {
         googleLoginBtn = findViewById(R.id.google_sign_in);
         facebookLoginBtn = findViewById(R.id.facebook_sign_in);
         progressIndicator = findViewById(R.id.progress);
+        emailHint = findViewById(R.id.email_hint);
+        passwordHint = findViewById(R.id.password_hint);
     }
     private void getDataFromSignUp(){
         if(getIntent().getExtras() != null){
@@ -172,9 +179,13 @@ public class LoginActivity extends AppCompatActivity {
     private boolean emailValidation(TextInputLayout email){
         boolean isValid = false;
         if(email.getEditText().getText().toString().isEmpty()){
+            email.setErrorEnabled(true);
+            emailHint.setVisibility(View.INVISIBLE);
             email.setError(getString(R.string.email_is_mandatory));
         }
         else if(!email.getEditText().getText().toString().contains("@")){
+            email.setErrorEnabled(true);
+            emailHint.setVisibility(View.INVISIBLE);
             email.setError(getString(R.string.wrong_email_format));
         }
         email.getEditText().addTextChangedListener(new TextWatcher() {
@@ -185,9 +196,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(!s.toString().isEmpty()){
+                    email.setErrorEnabled(false);
+                    emailHint.setVisibility(View.VISIBLE);
                     email.setError(null);
                 }
                 else if(s.toString().contains("@")){
+                    email.setErrorEnabled(false);
+                    emailHint.setVisibility(View.VISIBLE);
                     email.setError(null);
                 }
             }
@@ -200,9 +215,13 @@ public class LoginActivity extends AppCompatActivity {
     private boolean passwordValidation(TextInputLayout password){
         boolean isValid = false;
         if(password.getEditText().getText().toString().isEmpty()){
+            password.setErrorEnabled(true);
+            passwordHint.setVisibility(View.INVISIBLE);
             password.setError(getString(R.string.password_is_mandatory));
         }
         else if(password.getEditText().getText().toString().length() < 8){
+            password.setErrorEnabled(true);
+            passwordHint.setVisibility(View.INVISIBLE);
             password.setError(getString(R.string.weak_password_password_must_be_at_least_8_letters));
         }
         password.getEditText().addTextChangedListener(new TextWatcher() {
@@ -213,9 +232,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if(!s.toString().isEmpty()){
+                    password.setErrorEnabled(false);
+                    passwordHint.setVisibility(View.VISIBLE);
                     password.setError(null);
                 }
                 else if(s.toString().length() > 8){
+                    password.setErrorEnabled(false);
+                    passwordHint.setVisibility(View.VISIBLE);
                     password.setError(null);
                 }
             }
@@ -239,6 +262,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     private void login(String email , String password){
+        loginBtn.setClickable(false);
+        loading.setVisibility(View.VISIBLE);
         progressIndicator.setVisibility(View.VISIBLE);
         progressIndicator.setProgress(50,true);
         FirebaseService.getFirebaseAuth()
@@ -246,12 +271,16 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(authResult -> {
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
+                    loading.setVisibility(View.INVISIBLE);
+                    loginBtn.setClickable(true);
                     searchForUser(authResult);
                 }).addOnFailureListener(e -> {
+                    loginBtn.setClickable(true);
                     progressIndicator.setIndicatorColor(getColor(R.color.error_color));
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
                     progressIndicator.setIndicatorColor(getColor(R.color.main_color));
+                    loading.setVisibility(View.INVISIBLE);
                     Toast.makeText(LoginActivity.this,"Sorry, Couldn't login\nPlease try again", Toast.LENGTH_SHORT).show();
                 });
     }
@@ -356,6 +385,7 @@ public class LoginActivity extends AppCompatActivity {
                     FirebaseUser user = FirebaseService.getFirebaseAuth().getCurrentUser();
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
+                    loading.setVisibility(View.INVISIBLE);
                     try {
                         registerUserWithGoogle(user,v);
                     } catch (Exception e) {
@@ -367,6 +397,7 @@ public class LoginActivity extends AppCompatActivity {
                     progressIndicator.setProgress(100,true);
                     progressIndicator.setVisibility(View.INVISIBLE);
                     progressIndicator.setIndicatorColor(getColor(R.color.main_color));
+                    loading.setVisibility(View.INVISIBLE);
                     Toast.makeText(LoginActivity.this,"Sorry, Couldn't login\nPlease try again", Toast.LENGTH_SHORT).show();
                 });
         }

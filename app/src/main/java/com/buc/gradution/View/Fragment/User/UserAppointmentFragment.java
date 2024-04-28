@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,8 +42,9 @@ public class UserAppointmentFragment extends Fragment {
     private final Gson gson = new Gson();
     private RecyclerView recyclerView;
     private UserAppointmentsRecyclerAdapter adapter;
+    private TextView noAppointmentText;
     private View root;
-    private ArrayList<AppointmentModel> appointments;
+    private ArrayList<AppointmentModel> appointments = new ArrayList<>();
     private Context context;
     @Nullable
     @Override
@@ -60,13 +62,17 @@ public class UserAppointmentFragment extends Fragment {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
-                handler.post(()-> getAppointmentsFromDB());
+                handler.post(()-> {
+                    getAppointmentsFromDB();
+                });
             }
 
             @Override
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
-               handler.post(()-> getAppointmentFromStorage());
+               handler.post(()-> {
+                   getAppointmentFromStorage();
+               });
             }
         });
     }
@@ -76,6 +82,14 @@ public class UserAppointmentFragment extends Fragment {
             appointments = new ArrayList<>();
         }else{
             appointments = gson.fromJson(json,new TypeToken<ArrayList<AppointmentModel>>(){}.getType());
+        }
+        if(appointments.isEmpty()){
+            noAppointmentText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
+        }
+        else{
+            noAppointmentText.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
         adapter = new UserAppointmentsRecyclerAdapter();
         adapter.setAppointments(appointments);
@@ -96,6 +110,7 @@ public class UserAppointmentFragment extends Fragment {
                             }
                             if(appointment.getUserId().equals(FirebaseService.getFirebaseAuth().getCurrentUser().getUid())){
                                 appointments.add(appointment);
+                                noAppointmentText.setVisibility(View.INVISIBLE);
                             }
                         }
                         adapter = new UserAppointmentsRecyclerAdapter(new AppointmentInterface() {
@@ -108,6 +123,14 @@ public class UserAppointmentFragment extends Fragment {
                                 rescheduleFromDB(appointment);
                             }
                         });
+                        if(appointments.isEmpty()){
+                            noAppointmentText.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.INVISIBLE);
+                        }
+                        else{
+                            noAppointmentText.setVisibility(View.INVISIBLE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
                         adapter.setAppointments(appointments);
                         recyclerView.setAdapter(adapter);
                     }
@@ -153,6 +176,7 @@ public class UserAppointmentFragment extends Fragment {
     }
     private void initComponents(View view){
         recyclerView = view.findViewById(R.id.recycler);
+        noAppointmentText = view.findViewById(R.id.no_appointment_text);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
     }
 }

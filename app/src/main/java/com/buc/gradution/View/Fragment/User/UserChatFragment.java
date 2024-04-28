@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 public class UserChatFragment extends Fragment {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private RecyclerView recyclerView;
+    private TextView noMessageText;
     private Gson gson = new Gson();
     private ArrayList<MessageModel> messages;
     private UserChatsRecyclerAdapter adapter;
@@ -62,7 +64,7 @@ public class UserChatFragment extends Fragment {
                                                 throw new RuntimeException(e);
                                             }
                                             messages.add(messageModel);
-                                            //addMessagesToHistory();
+                                            noMessageText.setVisibility(View.INVISIBLE);
                                             adapter.setMessages(messages);
                                             recyclerView.setAdapter(adapter);
                                             recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
@@ -81,6 +83,7 @@ public class UserChatFragment extends Fragment {
     }
     private void initComponents(View view){
         recyclerView = view.findViewById(R.id.recycler_view);
+        noMessageText = view.findViewById(R.id.no_messages_text);
     }
 //    private void getMessagesHistory(){
 //        String json = getActivity().getApplicationContext().getSharedPreferences(Constant.MESSAGES_SHARED_PREFERENCES,0).getString(Constant.MESSAGES_HISTORY,"");

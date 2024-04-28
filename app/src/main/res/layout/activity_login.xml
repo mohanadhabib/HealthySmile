@@ -88,7 +88,7 @@
         app:boxStrokeWidth="1.5dp"
         android:hint="@string/enter_your_email"
         app:hintTextColor="@color/grey"
-        app:errorEnabled="true"
+        app:errorEnabled="false"
         app:errorTextColor="@color/error_color"
         app:boxStrokeErrorColor="@color/error_color"
         app:errorIconTint="@color/error_color"
@@ -107,10 +107,22 @@
             android:inputType="textEmailAddress"
             android:textFontWeight="800" />
     </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/email_hint"
+        app:layout_constraintTop_toBottomOf="@id/email_layout"
+        app:layout_constraintStart_toStartOf="@id/email_layout"
+        android:text="@string/email_should_be_like_this_example123_example_com"
+        android:visibility="visible"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="12sp"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g1"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.235"
+        app:layout_constraintGuide_percent="0.255"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
@@ -144,7 +156,7 @@
         app:boxStrokeWidth="1.5dp"
         android:hint="@string/enter_your_password"
         app:hintTextColor="@color/grey"
-        app:errorEnabled="true"
+        app:errorEnabled="false"
         app:errorTextColor="@color/error_color"
         app:boxStrokeErrorColor="@color/error_color"
         app:errorIconTint="@color/error_color"
@@ -163,10 +175,22 @@
             android:textColor="@color/grey"
             android:textFontWeight="800" />
     </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/password_hint"
+        app:layout_constraintTop_toBottomOf="@id/password_layout"
+        app:layout_constraintStart_toStartOf="@id/password_layout"
+        android:text="@string/password_should_contains_at_least_8_characters"
+        android:visibility="visible"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="12sp"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g2"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.345"
+        app:layout_constraintGuide_percent="0.395"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -208,7 +232,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g3"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.425"
+        app:layout_constraintGuide_percent="0.465"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <com.google.android.material.button.MaterialButton
@@ -216,7 +240,8 @@
         app:layout_constraintTop_toBottomOf="@id/g3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="15dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
         app:cornerRadius="20dp"
         android:text="@string/login"
         android:textColor="@color/background_color"
@@ -227,7 +252,7 @@
         android:layout_height="wrap_content" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g4"
-        app:layout_constraintGuide_percent="0.535"
+        app:layout_constraintGuide_percent="0.57"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -262,7 +287,7 @@
     </LinearLayout>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g5"
-        app:layout_constraintGuide_percent="0.62"
+        app:layout_constraintGuide_percent="0.65"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -300,7 +325,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g6"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7"
+        app:layout_constraintGuide_percent="0.715"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <com.google.android.material.button.MaterialButton
@@ -349,6 +374,19 @@
         app:layout_constraintEnd_toEndOf="@id/facebook_sign_in"
         app:indicatorColor="@color/main_color"
         android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/loading_txt"
+        app:layout_constraintStart_toStartOf="@id/progress"
+        app:layout_constraintEnd_toEndOf="@id/progress"
+        app:layout_constraintTop_toBottomOf="@id/progress"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        android:visibility="invisible"
+        android:text="@string/loading"
+        android:fontFamily="@font/nunito_regular"
+        android:textFontWeight="700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

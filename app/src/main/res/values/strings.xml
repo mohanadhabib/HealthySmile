@@ -134,4 +134,10 @@
     <string name="_20">+2</string>
     <string name="star_txt">*</string>
     <string name="mandatory">Mandatory</string>
+    <string name="name_should_start_with_capital_letter">Name should start with capital letter</string>
+    <string name="phone_should_contains_11_digit">Phone should contains 11 digit</string>
+    <string name="email_should_be_like_this_example123_example_com">Email should be like this : example123@example.com</string>
+    <string name="password_should_contains_at_least_8_characters">Password should contains at least 8 characters</string>
+    <string name="upload_image_or_capture_na_real_one_to_see_diseases">Upload image or capture\na real one to see diseases</string>
+    <string name="no_notes_yet">No Notes Yet</string>
 </resources>

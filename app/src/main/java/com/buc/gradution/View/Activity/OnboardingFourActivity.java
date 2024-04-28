@@ -8,10 +8,8 @@ import androidx.core.os.LocaleListCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,11 +46,14 @@ public class OnboardingFourActivity extends AppCompatActivity {
         userGuide.setOnClickListener(v ->{
             if(NetworkService.isConnected(getApplicationContext())){
                 boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
+                Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
                 if(isEnglish){
-                    Intent intent = new Intent(getApplicationContext(), UserGuideActivity.class);
                     intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
-                    startActivity(intent);
                 }
+                else {
+                    intent.putExtra("url","https://drive.google.com/file/d/15y9mimifNeyOhWzold7kcXYSGb533s0E/view?usp=drivesdk");
+                }
+                startActivity(intent);
             }
             else{
                 NetworkService.connectionFailed(getApplicationContext());

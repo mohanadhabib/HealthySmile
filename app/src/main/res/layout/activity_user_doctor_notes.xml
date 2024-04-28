@@ -38,4 +38,20 @@
         android:layout_marginVertical="20dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
+    <TextView
+        android:id="@+id/no_notes_text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="22sp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
+        android:textFontWeight="900"
+        android:text="@string/no_notes_yet"
+        android:visibility="visible"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

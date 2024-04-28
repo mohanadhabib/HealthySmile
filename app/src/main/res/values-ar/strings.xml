@@ -112,7 +112,7 @@
     <string name="reschedule_txt">اعاده جدوله</string>
     <string name="cancel_txt">الغاء</string>
     <string name="confirmed">اتمام</string>
-    <string name="no_data_found">لا يوجد تاريخ</string>
+    <string name="no_data_found">لا يوجد بيانات هنا</string>
     <string name="scan_txt">فحص</string>
     <string name="profile_txt">ملفى الشخصى</string>
     <string name="type_message">اكتب رسالة ...</string>
@@ -135,4 +135,10 @@
     <string name="_20">+2</string>
     <string name="star_txt">*</string>
     <string name="mandatory">اجباري</string>
+    <string name="name_should_start_with_capital_letter">يجب ادخال اسمك</string>
+    <string name="phone_should_contains_11_digit">يجب ان يحتوي رقم الهاتف علي 11 رقم</string>
+    <string name="email_should_be_like_this_example123_example_com">يجب ان يكون بريدك هكذا : example123@example.com</string>
+    <string name="password_should_contains_at_least_8_characters">يجب ان تحتوي كلمه السر علي 8 احرف علي الاقل</string>
+    <string name="upload_image_or_capture_na_real_one_to_see_diseases">قم برفع صوره او التقط \nواحده لرؤيه النتائج</string>
+    <string name="no_notes_yet">لا توجد ملاحظات حتي الان</string>
 </resources>

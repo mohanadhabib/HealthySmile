@@ -52,7 +52,7 @@ public class UserScanFragment extends Fragment {
     private ScanOutputModel scanXray,scanPhoto;
     private ImageView beforeImg, afterImg;
     private MaterialButton submitBtn,captureBtn;
-    private TextView resultTxt;
+    private TextView resultTxt,noImageTxt;
     private CircularProgressIndicator progress;
     private Context context;
     private AtomicReference<Uri> uri = new AtomicReference<>();
@@ -75,12 +75,14 @@ public class UserScanFragment extends Fragment {
                 if(NetworkService.isConnected(context)){
                     progress.setVisibility(View.VISIBLE);
                     progress.setProgress(15,true);
+                    noImageTxt.setVisibility(View.INVISIBLE);
                     uploadXRayImage();
                 }
                 else{
                     NetworkService.connectionFailed(context);
                 }
             }else {
+                noImageTxt.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
@@ -93,12 +95,14 @@ public class UserScanFragment extends Fragment {
                 if(NetworkService.isConnected(context)){
                     progress.setVisibility(View.VISIBLE);
                     progress.setProgress(15,true);
+                    noImageTxt.setVisibility(View.INVISIBLE);
                     uploadPhotoImage();
                 }
                 else{
                     NetworkService.connectionFailed(context);
                 }
             }else {
+                noImageTxt.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
@@ -125,6 +129,7 @@ public class UserScanFragment extends Fragment {
         resultTxt = view.findViewById(R.id.result);
         afterImg = view.findViewById(R.id.after_img);
         progress = view.findViewById(R.id.progress);
+        noImageTxt = view.findViewById(R.id.no_image_text);
     }
     private void uploadXRayImage() {
         String id = FirebaseService.getFirebaseAuth().getCurrentUser().getUid();
@@ -250,8 +255,8 @@ public class UserScanFragment extends Fragment {
                 String txt = scanModel.getPredictions().get(i).getClassType();
                 double confidence = scanModel.getPredictions().get(i).getConfidence();
                 String confidenceTxt = format.format(confidence);
-                x += txt + " " + confidenceTxt + "\n";
                 int conPer = (int) (Double.parseDouble(confidenceTxt) * 100);
+                x += txt + " " + conPer +"%" + "\n";
                 String resTxt = txt + " " + conPer + "%";
                 float textWidth = paintTxt.measureText(resTxt);
                 Rect r = new Rect((int) xPos, (int) yPos, (int) (xPos + 10), (int) (yPos + 10));

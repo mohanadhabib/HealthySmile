@@ -103,11 +103,14 @@ public class UserProfileFragment extends Fragment {
         faqLayout.setOnClickListener(v -> {
             if(NetworkService.isConnected(context)){
                 boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
+                Intent intent = new Intent(context, UserGuideActivity.class);
                 if(isEnglish){
-                    Intent intent = new Intent(context, UserGuideActivity.class);
                     intent.putExtra("url","https://drive.google.com/file/d/117O8OjdD4kAtRgl9EKE1ydzNKdQE49_b/view?usp=drivesdk");
-                    startActivity(intent);
                 }
+                else {
+                    intent.putExtra("url","https://drive.google.com/file/d/15y9mimifNeyOhWzold7kcXYSGb533s0E/view?usp=drivesdk");
+                }
+                startActivity(intent);
             }
             else{
                 NetworkService.connectionFailed(context);

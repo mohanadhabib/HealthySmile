@@ -80,11 +80,7 @@ public class UserHomeFragment extends Fragment {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
-                handler.post(()->{
-                    recyclerView.setVisibility(View.VISIBLE);
-                    noItem.setVisibility(View.INVISIBLE);
-                    getDoctors();
-                });
+                handler.post(()-> getDoctors());
             }
             @Override
             public void onLost(@NonNull Network network) {
@@ -120,6 +116,13 @@ public class UserHomeFragment extends Fragment {
                                         throw new RuntimeException(e);
                                     }
                                     doctors.add(doctor);
+                                }
+                                if(doctors.isEmpty()){
+                                    noItem.setVisibility(View.VISIBLE);
+                                    recyclerView.setVisibility(View.INVISIBLE);
+                                }else {
+                                    noItem.setVisibility(View.INVISIBLE);
+                                    recyclerView.setVisibility(View.VISIBLE);
                                 }
                                 adapter = new TopDoctorsRecyclerAdapter();
                                 adapter.setDoctors(doctors);

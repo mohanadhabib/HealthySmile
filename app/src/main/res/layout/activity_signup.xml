@@ -129,7 +129,7 @@
         app:boxStrokeWidth="1.5dp"
         android:hint="@string/enter_your_name"
         app:hintTextColor="@color/grey"
-        app:errorEnabled="true"
+        app:errorEnabled="false"
         app:errorTextColor="@color/error_color"
         app:boxStrokeErrorColor="@color/error_color"
         app:errorIconTint="@color/error_color"
@@ -149,6 +149,18 @@
             android:textFontWeight="800" />
     </com.google.android.material.textfield.TextInputLayout>
     <TextView
+        android:id="@+id/name_hint"
+        app:layout_constraintTop_toBottomOf="@id/name_layout"
+        app:layout_constraintStart_toStartOf="@id/name_layout"
+        android:text="@string/name_should_start_with_capital_letter"
+        android:visibility="visible"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="12sp"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
         android:id="@+id/star1"
         app:layout_constraintTop_toBottomOf="@id/g1"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,6 +172,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <LinearLayout
+        android:id="@+id/phone_code"
         app:layout_constraintTop_toBottomOf="@id/g1"
         android:weightSum="3"
         android:layout_marginStart="5dp"
@@ -207,7 +220,7 @@
             app:boxStrokeWidth="1.5dp"
             android:hint="@string/enter_your_phone_number"
             app:hintTextColor="@color/grey"
-            app:errorEnabled="true"
+            app:errorEnabled="false"
             app:errorTextColor="@color/error_color"
             app:boxStrokeErrorColor="@color/error_color"
             app:errorIconTint="@color/error_color"
@@ -227,6 +240,18 @@
                 android:textFontWeight="800" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/phone_hint"
+        app:layout_constraintTop_toBottomOf="@id/phone_code"
+        app:layout_constraintStart_toStartOf="@id/phone_code"
+        android:text="@string/phone_should_contains_11_digit"
+        android:visibility="visible"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="12sp"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g2"
         android:orientation="horizontal"
@@ -261,7 +286,7 @@
         app:boxStrokeWidth="1.5dp"
         android:hint="@string/enter_your_email"
         app:hintTextColor="@color/grey"
-        app:errorEnabled="true"
+        app:errorEnabled="false"
         app:errorTextColor="@color/error_color"
         app:boxStrokeErrorColor="@color/error_color"
         app:errorIconTint="@color/error_color"
@@ -280,6 +305,18 @@
             android:inputType="textEmailAddress"
             android:textFontWeight="800" />
     </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/email_hint"
+        app:layout_constraintTop_toBottomOf="@id/email_layout"
+        app:layout_constraintStart_toStartOf="@id/email_layout"
+        android:text="@string/email_should_be_like_this_example123_example_com"
+        android:visibility="visible"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="12sp"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g3"
         android:orientation="horizontal"
@@ -317,7 +354,7 @@
         app:boxStrokeWidth="1.5dp"
         android:hint="@string/enter_your_password"
         app:hintTextColor="@color/grey"
-        app:errorEnabled="true"
+        app:errorEnabled="false"
         app:errorTextColor="@color/error_color"
         app:boxStrokeErrorColor="@color/error_color"
         app:errorIconTint="@color/error_color"
@@ -336,12 +373,26 @@
             android:textColor="@color/grey"
             android:textFontWeight="800" />
     </com.google.android.material.textfield.TextInputLayout>
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/g4"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.695"
+    <TextView
+        android:id="@+id/password_hint"
+        app:layout_constraintTop_toBottomOf="@id/password_layout"
+        app:layout_constraintStart_toStartOf="@id/password_layout"
+        android:text="@string/password_should_contains_at_least_8_characters"
+        android:visibility="visible"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="12sp"
+        android:textFontWeight="900"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="183dp"
+        app:layout_constraintGuide_percent="0.715" />
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/doctor"
         app:layout_constraintTop_toBottomOf="@id/g4"
@@ -367,7 +418,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g5"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75"
+        app:layout_constraintGuide_percent="0.775"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -441,7 +492,7 @@
         android:layout_height="wrap_content" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g6"
-        app:layout_constraintGuide_percent="0.83"
+        app:layout_constraintGuide_percent="0.85"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -450,7 +501,8 @@
         app:layout_constraintTop_toBottomOf="@id/g6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="15dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
         app:cornerRadius="20dp"
         android:text="@string/sign_up"
         android:textColor="@color/background_color"

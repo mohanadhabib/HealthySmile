@@ -175,7 +175,6 @@
         android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/no_item_txt"
-        android:visibility="invisible"
         android:text="@string/no_data_found"
         android:gravity="center"
         android:textAlignment="center"

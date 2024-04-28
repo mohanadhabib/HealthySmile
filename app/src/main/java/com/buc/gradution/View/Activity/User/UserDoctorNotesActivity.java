@@ -11,7 +11,9 @@ import com.buc.gradution.Service.FirebaseService;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 public class UserDoctorNotesActivity extends AppCompatActivity {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private DoctorModel doctor;
+    private TextView noNotesTxt;
     private ImageView back;
     private RecyclerView recyclerView;
     private ArrayList<NotesModel> notes = new ArrayList<>();
@@ -43,6 +46,7 @@ public class UserDoctorNotesActivity extends AppCompatActivity {
     }
     private void initComponents(){
         back = findViewById(R.id.back);
+        noNotesTxt = findViewById(R.id.no_notes_text);
         recyclerView = findViewById(R.id.notes_recycler);
         adapter = new UserDoctorNotesRecyclerAdapter();
     }
@@ -63,6 +67,7 @@ public class UserDoctorNotesActivity extends AppCompatActivity {
                             }
                             notes.add(note);
                         }
+                        noNotesTxt.setVisibility(View.INVISIBLE);
                         adapter.setNotes(notes);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
