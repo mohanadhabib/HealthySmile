@@ -84,6 +84,8 @@ public class UserScanFragment extends Fragment {
                     NetworkService.connectionFailed(context);
                 }
             }else {
+                afterImg.setImageURI(null);
+                beforeImg.setImageURI(null);
                 noImageTxt.setVisibility(View.VISIBLE);
                 hintText.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
@@ -106,6 +108,8 @@ public class UserScanFragment extends Fragment {
                     NetworkService.connectionFailed(context);
                 }
             }else {
+                afterImg.setImageURI(null);
+                beforeImg.setImageURI(null);
                 noImageTxt.setVisibility(View.VISIBLE);
                 hintText.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();

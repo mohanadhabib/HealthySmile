@@ -57,7 +57,7 @@ public class SignupActivity extends AppCompatActivity {
     private TextView nameHint , emailHint, phoneHint, passwordHint;
     private MaterialCheckBox checkBox,doctorCheck;
     private MaterialButton signupBtn;
-    private TextView loading;
+    private TextView loading,termsOfService,privacyPolicy;
     private CircularProgressIndicator progressIndicator;
     private Boolean isDarkTheme;
     private SharedPreferences.Editor themeEditor;
@@ -148,6 +148,20 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+        termsOfService.setOnClickListener(v -> {
+            String url = "https://sites.google.com/view/healthy-smile-tech/more/terms-of-service";
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+        });
+        privacyPolicy.setOnClickListener(v ->{
+            String url = "https://sites.google.com/view/healthy-smile-tech/more/privacy-policy";
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+        });
     }
     private void initComponents(){
         userGuide = findViewById(R.id.user_guide);
@@ -168,6 +182,8 @@ public class SignupActivity extends AppCompatActivity {
         emailHint = findViewById(R.id.email_hint);
         phoneHint = findViewById(R.id.phone_hint);
         passwordHint = findViewById(R.id.password_hint);
+        termsOfService = findViewById(R.id.terms_of_service);
+        privacyPolicy = findViewById(R.id.privacy_policy);
     }
     private boolean nameValidation(TextInputLayout name){
         boolean isValid = false;

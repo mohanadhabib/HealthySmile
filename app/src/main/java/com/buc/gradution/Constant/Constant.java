@@ -1,7 +1,5 @@
 package com.buc.gradution.Constant;
 
-import java.util.Random;
-
 public abstract class Constant {
     public static final String DOCTOR_TYPE = "Doctor";
     public static final String PATIENT_TYPE = "Patient";

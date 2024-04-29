@@ -14,7 +14,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.buc.gradution.Constant.Constant;
+import com.buc.gradution.Model.DoctorModel;
+import com.buc.gradution.Model.UserModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
@@ -26,11 +31,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ResetPasswordActivity extends AppCompatActivity {
-
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private AtomicBoolean isEmailMethod;
     private ImageView back;
     private TextView emailBtn,phoneBtn;
@@ -105,25 +112,68 @@ public class ResetPasswordActivity extends AppCompatActivity {
         phone = findViewById(R.id.phone_layout);
         code = findViewById(R.id.code_layout);
         phoneCode = findViewById(R.id.phone_code_layout);
+
     }
     private void sendResetPasswordEmail(String email){
-        FirebaseService.getFirebaseAuth().sendPasswordResetEmail(email)
-                .addOnSuccessListener(command -> {
-                    progressIndicator.setProgress(100,true);
-                    progressIndicator.setVisibility(View.INVISIBLE);
-                    LayoutInflater inflater = LayoutInflater.from(ResetPasswordActivity.this);
-                    View view = inflater.inflate(R.layout.alert_dialog_email_reset_password,null);
-                    AlertDialog alertDialog = new MaterialAlertDialogBuilder(ResetPasswordActivity.this).create();
-                    MaterialButton goToLoginPage = view.findViewById(R.id.go_to_login);
-                    alertDialog.setView(view);
-                    alertDialog.show();
-                    goToLoginPage.setOnClickListener(v ->{
-                        Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
+        AtomicBoolean isFound = new AtomicBoolean(false);
+        FirebaseService.getFirebaseDatabase()
+                .getReference(Constant.PATIENT_TYPE)
+                .get()
+                .addOnSuccessListener(dataSnapshot -> {
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        try {
+                            UserModel user = security.decryptUser(snapshot.getValue().toString());
+                            if(user.getEmail().equals(email)){
+                                isFound.set(true);
+                                break;
+                            }
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    if(!isFound.get()){
+                        FirebaseService.getFirebaseDatabase()
+                                .getReference(Constant.DOCTOR_TYPE)
+                                .get()
+                                .addOnSuccessListener(dataSnapshot1 -> {
+                                    for(DataSnapshot snapshot1 : dataSnapshot.getChildren()){
+                                        try {
+                                            DoctorModel doctor = security.decryptDoctor(snapshot1.getValue().toString());
+                                            if(doctor.getEmail().equals(email)){
+                                                isFound.set(true);
+                                                break;
+                                            }
+                                        } catch (Exception e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(this, "Error , Cannot get data", Toast.LENGTH_SHORT).show());
+                    }
                 })
-                .addOnFailureListener(e -> Toast.makeText(ResetPasswordActivity.this, "Sorry,Couldn't send email\nplease try again", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(this, "Error , Cannot get data", Toast.LENGTH_SHORT).show());
+        if(isFound.get()){
+            FirebaseService.getFirebaseAuth().sendPasswordResetEmail(email)
+                    .addOnSuccessListener(command -> {
+                        progressIndicator.setProgress(100,true);
+                        progressIndicator.setVisibility(View.INVISIBLE);
+                        LayoutInflater inflater = LayoutInflater.from(ResetPasswordActivity.this);
+                        View view = inflater.inflate(R.layout.alert_dialog_email_reset_password,null);
+                        AlertDialog alertDialog = new MaterialAlertDialogBuilder(ResetPasswordActivity.this).create();
+                        MaterialButton goToLoginPage = view.findViewById(R.id.go_to_login);
+                        alertDialog.setView(view);
+                        alertDialog.show();
+                        goToLoginPage.setOnClickListener(v ->{
+                            Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        });
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(ResetPasswordActivity.this, "Sorry,Couldn't send email\nplease try again", Toast.LENGTH_SHORT).show());
+        }
+        else {
+            Toast.makeText(this, "Sorry, you don't have an account", Toast.LENGTH_SHORT).show();
+        }
     }
     private void sendOTP(String phoneNum){
         PhoneAuthOptions phoneAuthOptions = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())

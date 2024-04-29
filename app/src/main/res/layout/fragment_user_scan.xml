@@ -36,10 +36,10 @@
         android:layout_marginTop="15dp"
         android:text="@string/tips_for_capture_image_n_n_light_it_up_natural_light_is_best_but_avoid_harsh_shadows_indoors_use_bright_white_light_skip_the_flash_it_creates_glare_n_steady_does_it_hold_your_phone_still_or_use_a_tripod_for_sharp_focused_pics_n_focus_on_your_smile_make_sure_your_teeth_are_the_stars_no_fingers_hair_or_other_objects_blocking_the_view_n_multiple_angles_capture_close_up_shots_from_the_front_back_and_sides_of_the_teeth_you_re_concerned_about_n_show_your_smile_gently_pull_back_your_lips_and_keep_your_mouth_slightly_open_for_a_clear_view_smile_naturally_n_clean_and_clear_brush_your_teeth_beforehand_to_remove_anything_hiding_your_pearly_whites"
         android:fontFamily="@font/nunito_regular"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:textColor="@color/text_color"
         android:textStyle="normal"
-        android:textFontWeight="800"
+        android:textFontWeight="900"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.Guideline
