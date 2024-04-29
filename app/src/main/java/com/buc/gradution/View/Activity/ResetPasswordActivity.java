@@ -147,33 +147,33 @@ public class ResetPasswordActivity extends AppCompatActivity {
                                             throw new RuntimeException(e);
                                         }
                                     }
+                                    if(isFound.get()){
+                                        FirebaseService.getFirebaseAuth().sendPasswordResetEmail(email)
+                                                .addOnSuccessListener(command -> {
+                                                    progressIndicator.setProgress(100,true);
+                                                    progressIndicator.setVisibility(View.INVISIBLE);
+                                                    LayoutInflater inflater = LayoutInflater.from(ResetPasswordActivity.this);
+                                                    View view = inflater.inflate(R.layout.alert_dialog_email_reset_password,null);
+                                                    AlertDialog alertDialog = new MaterialAlertDialogBuilder(ResetPasswordActivity.this).create();
+                                                    MaterialButton goToLoginPage = view.findViewById(R.id.go_to_login);
+                                                    alertDialog.setView(view);
+                                                    alertDialog.show();
+                                                    goToLoginPage.setOnClickListener(v ->{
+                                                        Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    });
+                                                })
+                                                .addOnFailureListener(e -> Toast.makeText(ResetPasswordActivity.this, "Sorry,Couldn't send email\nplease try again", Toast.LENGTH_SHORT).show());
+                                    }
+                                    else {
+                                        Toast.makeText(this, "Sorry, you don't have an account", Toast.LENGTH_SHORT).show();
+                                    }
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(this, "Error , Cannot get data", Toast.LENGTH_SHORT).show());
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Error , Cannot get data", Toast.LENGTH_SHORT).show());
-        if(isFound.get()){
-            FirebaseService.getFirebaseAuth().sendPasswordResetEmail(email)
-                    .addOnSuccessListener(command -> {
-                        progressIndicator.setProgress(100,true);
-                        progressIndicator.setVisibility(View.INVISIBLE);
-                        LayoutInflater inflater = LayoutInflater.from(ResetPasswordActivity.this);
-                        View view = inflater.inflate(R.layout.alert_dialog_email_reset_password,null);
-                        AlertDialog alertDialog = new MaterialAlertDialogBuilder(ResetPasswordActivity.this).create();
-                        MaterialButton goToLoginPage = view.findViewById(R.id.go_to_login);
-                        alertDialog.setView(view);
-                        alertDialog.show();
-                        goToLoginPage.setOnClickListener(v ->{
-                            Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        });
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(ResetPasswordActivity.this, "Sorry,Couldn't send email\nplease try again", Toast.LENGTH_SHORT).show());
-        }
-        else {
-            Toast.makeText(this, "Sorry, you don't have an account", Toast.LENGTH_SHORT).show();
-        }
     }
     private void sendOTP(String phoneNum){
         PhoneAuthOptions phoneAuthOptions = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
