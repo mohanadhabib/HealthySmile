@@ -80,7 +80,7 @@
     <string name="my_saved">محفوظاتي</string>
     <string name="appointment_txt">مواعيدي</string>
     <string name="payment_method">وسائل الدفع</string>
-    <string name="faqs">الأسئله</string>
+    <string name="user_guide">دليل المستخدم</string>
     <string name="logout">تسجيل خروج</string>
     <string name="are_you_sure_to_log_out_of">هل انت متأكد من انك تريد</string>
     <string name="your_account">تسجيل الخروج من حسابك؟</string>
@@ -158,4 +158,8 @@
  \n* ابتسم بشكل طبيعي لمظهر أكثر استرخاءً.
 النظافة:
  * قم بتنظيف أسنانك قبل التقاط الصور لإزالة أي شيء قد يخفي أسنانك البيضاء.</string>
+    <string name="your_image">Your Image</string>
+    <string name="result_image">Result Image</string>
+    <string name="your_history">Your History</string>
+    <string name="language">Language</string>
 </resources>

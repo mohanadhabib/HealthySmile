@@ -9,8 +9,9 @@ import androidx.core.os.LocaleListCompat;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.buc.gradution.Constant.Constant;
@@ -19,13 +20,17 @@ import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.User.UserGuideActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Locale;
 
 public class OnboardingFourActivity extends AppCompatActivity {
 
+    private String[] languages;
     private ImageView userGuide;
-    private TextView englishBtn , arabicBtn;
+    private TextInputLayout languageLayout;
+    private MaterialAutoCompleteTextView autoCompleteTextView;
     private MaterialSwitch themeSwitch;
     private MaterialButton loginBtn;
     private MaterialButton signupBtn;
@@ -37,11 +42,17 @@ public class OnboardingFourActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding_four);
         initComponents();
+        languages = new String[]{getResources().getString(R.string.english),getResources().getString(R.string.arabic)};
         isDarkTheme = getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).getBoolean(Constant.CURRENT_THEME,false);
         if (isDarkTheme){
             themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.ic_dark_mode));
         }else{
             themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.ic_light_mode));
+        }
+        if(Locale.getDefault().getLanguage().contentEquals("en")){
+            autoCompleteTextView.setText(getResources().getString(R.string.english));
+        }else{
+            autoCompleteTextView.setText(getResources().getString(R.string.arabic));
         }
         userGuide.setOnClickListener(v ->{
             if(NetworkService.isConnected(getApplicationContext())){
@@ -59,6 +70,18 @@ public class OnboardingFourActivity extends AppCompatActivity {
                 NetworkService.connectionFailed(getApplicationContext());
             }
         });
+        autoCompleteTextView.setSimpleItems(languages);
+        autoCompleteTextView.dismissDropDown();
+        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+            if(position == 0){
+                LocaleListCompat locale = LocaleListCompat.forLanguageTags("en");
+                AppCompatDelegate.setApplicationLocales(locale);
+            }
+            else if(position == 1){
+                LocaleListCompat locale = LocaleListCompat.forLanguageTags("ar");
+                AppCompatDelegate.setApplicationLocales(locale);
+            }
+        });
         themeSwitch.setOnClickListener(v -> {
             themeEditor = getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).edit();
             isDarkTheme = !isDarkTheme;
@@ -71,14 +94,6 @@ public class OnboardingFourActivity extends AppCompatActivity {
             else{
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
-        });
-        englishBtn.setOnClickListener(v ->{
-            LocaleListCompat locale = LocaleListCompat.forLanguageTags("en");
-            AppCompatDelegate.setApplicationLocales(locale);
-        });
-        arabicBtn.setOnClickListener(v ->{
-            LocaleListCompat locale = LocaleListCompat.forLanguageTags("ar");
-            AppCompatDelegate.setApplicationLocales(locale);
         });
         loginBtn.setOnClickListener(v -> {
                 Intent intent = new Intent(OnboardingFourActivity.this, LoginActivity.class);
@@ -107,7 +122,7 @@ public class OnboardingFourActivity extends AppCompatActivity {
         themeSwitch = findViewById(R.id.theme);
         loginBtn = findViewById(R.id.login);
         signupBtn = findViewById(R.id.signUp);
-        englishBtn = findViewById(R.id.english);
-        arabicBtn = findViewById(R.id.arabic);
+        languageLayout = findViewById(R.id.language_layout);
+        autoCompleteTextView = (MaterialAutoCompleteTextView) languageLayout.getEditText();
     }
 }

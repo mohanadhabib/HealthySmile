@@ -5,6 +5,7 @@ import android.util.Base64;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.AppointmentModel;
 import com.buc.gradution.Model.DoctorModel;
+import com.buc.gradution.Model.HistoryModel;
 import com.buc.gradution.Model.MessageModel;
 import com.buc.gradution.Model.NotesModel;
 import com.buc.gradution.Model.UserModel;
@@ -20,6 +21,18 @@ public class FirebaseSecurity {
         cipher.init(Cipher.ENCRYPT_MODE,secretKey);
         byte [] encryptedData = cipher.doFinal(data.getBytes());
         return Base64.encodeToString(encryptedData,Base64.DEFAULT);
+    }
+    public String encrypt(HistoryModel history) throws Exception{
+        String data = history.getImgUrl() + ",#";
+        return encryptProcess(data);
+    }
+    public HistoryModel decryptHistory(String encryptedData) throws Exception{
+        SecretKey secretKey = new SecretKeySpec(Constant.ENCRYPTION_KEY.getBytes(),"AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE,secretKey);
+        byte [] decryptedData = cipher.doFinal(Base64.decode(encryptedData,Base64.DEFAULT));
+        String [] history = new String(decryptedData).split(",#");
+        return new HistoryModel(history[0]);
     }
     public String encrypt(AppointmentModel appointment) throws Exception{
         String data = appointment.getUserId() + ",#" +appointment.getUserName() + ",#" + appointment.getUserEmail() + ",#" + appointment.getUserImg() + ",#" + appointment.getDoctorId() + ",#" + appointment.getDoctorName() + ",#" + appointment.getDoctorEmail() + ",#" + appointment.getDoctorImg() + ",#" + appointment.getDoctorSpec() + ",#" + appointment.getAppointmentDate() + ",#" + appointment.getAppointmentTime() + ",#" + appointment.getStars() + ",#" + appointment.getDistance() + ",#" + appointment.getAboutDoctor();

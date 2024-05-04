@@ -27,8 +27,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.buc.gradution.Constant.Constant;
+import com.buc.gradution.Model.HistoryModel;
 import com.buc.gradution.Model.ScanOutputModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.Interface.ScanInterface;
@@ -49,10 +51,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserScanFragment extends Fragment {
+    private final FirebaseSecurity security = new FirebaseSecurity();
     private ScanOutputModel scanXray,scanPhoto;
     private ImageView beforeImg, afterImg;
     private MaterialButton submitBtn,captureBtn;
-    private TextView resultTxt,noImageTxt,hintText,loadingTxt;
+    private TextView resultTxt,noImageTxt,hintText,loadingTxt,beforeTxt,afterTxt;
     private CircularProgressIndicator progress;
     private Context context;
     private final AtomicReference<Uri> uri = new AtomicReference<>();
@@ -62,7 +65,6 @@ public class UserScanFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_user_scan, container, false);
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -78,6 +80,8 @@ public class UserScanFragment extends Fragment {
                     progress.setProgress(15,true);
                     noImageTxt.setVisibility(View.INVISIBLE);
                     hintText.setVisibility(View.INVISIBLE);
+                    afterTxt.setVisibility(View.VISIBLE);
+                    beforeTxt.setVisibility(View.VISIBLE);
                     uploadXRayImage();
                 }
                 else{
@@ -88,6 +92,8 @@ public class UserScanFragment extends Fragment {
                 beforeImg.setImageURI(null);
                 noImageTxt.setVisibility(View.VISIBLE);
                 hintText.setVisibility(View.VISIBLE);
+                afterTxt.setVisibility(View.INVISIBLE);
+                beforeTxt.setVisibility(View.INVISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
@@ -102,6 +108,9 @@ public class UserScanFragment extends Fragment {
                     loadingTxt.setVisibility(View.VISIBLE);
                     progress.setProgress(15,true);
                     noImageTxt.setVisibility(View.INVISIBLE);
+                    hintText.setVisibility(View.INVISIBLE);
+                    afterTxt.setVisibility(View.VISIBLE);
+                    beforeTxt.setVisibility(View.VISIBLE);
                     uploadPhotoImage();
                 }
                 else{
@@ -112,6 +121,8 @@ public class UserScanFragment extends Fragment {
                 beforeImg.setImageURI(null);
                 noImageTxt.setVisibility(View.VISIBLE);
                 hintText.setVisibility(View.VISIBLE);
+                afterTxt.setVisibility(View.INVISIBLE);
+                beforeTxt.setVisibility(View.INVISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
@@ -141,8 +152,70 @@ public class UserScanFragment extends Fragment {
         noImageTxt = view.findViewById(R.id.no_image_text);
         hintText = view.findViewById(R.id.hint_txt);
         loadingTxt = view.findViewById(R.id.loading_txt);
+        beforeTxt = view.findViewById(R.id.before_txt);
+        afterTxt = view.findViewById(R.id.after_txt);
+    }
+    private void addImageToHistory(Bitmap image,String x){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        byte[] data = byteArrayOutputStream.toByteArray();
+        String id = FirebaseService.getFirebaseAuth().getCurrentUser().getUid();
+        String path = Constant.HISTORY+"/"+uri.get().getLastPathSegment();
+        FirebaseService.getFirebaseStorage()
+                .getReference(id)
+                .child(path)
+                .putBytes(data)
+                .addOnSuccessListener(v -> v.getStorage().getStorage()
+                        .getReference(id)
+                        .child(path)
+                        .getDownloadUrl()
+                        .addOnSuccessListener(v0 -> {
+                            HistoryModel model = new HistoryModel(v0.toString());
+                            String encryptedData = null;
+                            try {
+                                encryptedData = security.encrypt(model);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            FirebaseService.getFirebaseDatabase().getReference(Constant.HISTORY)
+                                    .child(id)
+                                    .push()
+                                    .setValue(encryptedData)
+                                    .addOnSuccessListener(s ->{
+                                        progress.setProgress(100, true);
+                                        progress.setVisibility(View.INVISIBLE);
+                                        loadingTxt.setVisibility(View.INVISIBLE);
+                                        resultTxt.setText(x);
+                                        afterImg.setImageBitmap(image);
+                                        submitBtn.setClickable(true);
+                                        captureBtn.setClickable(true);
+                                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        progress.setProgress(100, true);
+                                        progress.setVisibility(View.INVISIBLE);
+                                        loadingTxt.setVisibility(View.INVISIBLE);
+                                        afterImg.setImageBitmap(null);
+                                        resultTxt.setText(getString(R.string.error));
+                                        submitBtn.setClickable(true);
+                                        captureBtn.setClickable(true);
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        })
+                        .addOnFailureListener(e -> {
+                            submitBtn.setClickable(true);
+                            captureBtn.setClickable(true);
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }))
+                .addOnFailureListener(e -> {
+                    submitBtn.setClickable(true);
+                    captureBtn.setClickable(true);
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
     private void uploadXRayImage() {
+        submitBtn.setClickable(false);
+        captureBtn.setClickable(false);
         String id = FirebaseService.getFirebaseAuth().getCurrentUser().getUid();
         FirebaseService.getFirebaseStorage().getReference(id)
                 .child("Xray")
@@ -163,12 +236,16 @@ public class UserScanFragment extends Fragment {
                                 progress.setVisibility(View.INVISIBLE);
                                 loadingTxt.setVisibility(View.INVISIBLE);
                                 progress.setIndicatorColor(getContext().getColor(R.color.main_color));
+                                submitBtn.setClickable(true);
+                                captureBtn.setClickable(true);
                                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e0 -> Toast.makeText(getContext(), e0.getMessage(), Toast.LENGTH_SHORT).show());
     }
     private void uploadPhotoImage() {
+        submitBtn.setClickable(false);
+        captureBtn.setClickable(false);
         String id = FirebaseService.getFirebaseAuth().getCurrentUser().getUid();
         FirebaseService.getFirebaseStorage().getReference(id)
                 .child("Real Photo")
@@ -189,6 +266,8 @@ public class UserScanFragment extends Fragment {
                                 progress.setVisibility(View.INVISIBLE);
                                 loadingTxt.setVisibility(View.INVISIBLE);
                                 progress.setIndicatorColor(getContext().getColor(R.color.main_color));
+                                submitBtn.setClickable(true);
+                                captureBtn.setClickable(true);
                                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
                 })
@@ -209,10 +288,14 @@ public class UserScanFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<ScanOutputModel> call, Throwable t) {
+                            submitBtn.setClickable(true);
+                            captureBtn.setClickable(true);
                             Toast.makeText(getActivity().getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
                         }
                     });
         }catch (Exception e){
+            submitBtn.setClickable(true);
+            captureBtn.setClickable(true);
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -230,10 +313,14 @@ public class UserScanFragment extends Fragment {
                         }
                         @Override
                         public void onFailure(Call<ScanOutputModel> call, Throwable t) {
+                            submitBtn.setClickable(true);
+                            captureBtn.setClickable(true);
                             Toast.makeText(getActivity().getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
                         }
                     });
         } catch (Exception e) {
+            submitBtn.setClickable(true);
+            captureBtn.setClickable(true);
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -250,7 +337,14 @@ public class UserScanFragment extends Fragment {
         try {
             String x = "";
             if(scanModel.getPredictions().isEmpty()){
-                Toast.makeText(context, "Error,it isn't teeth image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error, it isn't teeth image", Toast.LENGTH_SHORT).show();
+                progress.setProgress(100, true);
+                progress.setVisibility(View.INVISIBLE);
+                loadingTxt.setVisibility(View.INVISIBLE);
+                afterImg.setImageBitmap(null);
+                resultTxt.setText(null);
+                submitBtn.setClickable(true);
+                captureBtn.setClickable(true);
             }else{
                 Canvas canvas = new Canvas(image);
                 Paint paintTxt = new Paint();
@@ -282,12 +376,8 @@ public class UserScanFragment extends Fragment {
                     canvas.drawRect(x0, y0 - paintTxt.getTextSize(), x0 + textWidth, y0, background);
                     canvas.drawText(resTxt, x0, y0, paintTxt);
                 }
+                addImageToHistory(image,x);
             }
-            progress.setProgress(100, true);
-            progress.setVisibility(View.INVISIBLE);
-            loadingTxt.setVisibility(View.INVISIBLE);
-            resultTxt.setText(x);
-            afterImg.setImageBitmap(image);
         }
         catch(Exception e){
             progress.setProgress(100, true);
@@ -295,6 +385,8 @@ public class UserScanFragment extends Fragment {
             loadingTxt.setVisibility(View.INVISIBLE);
             afterImg.setImageBitmap(null);
             resultTxt.setText(getString(R.string.error));
+            submitBtn.setClickable(true);
+            captureBtn.setClickable(true);
         }
     }
     private Bitmap createBitmapFromUri(Uri uri) {

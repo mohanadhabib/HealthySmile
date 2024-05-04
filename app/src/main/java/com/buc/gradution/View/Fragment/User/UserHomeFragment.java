@@ -19,22 +19,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.buc.gradution.Service.FirebaseSecurity;
-import com.buc.gradution.View.Activity.User.UserAllDoctorActivity;
-import com.buc.gradution.View.Activity.User.UserDoctorSearchActivity;
 import com.buc.gradution.Adapter.User.TopDoctorsRecyclerAdapter;
 import com.buc.gradution.Constant.Constant;
 import com.buc.gradution.Model.DoctorModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
+import com.buc.gradution.View.Activity.User.UserAllDoctorActivity;
+import com.buc.gradution.View.Activity.User.UserDoctorSearchActivity;
 import com.buc.gradution.View.Activity.User.UserGuideActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +46,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class UserHomeFragment extends Fragment {
+    private String[] languages;
+    private TextInputLayout languageLayout;
+    private MaterialAutoCompleteTextView autoCompleteTextView;
     private final FirebaseSecurity security = new FirebaseSecurity();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private ImageView userGuide;
@@ -66,6 +71,7 @@ public class UserHomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initComponents(view);
+        languages = new String[]{getResources().getString(R.string.english),getResources().getString(R.string.arabic)};
         context = view.getContext();
         isDarkTheme = getActivity().getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).getBoolean(Constant.CURRENT_THEME,false);
         if (isDarkTheme){
@@ -73,7 +79,24 @@ public class UserHomeFragment extends Fragment {
         }else{
             themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getActivity().getApplicationContext(),R.drawable.ic_light_mode));
         }
+        if(Locale.getDefault().getLanguage().contentEquals("en")){
+            autoCompleteTextView.setText(getResources().getString(R.string.english));
+        }else{
+            autoCompleteTextView.setText(getResources().getString(R.string.arabic));
+        }
         themeSwitch.setChecked(isDarkTheme);
+        autoCompleteTextView.setSimpleItems(languages);
+        autoCompleteTextView.dismissDropDown();
+        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
+            if(position == 0){
+                LocaleListCompat locale = LocaleListCompat.forLanguageTags("en");
+                AppCompatDelegate.setApplicationLocales(locale);
+            }
+            else if(position == 1){
+                LocaleListCompat locale = LocaleListCompat.forLanguageTags("ar");
+                AppCompatDelegate.setApplicationLocales(locale);
+            }
+        });
         userGuide.setOnClickListener(v ->{
             if(NetworkService.isConnected(getActivity().getApplicationContext())){
                 boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
@@ -139,6 +162,8 @@ public class UserHomeFragment extends Fragment {
         });
     }
     private void initComponents(View view){
+        languageLayout = view.findViewById(R.id.language_layout);
+        autoCompleteTextView = (MaterialAutoCompleteTextView) languageLayout.getEditText();
         userGuide = view.findViewById(R.id.user_guide);
         themeSwitch = view.findViewById(R.id.theme);
         doctorSearch = view.findViewById(R.id.search_doctor);

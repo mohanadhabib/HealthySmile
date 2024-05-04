@@ -22,6 +22,8 @@ import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -126,7 +128,10 @@ public class UserDoctorDetailsActivity extends AppCompatActivity {
     }
     private void pickDate(){
         AtomicReference<String> dateTxt = new AtomicReference<>();
+        CalendarConstraints.Builder calendarbuilder = new CalendarConstraints.Builder();
+        calendarbuilder.setValidator(DateValidatorPointForward.now());
         MaterialDatePicker.Builder materialDatePicker = MaterialDatePicker.Builder.datePicker();
+        materialDatePicker.setCalendarConstraints(calendarbuilder.build());
         MaterialDatePicker datePicker = materialDatePicker.build();
         datePicker.show(getSupportFragmentManager(),"UserDoctorDetailsActivity");
         datePicker.addOnPositiveButtonClickListener(n -> {

@@ -146,32 +146,20 @@
         android:src="@drawable/ic_language"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/english"
-            app:layout_constraintTop_toTopOf="@id/language"
-            app:layout_constraintBottom_toBottomOf="@id/language"
-            app:layout_constraintStart_toEndOf="@id/language"
-            android:layout_marginStart="20dp"
-            android:text="@string/english"
-            android:textColor="@color/main_color"
-            android:textSize="16sp"
-            android:textFontWeight="600"
-            android:fontFamily="@font/nunito_regular"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/arabic"
-            app:layout_constraintTop_toTopOf="@id/english"
-            app:layout_constraintBottom_toBottomOf="@id/english"
-            app:layout_constraintStart_toEndOf="@id/english"
-            android:layout_marginStart="20dp"
-            android:text="@string/arabic"
-            android:textColor="@color/main_color"
-            android:textSize="16sp"
-            android:textFontWeight="600"
-            android:fontFamily="@font/nunito_regular"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/language_layout"
+        app:layout_constraintTop_toTopOf="@id/language"
+        app:layout_constraintBottom_toBottomOf="@id/language"
+        app:layout_constraintStart_toEndOf="@id/language"
+        app:layout_constraintEnd_toEndOf="@id/signUp"
+        android:layout_marginHorizontal="20dp"
+        android:hint="@string/language"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
