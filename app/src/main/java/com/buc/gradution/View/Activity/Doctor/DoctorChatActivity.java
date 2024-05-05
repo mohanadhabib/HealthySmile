@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
+import com.buc.gradution.View.Activity.User.UserHistoryActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +35,7 @@ public class DoctorChatActivity extends AppCompatActivity {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private DoctorModel doctor;
     private UserModel user;
-    private ImageView back;
+    private ImageView back,menu;
     private TextView patientName,noData;
     private RecyclerView recyclerView;
     private TextInputLayout typeMessage;
@@ -50,6 +52,11 @@ public class DoctorChatActivity extends AppCompatActivity {
         user = (UserModel) getIntent().getSerializableExtra(Constant.OBJECT);
         doctor = gson.fromJson(json,DoctorModel.class);
         back.setOnClickListener(v -> finish());
+        menu.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), UserHistoryActivity.class);
+            intent.putExtra("user",user);
+            startActivity(intent);
+        });
         patientName.setText(user.getName());
         sendMessage.setOnClickListener(v ->{
             String message = typeMessage.getEditText().getText().toString();
@@ -141,6 +148,7 @@ public class DoctorChatActivity extends AppCompatActivity {
     }
     private void initComponents(){
         back = findViewById(R.id.back);
+        menu = findViewById(R.id.menu);
         patientName = findViewById(R.id.patient_name);
         noData = findViewById(R.id.no_data);
         recyclerView = findViewById(R.id.messages_recycler);

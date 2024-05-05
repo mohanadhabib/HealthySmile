@@ -142,10 +142,28 @@
     <string name="no_notes_yet">No Notes Yet</string>
     <string name="chat_with_ai">chat with ai</string>
     <string name="tips_for_capture_image_n_n_light_it_up_natural_light_is_best_but_avoid_harsh_shadows_indoors_use_bright_white_light_skip_the_flash_it_creates_glare_n_steady_does_it_hold_your_phone_still_or_use_a_tripod_for_sharp_focused_pics_n_focus_on_your_smile_make_sure_your_teeth_are_the_stars_no_fingers_hair_or_other_objects_blocking_the_view_n_multiple_angles_capture_close_up_shots_from_the_front_back_and_sides_of_the_teeth_you_re_concerned_about_n_show_your_smile_gently_pull_back_your_lips_and_keep_your_mouth_slightly_open_for_a_clear_view_smile_naturally_n_clean_and_clear_brush_your_teeth_beforehand_to_remove_anything_hiding_your_pearly_whites">
-        Tips for capture image : \n\n- Light it Up: Natural light is best, but avoid harsh shadows. Indoors, use bright white light. Skip the flash, it creates glare.\n - Steady Does It: Hold your phone still or use a tripod for sharp, focused pics.\n - Focus on Your Smile: Make sure your teeth are the stars! No fingers, hair, or other objects blocking the view.\n - Multiple Angles: Capture close-up shots from the front, back, and sides of the teeth you\'re concerned about.\n - Show Your Smile: Gently pull back your lips and keep your mouth slightly open for a clear view. Smile naturally!\n - Clean and Clear: Brush your teeth beforehand to remove anything hiding your pearly whites.
+        Tips for capture image :\n\n
+        - Light it Up:
+        Natural light is best, but avoid harsh shadows. Indoors, use bright white light. Skip the flash, it creates glare.\n
+        - Steady Does It:
+        Hold your phone still or use a tripod for sharp, focused pics.\n
+        - Focus on Your Smile:
+        Make sure your teeth are the stars! No fingers, hair, or other objects blocking the view.\n
+        - Multiple Angles:
+        Capture close-up shots from the front, back, and sides of the teeth you\'re concerned about.\n
+        - Show Your Smile:
+        Gently pull back your lips and keep your mouth slightly open for a clear view. Smile naturally!\n
+        - Clean and Clear:
+        Brush your teeth beforehand to remove anything hiding your pearly whites.
     </string>
     <string name="your_image">Your Image</string>
     <string name="result_image">Result Image</string>
     <string name="your_history">Your History</string>
     <string name="language">Language</string>
+    <string name="menu">Menu</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="change_language">Change Language</string>
+    <string name="close">Close</string>
+    <string name="your_patients">Your Patients</string>
+    <string name="no_patients_yet">No Patients Yet</string>
 </resources>

@@ -15,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.os.LocaleListCompat;
@@ -35,6 +37,7 @@ import com.buc.gradution.View.Activity.User.UserAllDoctorActivity;
 import com.buc.gradution.View.Activity.User.UserDoctorSearchActivity;
 import com.buc.gradution.View.Activity.User.UserGuideActivity;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
@@ -47,12 +50,9 @@ import java.util.Locale;
 
 public class UserHomeFragment extends Fragment {
     private String[] languages;
-    private TextInputLayout languageLayout;
-    private MaterialAutoCompleteTextView autoCompleteTextView;
     private final FirebaseSecurity security = new FirebaseSecurity();
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private ImageView userGuide;
-    private MaterialSwitch themeSwitch;
+    private ImageView userGuide,menu;
     private TextInputLayout doctorSearch;
     private MaterialButton btn;
     private TextView seeAll,noItem;
@@ -74,29 +74,7 @@ public class UserHomeFragment extends Fragment {
         languages = new String[]{getResources().getString(R.string.english),getResources().getString(R.string.arabic)};
         context = view.getContext();
         isDarkTheme = getActivity().getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).getBoolean(Constant.CURRENT_THEME,false);
-        if (isDarkTheme){
-            themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getActivity().getApplicationContext(),R.drawable.ic_dark_mode));
-        }else{
-            themeSwitch.setThumbIconDrawable(AppCompatResources.getDrawable(getActivity().getApplicationContext(),R.drawable.ic_light_mode));
-        }
-        if(Locale.getDefault().getLanguage().contentEquals("en")){
-            autoCompleteTextView.setText(getResources().getString(R.string.english));
-        }else{
-            autoCompleteTextView.setText(getResources().getString(R.string.arabic));
-        }
-        themeSwitch.setChecked(isDarkTheme);
-        autoCompleteTextView.setSimpleItems(languages);
-        autoCompleteTextView.dismissDropDown();
-        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
-            if(position == 0){
-                LocaleListCompat locale = LocaleListCompat.forLanguageTags("en");
-                AppCompatDelegate.setApplicationLocales(locale);
-            }
-            else if(position == 1){
-                LocaleListCompat locale = LocaleListCompat.forLanguageTags("ar");
-                AppCompatDelegate.setApplicationLocales(locale);
-            }
-        });
+        menu.setOnClickListener(v -> settingsPopUp());
         userGuide.setOnClickListener(v ->{
             if(NetworkService.isConnected(getActivity().getApplicationContext())){
                 boolean isEnglish = Locale.getDefault().getLanguage().contentEquals("en");
@@ -111,19 +89,6 @@ public class UserHomeFragment extends Fragment {
             }
             else{
                 NetworkService.connectionFailed(getActivity().getApplicationContext());
-            }
-        });
-        themeSwitch.setOnClickListener(v -> {
-            themeEditor = getActivity().getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).edit();
-            isDarkTheme = !isDarkTheme;
-            themeEditor.putBoolean(Constant.CURRENT_THEME,isDarkTheme);
-            themeEditor.commit();
-            themeSwitch.setChecked(isDarkTheme);
-            if(isDarkTheme){
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            }
-            else{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
         btn.setOnClickListener(v -> {
@@ -162,15 +127,13 @@ public class UserHomeFragment extends Fragment {
         });
     }
     private void initComponents(View view){
-        languageLayout = view.findViewById(R.id.language_layout);
-        autoCompleteTextView = (MaterialAutoCompleteTextView) languageLayout.getEditText();
         userGuide = view.findViewById(R.id.user_guide);
-        themeSwitch = view.findViewById(R.id.theme);
         doctorSearch = view.findViewById(R.id.search_doctor);
         noItem = view.findViewById(R.id.no_item_txt);
         btn = view.findViewById(R.id.btn);
         seeAll = view.findViewById(R.id.see_more_doctors);
         recyclerView = view.findViewById(R.id.top_doctors_recycler);
+        menu = view.findViewById(R.id.menu);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
     }
     private void getDoctors(){
@@ -204,5 +167,52 @@ public class UserHomeFragment extends Fragment {
                             public void onCancelled(@NonNull DatabaseError error) {}
                         }
                 );
+    }
+    private void settingsPopUp(){
+        LayoutInflater inflater = LayoutInflater.from(this.getActivity());
+        View view = inflater.inflate(R.layout.alert_home_menu,null);
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(this.getActivity()).create();
+        alertDialog.setView(view);
+        alertDialog.show();
+        MaterialSwitch theme = view.findViewById(R.id.theme);
+        MaterialButton close = view.findViewById(R.id.close);
+        TextInputLayout language = view.findViewById(R.id.language_layout);
+        MaterialAutoCompleteTextView autoCompleteTextView = (MaterialAutoCompleteTextView) language.getEditText();
+        if (isDarkTheme){
+            theme.setThumbIconDrawable(AppCompatResources.getDrawable(getActivity().getApplicationContext(),R.drawable.ic_dark_mode));
+        }else{
+            theme.setThumbIconDrawable(AppCompatResources.getDrawable(getActivity().getApplicationContext(),R.drawable.ic_light_mode));
+        }
+        theme.setChecked(isDarkTheme);
+        theme.setOnClickListener(v -> {
+            themeEditor = getActivity().getSharedPreferences(Constant.THEME_SHARED_PREFERENCES,0).edit();
+            isDarkTheme = !isDarkTheme;
+            themeEditor.putBoolean(Constant.CURRENT_THEME,isDarkTheme);
+            themeEditor.commit();
+            theme.setChecked(isDarkTheme);
+            if(isDarkTheme){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                alertDialog.dismiss();
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                alertDialog.dismiss();
+            }
+        });
+        autoCompleteTextView.setSimpleItems(languages);
+        autoCompleteTextView.dismissDropDown();
+        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
+            if(position == 0){
+                LocaleListCompat locale = LocaleListCompat.forLanguageTags("en");
+                AppCompatDelegate.setApplicationLocales(locale);
+                alertDialog.dismiss();
+            }
+            else if(position == 1){
+                LocaleListCompat locale = LocaleListCompat.forLanguageTags("ar");
+                AppCompatDelegate.setApplicationLocales(locale);
+                alertDialog.dismiss();
+            }
+        });
+        close.setOnClickListener(v -> alertDialog.dismiss());
     }
 }

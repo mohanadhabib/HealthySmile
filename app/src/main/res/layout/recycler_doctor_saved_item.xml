@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/user_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="30dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/user_name"
+        app:layout_constraintTop_toTopOf="@id/user_img"
+        app:layout_constraintBottom_toBottomOf="@id/user_img"
+        app:layout_constraintStart_toEndOf="@id/user_img"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/nunito_regular"
+        android:textSize="19sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold"
+        android:textFontWeight="900"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/user_img"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:padding="5dp"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        app:shapeAppearanceOverlay="@style/circleImageView"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

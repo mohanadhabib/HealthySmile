@@ -27,6 +27,7 @@ import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.View.Activity.AiChatActivity;
+import com.buc.gradution.View.Activity.Doctor.DoctorSavedActivity;
 import com.buc.gradution.View.Activity.OnboardingFourActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
@@ -78,6 +79,10 @@ public class DoctorProfileFragment extends Fragment {
         appointmentLayout.setOnClickListener(v ->{
             viewPager.setCurrentItem(0,false);
             bottomNavigationView.setSelectedItemId(R.id.appointment);
+        });
+        savedLayout.setOnClickListener(v ->{
+            Intent intent = new Intent(getContext(), DoctorSavedActivity.class);
+            startActivity(intent);
         });
         logOutLayout.setOnClickListener(v -> {
             LayoutInflater inflater = LayoutInflater.from(getContext());

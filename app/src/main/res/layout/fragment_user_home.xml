@@ -33,58 +33,34 @@
         android:id="@+id/user_guide"
         app:layout_constraintTop_toBottomOf="@id/txt0"
         app:layout_constraintBottom_toTopOf="@id/txt1"
-        app:layout_constraintEnd_toStartOf="@id/theme"
+        app:layout_constraintEnd_toStartOf="@id/menu"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/ic_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/theme"
+    <ImageView
+        android:id="@+id/menu"
         app:layout_constraintTop_toTopOf="@id/user_guide"
         app:layout_constraintBottom_toBottomOf="@id/user_guide"
         app:layout_constraintEnd_toEndOf="parent"
-        android:checked="false"
-        app:thumbIcon="@drawable/ic_light_mode"
-        app:thumbTint="@color/background_color"
-        app:thumbIconTint="@color/main_color"
-        app:trackTint="@color/main_color"
-        app:trackDecorationTint="@color/main_color"
+        android:src="@drawable/ic_menu"
+        app:tint="@color/main_color"
+        android:backgroundTint="@color/main_color"
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <ImageView
-        android:id="@+id/language"
-        app:layout_constraintTop_toTopOf="@id/language_layout"
-        app:layout_constraintEnd_toStartOf="@id/language_layout"
-        app:layout_constraintBottom_toBottomOf="@id/language_layout"
-        android:layout_marginEnd="20dp"
-        android:src="@drawable/ic_language"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/language_layout"
-        app:layout_constraintTop_toBottomOf="@id/theme"
-        app:layout_constraintEnd_toEndOf="@id/theme"
-        android:hint="@string/language"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content">
-        <AutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"/>
-    </com.google.android.material.textfield.TextInputLayout>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g0"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.205"
+        app:layout_constraintGuide_percent="0.135"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_doctor"
         app:layout_constraintTop_toBottomOf="@id/g0"
         app:layout_constraintStart_toStartOf="@id/txt1"
-        app:layout_constraintEnd_toEndOf="@id/theme"
+        app:layout_constraintEnd_toEndOf="@id/menu"
         app:boxCornerRadiusTopStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
@@ -113,7 +89,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g1"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.335"
+        app:layout_constraintGuide_percent="0.275"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -175,7 +151,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g2"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.625"
+        app:layout_constraintGuide_percent="0.575"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
@@ -209,7 +185,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.685" />
+        app:layout_constraintGuide_percent="0.645" />
     <TextView
         android:id="@+id/no_item_txt"
         android:text="@string/no_data_found"

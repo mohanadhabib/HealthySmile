@@ -158,8 +158,14 @@
  \n* ابتسم بشكل طبيعي لمظهر أكثر استرخاءً.
 النظافة:
  * قم بتنظيف أسنانك قبل التقاط الصور لإزالة أي شيء قد يخفي أسنانك البيضاء.</string>
-    <string name="your_image">Your Image</string>
-    <string name="result_image">Result Image</string>
-    <string name="your_history">Your History</string>
-    <string name="language">Language</string>
+    <string name="your_image">صورتك</string>
+    <string name="result_image">النتيجه</string>
+    <string name="your_history">التاريخ المرضي</string>
+    <string name="language">اللغه</string>
+    <string name="menu">القائمه</string>
+    <string name="change_theme">تغيير السمه</string>
+    <string name="change_language">تغيير اللغه</string>
+    <string name="close">اغلاق</string>
+    <string name="your_patients">المرضي</string>
+    <string name="no_patients_yet">لا يوجد مرضي حتي الان</string>
 </resources>
