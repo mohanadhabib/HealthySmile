@@ -23,7 +23,7 @@ import com.buc.gradution.R;
 import com.buc.gradution.Service.FirebaseSecurity;
 import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.View.Activity.AiChatActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public class DoctorChatFragment extends Fragment {
     private final FirebaseSecurity security = new FirebaseSecurity();
     private TextView noMessagesText;
-    private FloatingActionButton chatBtn;
+    private ExtendedFloatingActionButton chatBtn;
     private RecyclerView recyclerView;
     private ArrayList<MessageModel> messages;
     private DoctorChatsRecyclerAdapter adapter;

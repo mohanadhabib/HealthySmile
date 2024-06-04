@@ -3,6 +3,7 @@
     <color name="text_color">#FFFFFF</color>
     <color name="background_color">#2c3552</color>
     <color name="main_color">#afb9dd</color>
+    <color name="scan_btn_color">#afd0dd</color>
     <color name="gradient_center">#80A4ACCE</color>
     <color name="gradient_end">#00F5F7FF</color>
     <color name="grey">#FFFFFF</color>

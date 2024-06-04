@@ -166,4 +166,9 @@
     <string name="close">Close</string>
     <string name="your_patients">Your Patients</string>
     <string name="no_patients_yet">No Patients Yet</string>
+    <string name="scan_xray_image">Scan Xray Image</string>
+    <string name="pick_real_image_from_gallery">Pick Real Image From Gallery</string>
+    <string name="capture_real_image">Capture Real Image</string>
+    <string name="scan_your_image">Scan Your Image</string>
+    <string name="copy_results">Copy Results</string>
 </resources>

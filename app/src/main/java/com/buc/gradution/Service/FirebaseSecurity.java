@@ -9,6 +9,7 @@ import com.buc.gradution.Model.HistoryModel;
 import com.buc.gradution.Model.MessageModel;
 import com.buc.gradution.Model.NotesModel;
 import com.buc.gradution.Model.UserModel;
+import com.google.firebase.Timestamp;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -23,7 +24,7 @@ public class FirebaseSecurity {
         return Base64.encodeToString(encryptedData,Base64.DEFAULT);
     }
     public String encrypt(HistoryModel history) throws Exception{
-        String data = history.getImgUrl() + ",#";
+        String data = history.getImgUrl() + ",#" + history.getDateTime();
         return encryptProcess(data);
     }
     public HistoryModel decryptHistory(String encryptedData) throws Exception{
@@ -32,7 +33,7 @@ public class FirebaseSecurity {
         cipher.init(Cipher.DECRYPT_MODE,secretKey);
         byte [] decryptedData = cipher.doFinal(Base64.decode(encryptedData,Base64.DEFAULT));
         String [] history = new String(decryptedData).split(",#");
-        return new HistoryModel(history[0]);
+        return new HistoryModel(history[0],history[1]);
     }
     public String encrypt(AppointmentModel appointment) throws Exception{
         String data = appointment.getUserId() + ",#" +appointment.getUserName() + ",#" + appointment.getUserEmail() + ",#" + appointment.getUserImg() + ",#" + appointment.getDoctorId() + ",#" + appointment.getDoctorName() + ",#" + appointment.getDoctorEmail() + ",#" + appointment.getDoctorImg() + ",#" + appointment.getDoctorSpec() + ",#" + appointment.getAppointmentDate() + ",#" + appointment.getAppointmentTime() + ",#" + appointment.getStars() + ",#" + appointment.getDistance() + ",#" + appointment.getAboutDoctor();

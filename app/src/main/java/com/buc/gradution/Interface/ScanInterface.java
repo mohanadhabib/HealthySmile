@@ -14,7 +14,7 @@ public interface ScanInterface {
                 @Query("api_key") String apiKey,
                 @Query("image") String image
         );
-        @POST("dadad12/2")
+        @POST("oral_detection_diseases/1")
         Call<ScanOutputModel> postCapturedImage(
                 @Query("api_key") String apiKey,
                 @Query("image") String image

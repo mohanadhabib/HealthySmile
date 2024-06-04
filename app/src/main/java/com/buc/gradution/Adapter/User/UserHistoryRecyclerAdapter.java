@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,7 @@ public class UserHistoryRecyclerAdapter extends RecyclerView.Adapter<UserHistory
     @Override
     public void onBindViewHolder(@NonNull UserHistoryRecyclerViewHolder holder, int position) {
         Picasso.get().load(history.get(position).getImgUrl()).into(holder.image);
+        holder.dateTime.setText(history.get(position).getDateTime());
     }
 
     @Override
@@ -39,9 +41,11 @@ public class UserHistoryRecyclerAdapter extends RecyclerView.Adapter<UserHistory
 
     static class UserHistoryRecyclerViewHolder extends RecyclerView.ViewHolder{
         ImageView image;
+        TextView dateTime;
         public UserHistoryRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
+            dateTime = itemView.findViewById(R.id.date_time);
         }
     }
 }

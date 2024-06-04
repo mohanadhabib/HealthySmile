@@ -168,4 +168,9 @@
     <string name="close">اغلاق</string>
     <string name="your_patients">المرضي</string>
     <string name="no_patients_yet">لا يوجد مرضي حتي الان</string>
+    <string name="scan_xray_image">فحص صوره الاشعه</string>
+    <string name="pick_real_image_from_gallery">اختر صوره حقيقه من معرض الصور</string>
+    <string name="capture_real_image">التقط صوره حقيقه للاسنان من الكاميرا</string>
+    <string name="scan_your_image">فحص صورتك</string>
+    <string name="copy_results">انسخ النتائج</string>
 </resources>

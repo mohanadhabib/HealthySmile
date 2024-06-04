@@ -2,6 +2,8 @@ package com.buc.gradution.View.Fragment.User;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,19 +12,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +38,7 @@ import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.Interface.ScanInterface;
 import com.buc.gradution.Service.RetrofitService;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.io.ByteArrayOutputStream;
@@ -49,6 +46,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -57,10 +56,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserScanFragment extends Fragment {
+    private ActivityResultLauncher<Intent> launcher,captureLauncher,galleryPickLauncher;
     private final FirebaseSecurity security = new FirebaseSecurity();
     private ScanOutputModel scanXray,scanPhoto;
     private ImageView beforeImg, afterImg;
-    private MaterialButton submitBtn,captureBtn;
+    private LinearLayout btnLayout;
+    private ExtendedFloatingActionButton button,captureImageBtn,pickImageBtn,scanXrayBtn,copyResBtn;
     private TextView resultTxt,noImageTxt,hintText,loadingTxt,beforeTxt,afterTxt;
     private CircularProgressIndicator progress;
     private Context context;
@@ -76,7 +77,7 @@ public class UserScanFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initComponents(view);
         context = view.getContext();
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if(result.getResultCode() == RESULT_OK && result.getData() != null){
                 uri.set(result.getData().getData());
                 beforeImg.setImageURI(uri.get());
@@ -103,7 +104,34 @@ public class UserScanFragment extends Fragment {
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
-        ActivityResultLauncher<Intent> captureLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result ->{
+        galleryPickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if(result.getResultCode() == RESULT_OK && result.getData() != null){
+                uri.set(result.getData().getData());
+                beforeImg.setImageURI(uri.get());
+                if(NetworkService.isConnected(context)){
+                    progress.setVisibility(View.VISIBLE);
+                    loadingTxt.setVisibility(View.VISIBLE);
+                    progress.setProgress(15,true);
+                    noImageTxt.setVisibility(View.INVISIBLE);
+                    hintText.setVisibility(View.INVISIBLE);
+                    afterTxt.setVisibility(View.VISIBLE);
+                    beforeTxt.setVisibility(View.VISIBLE);
+                    uploadPhotoImage();
+                }
+                else{
+                    NetworkService.connectionFailed(context);
+                }
+            }else {
+                afterImg.setImageURI(null);
+                beforeImg.setImageURI(null);
+                noImageTxt.setVisibility(View.VISIBLE);
+                hintText.setVisibility(View.VISIBLE);
+                afterTxt.setVisibility(View.INVISIBLE);
+                beforeTxt.setVisibility(View.INVISIBLE);
+                Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
+            }
+        });
+        captureLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result ->{
             if(result.getResultCode() == RESULT_OK && result.getData() != null){
                 Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data");
                 Uri myUri = getImageUri(getActivity().getApplicationContext(),bitmap);
@@ -132,26 +160,55 @@ public class UserScanFragment extends Fragment {
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
-        captureBtn.setOnClickListener(v ->{
+        copyResBtn.setOnClickListener(v -> {
+            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("Results",resultTxt.getText());
+            clipboardManager.setPrimaryClip(clipData);
+            Toast.makeText(context, "Results Successfully Copied", Toast.LENGTH_SHORT).show();
+        });
+        button.setOnClickListener(v ->{
+            if(btnLayout.getVisibility() == View.INVISIBLE){
+                btnLayout.setVisibility(View.VISIBLE);
+                button.setIcon(getResources().getDrawable(R.drawable.ic_close));
+            }
+            else{
+                btnLayout.setVisibility(View.INVISIBLE);
+                button.setIcon(getResources().getDrawable(R.drawable.nav_scan));
+            }
+        });
+        captureImageBtn.setOnClickListener(v ->{
             progress.setProgress(0,true);
             afterImg.setImageBitmap(null);
             resultTxt.setText(null);
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             captureLauncher.launch(intent);
+            btnLayout.setVisibility(View.INVISIBLE);
+            button.setIcon(getResources().getDrawable(R.drawable.nav_scan));
         });
-        submitBtn.setOnClickListener(v -> {
+        scanXrayBtn.setOnClickListener(v -> {
             progress.setProgress(0,true);
             afterImg.setImageBitmap(null);
             resultTxt.setText(null);
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             launcher.launch(intent);
+            btnLayout.setVisibility(View.INVISIBLE);
+            button.setIcon(getResources().getDrawable(R.drawable.nav_scan));
+        });
+        pickImageBtn.setOnClickListener(v ->{
+            progress.setProgress(0,true);
+            afterImg.setImageBitmap(null);
+            resultTxt.setText(null);
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            galleryPickLauncher.launch(intent);
+            btnLayout.setVisibility(View.INVISIBLE);
+            button.setIcon(getResources().getDrawable(R.drawable.nav_scan));
         });
     }
     private void initComponents(View view) {
         beforeImg = view.findViewById(R.id.before_img);
-        submitBtn = view.findViewById(R.id.submit_img_button);
-        captureBtn = view.findViewById(R.id.capture_img_button);
+        button = view.findViewById(R.id.button);
         resultTxt = view.findViewById(R.id.result);
         afterImg = view.findViewById(R.id.after_img);
         progress = view.findViewById(R.id.progress);
@@ -160,6 +217,11 @@ public class UserScanFragment extends Fragment {
         loadingTxt = view.findViewById(R.id.loading_txt);
         beforeTxt = view.findViewById(R.id.before_txt);
         afterTxt = view.findViewById(R.id.after_txt);
+        btnLayout = view.findViewById(R.id.btn_layout);
+        scanXrayBtn = view.findViewById(R.id.scan_xray);
+        pickImageBtn = view.findViewById(R.id.pick_image);
+        captureImageBtn = view.findViewById(R.id.capture_image);
+        copyResBtn = view.findViewById(R.id.copy_data);
     }
     private void addImageToHistory(Bitmap image,String x){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -176,7 +238,10 @@ public class UserScanFragment extends Fragment {
                         .child(path)
                         .getDownloadUrl()
                         .addOnSuccessListener(v0 -> {
-                            HistoryModel model = new HistoryModel(v0.toString());
+                            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss");
+                            LocalDateTime localDateTime = LocalDateTime.now();
+                            String dateTime = dateTimeFormatter.format(localDateTime);
+                            HistoryModel model = new HistoryModel(v0.toString(),dateTime);
                             String encryptedData = null;
                             try {
                                 encryptedData = security.encrypt(model);
@@ -193,8 +258,7 @@ public class UserScanFragment extends Fragment {
                                         loadingTxt.setVisibility(View.INVISIBLE);
                                         resultTxt.setText(x);
                                         afterImg.setImageBitmap(image);
-                                        submitBtn.setClickable(true);
-                                        captureBtn.setClickable(true);
+                                        button.setClickable(true);
                                         Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                                     })
                                     .addOnFailureListener(e -> {
@@ -203,25 +267,21 @@ public class UserScanFragment extends Fragment {
                                         loadingTxt.setVisibility(View.INVISIBLE);
                                         afterImg.setImageBitmap(null);
                                         resultTxt.setText(getString(R.string.error));
-                                        submitBtn.setClickable(true);
-                                        captureBtn.setClickable(true);
+                                        button.setClickable(true);
                                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
                         })
                         .addOnFailureListener(e -> {
-                            submitBtn.setClickable(true);
-                            captureBtn.setClickable(true);
+                            button.setClickable(true);
                             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }))
                 .addOnFailureListener(e -> {
-                    submitBtn.setClickable(true);
-                    captureBtn.setClickable(true);
+                    button.setClickable(true);
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
     private void uploadXRayImage() {
-        submitBtn.setClickable(false);
-        captureBtn.setClickable(false);
+        button.setClickable(false);
         String id = FirebaseService.getFirebaseAuth().getCurrentUser().getUid();
         FirebaseService.getFirebaseStorage().getReference(id)
                 .child("Xray")
@@ -242,16 +302,14 @@ public class UserScanFragment extends Fragment {
                                 progress.setVisibility(View.INVISIBLE);
                                 loadingTxt.setVisibility(View.INVISIBLE);
                                 progress.setIndicatorColor(getContext().getColor(R.color.main_color));
-                                submitBtn.setClickable(true);
-                                captureBtn.setClickable(true);
+                                button.setClickable(true);
                                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e0 -> Toast.makeText(getContext(), e0.getMessage(), Toast.LENGTH_SHORT).show());
     }
     private void uploadPhotoImage() {
-        submitBtn.setClickable(false);
-        captureBtn.setClickable(false);
+        button.setClickable(false);
         String id = FirebaseService.getFirebaseAuth().getCurrentUser().getUid();
         FirebaseService.getFirebaseStorage().getReference(id)
                 .child("Real Photo")
@@ -272,8 +330,7 @@ public class UserScanFragment extends Fragment {
                                 progress.setVisibility(View.INVISIBLE);
                                 loadingTxt.setVisibility(View.INVISIBLE);
                                 progress.setIndicatorColor(getContext().getColor(R.color.main_color));
-                                submitBtn.setClickable(true);
-                                captureBtn.setClickable(true);
+                                button.setClickable(true);
                                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
                 })
@@ -294,14 +351,12 @@ public class UserScanFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<ScanOutputModel> call, Throwable t) {
-                            submitBtn.setClickable(true);
-                            captureBtn.setClickable(true);
+                            button.setClickable(true);
                             Toast.makeText(getActivity().getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
                         }
                     });
         }catch (Exception e){
-            submitBtn.setClickable(true);
-            captureBtn.setClickable(true);
+            button.setClickable(true);
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -319,14 +374,12 @@ public class UserScanFragment extends Fragment {
                         }
                         @Override
                         public void onFailure(Call<ScanOutputModel> call, Throwable t) {
-                            submitBtn.setClickable(true);
-                            captureBtn.setClickable(true);
+                            button.setClickable(true);
                             Toast.makeText(getActivity().getApplicationContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
                         }
                     });
         } catch (Exception e) {
-            submitBtn.setClickable(true);
-            captureBtn.setClickable(true);
+            button.setClickable(true);
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -349,8 +402,7 @@ public class UserScanFragment extends Fragment {
                 loadingTxt.setVisibility(View.INVISIBLE);
                 afterImg.setImageBitmap(null);
                 resultTxt.setText(null);
-                submitBtn.setClickable(true);
-                captureBtn.setClickable(true);
+                button.setClickable(true);
             }else{
                 Canvas canvas = new Canvas(image);
                 Paint paintTxt = new Paint();
@@ -383,6 +435,7 @@ public class UserScanFragment extends Fragment {
                     canvas.drawText(resTxt, x0, y0, paintTxt);
                 }
                 addImageToHistory(image,x);
+                copyResBtn.setVisibility(View.VISIBLE);
             }
         }
         catch(Exception e){
@@ -391,8 +444,7 @@ public class UserScanFragment extends Fragment {
             loadingTxt.setVisibility(View.INVISIBLE);
             afterImg.setImageBitmap(null);
             resultTxt.setText(getString(R.string.error));
-            submitBtn.setClickable(true);
-            captureBtn.setClickable(true);
+            button.setClickable(true);
         }
     }
     private Bitmap createBitmapFromUri(Uri uri) {
@@ -421,13 +473,3 @@ public class UserScanFragment extends Fragment {
         return Uri.parse(path);
     }
 }
-
-/*
-* - Light it Up: Natural light is best, but avoid harsh shadows. Indoors, use bright white light. Skip the flash, it creates glare.
-- Steady Does It: Hold your phone still or use a tripod for sharp, focused pics.
-- Focus on Your Smile: Make sure your teeth are the stars! No fingers, hair, or other objects blocking the view.
-- Multiple Angles: Capture close-up shots from the front, back, and sides of the teeth you're concerned about.
-- Show Your Smile: Gently pull back your lips and keep your mouth slightly open for a clear view. Smile naturally!
-- Clean and Clear: Brush your teeth beforehand to remove anything hiding your pearly whites.
-*
-* */

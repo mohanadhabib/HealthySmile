@@ -41,15 +41,17 @@
         android:text="@string/no_messages_yet"
         android:visibility="visible"
         />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/chat_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginVertical="10dp"
-        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
         android:tint="@color/main_color"
         android:backgroundTint="@color/main_color"
-        android:src="@drawable/ic_ai_chat"
+        app:backgroundTint="@color/white"
+        app:icon="@drawable/ic_ai_chat"
+        app:iconTint="@color/white"
         app:shapeAppearanceOverlay="@style/circleImageView"
         android:clickable="true"
         android:contentDescription="@string/chat_with_ai"
