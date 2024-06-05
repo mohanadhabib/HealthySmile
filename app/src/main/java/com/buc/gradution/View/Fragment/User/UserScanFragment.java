@@ -163,9 +163,7 @@ public class UserScanFragment extends Fragment {
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
-        afterImg.setOnClickListener(v -> {
-            startActivity(scanIntent);
-        });
+        afterImg.setOnClickListener(v -> startActivity(scanIntent));
         copyResBtn.setOnClickListener(v -> {
             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clipData = ClipData.newPlainText("Results",resultTxt.getText());
@@ -425,8 +423,8 @@ public class UserScanFragment extends Fragment {
                 DecimalFormat format = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.US);
                 format.applyPattern("###.##");
                 for (int i = 0; i < scanModel.getPredictions().size(); i++) {
-                    float xPos = scanModel.getPredictions().get(i).getX();
-                    float yPos = scanModel.getPredictions().get(i).getY();
+                    double xPos = scanModel.getPredictions().get(i).getX();
+                    double yPos = scanModel.getPredictions().get(i).getY();
                     String txt = scanModel.getPredictions().get(i).getClassType();
                     double confidence = scanModel.getPredictions().get(i).getConfidence();
                     String confidenceTxt = format.format(confidence);
@@ -435,11 +433,11 @@ public class UserScanFragment extends Fragment {
                     String resTxt = txt + " " + conPer + "%";
                     float textWidth = paintTxt.measureText(resTxt);
                     Rect r = new Rect((int) xPos, (int) yPos, (int) (xPos + 10), (int) (yPos + 10));
-                    float x0 = xPos - 10;
-                    float y0 = yPos - 10;
+                    double x0 = xPos - 10;
+                    double y0 = yPos - 10;
                     canvas.drawRect(r, paintRect);
-                    canvas.drawRect(x0, y0 - paintTxt.getTextSize(), x0 + textWidth, y0, background);
-                    canvas.drawText(resTxt, x0, y0, paintTxt);
+                    canvas.drawRect((float) x0,(float) y0 - paintTxt.getTextSize(), (float) x0 + textWidth, (float) y0, background);
+                    canvas.drawText(resTxt, (float) x0,(float) y0, paintTxt);
                 }
                 addImageToHistory(image,x);
                 copyResBtn.setVisibility(View.VISIBLE);

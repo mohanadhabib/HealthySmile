@@ -17,6 +17,7 @@ import com.buc.gradution.Model.ChatBotMessagesModel;
 import com.buc.gradution.Model.ChatBotResponseModel;
 import com.buc.gradution.Model.UserAiChatMessageModel;
 import com.buc.gradution.R;
+import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.Service.RetrofitService;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -68,9 +69,9 @@ public class AiChatActivity extends AppCompatActivity {
     }
     private void getChatbotResponse(String message){
         HashMap<String, Object> body = new HashMap<>();
-        body.put("conversation_id","123");
+        body.put("conversation_id","0"+ FirebaseService.getFirebaseAuth().getCurrentUser().getUid() +"0");
         body.put("bot_id","7371911820535742470");
-        body.put("user","123333333");
+        body.put("user",FirebaseService.getFirebaseAuth().getCurrentUser().getUid());
         body.put("query",message);
         body.put("stream",false);
         UserAiChatMessageModel userMessage = new UserAiChatMessageModel(1,message);
@@ -79,7 +80,7 @@ public class AiChatActivity extends AppCompatActivity {
         adapter.setMessages(messages);
         recyclerView.setAdapter(adapter);
         recyclerView.scrollToPosition(messages.size()-1);
-        RetrofitService.getRetrofit("https://api.coze.com/open_api/v2/")
+        RetrofitService.getLongTimeOutRetrofit("https://api.coze.com/open_api/v2/")
                 .create(ChatBotInterface.class)
                 .getResponse(body,
                         "Bearer "+Constant.token,

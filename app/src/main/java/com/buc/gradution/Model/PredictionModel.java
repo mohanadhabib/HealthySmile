@@ -2,55 +2,54 @@ package com.buc.gradution.Model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 
 public class PredictionModel {
     @SerializedName("x")
-    private float x;
+    private double x;
     @SerializedName("y")
-    private float y;
+    private double y;
     @SerializedName("width")
-    private float width;
+    private int width;
     @SerializedName("height")
-    private float height;
+    private int height;
     @SerializedName("confidence")
     private double confidence;
     @SerializedName("class")
     private String classType;
     @SerializedName("class_id")
     private int classId;
-    @SerializedName("points")
-    private ArrayList<PointModel> points;
+    @SerializedName("detection_id")
+    private String detectionId;
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public float getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setWidth(float width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
-    public float getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(float height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
@@ -78,11 +77,11 @@ public class PredictionModel {
         this.classId = classId;
     }
 
-    public ArrayList<PointModel> getPoints() {
-        return points;
+    public String getDetectionId() {
+        return detectionId;
     }
 
-    public void setPoints(ArrayList<PointModel> points) {
-        this.points = points;
+    public void setDetectionId(String detectionId) {
+        this.detectionId = detectionId;
     }
 }

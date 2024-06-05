@@ -7,7 +7,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public abstract class RetrofitService {
-    private static Retrofit retrofit;
+    private static Retrofit retrofitForScan;
+    private static Retrofit retrofitForChatBot;
     private static OkHttpClient getOkHttpClient(){
         return new OkHttpClient()
                 .newBuilder()
@@ -17,13 +18,22 @@ public abstract class RetrofitService {
                 .build();
     }
     public static Retrofit getRetrofit(String baseUrl){
-        if(retrofit == null){
-            retrofit = new Retrofit.Builder()
+        if(retrofitForScan == null){
+            retrofitForScan = new Retrofit.Builder()
+                    .baseUrl(baseUrl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return retrofitForScan;
+    }
+    public static Retrofit getLongTimeOutRetrofit(String baseUrl){
+        if(retrofitForChatBot == null){
+            retrofitForChatBot = new Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .client(RetrofitService.getOkHttpClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
-        return retrofit;
+        return retrofitForChatBot;
     }
 }
