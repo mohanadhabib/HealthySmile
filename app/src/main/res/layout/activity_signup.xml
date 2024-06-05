@@ -195,6 +195,7 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/code"
+                android:enabled="false"
                 android:text="@string/_20"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

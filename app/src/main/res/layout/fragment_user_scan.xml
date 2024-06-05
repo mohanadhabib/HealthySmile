@@ -101,6 +101,7 @@
         android:layout_height="wrap_content"/>
     <ImageView
         android:id="@+id/after_img"
+        android:clickable="true"
         app:layout_constraintTop_toBottomOf="@id/g1"
         app:layout_constraintBottom_toTopOf="@id/g3"
         app:layout_constraintStart_toEndOf="@id/vg0"

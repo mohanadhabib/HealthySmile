@@ -122,7 +122,7 @@
     <string name="enter_your_phone_number">ادخل رقم هاتفك</string>
     <string name="no_appointments_yet">لا يوجد مواعيد</string>
     <string name="no_messages_yet">لا يوجد رسائل</string>
-    <string name="chat_with_gemini">تحدث مع Gemini</string>
+    <string name="chat_with_gemini">تحدث مع AI</string>
     <string name="capture_image">التقط صوره</string>
     <string name="add_notes">اضف ملاحظات</string>
     <string name="type_your_notes_here">اكتب ملاحظااتك هنا ...</string>
@@ -173,4 +173,5 @@
     <string name="capture_real_image">التقط صوره حقيقه للاسنان من الكاميرا</string>
     <string name="scan_your_image">فحص صورتك</string>
     <string name="copy_results">انسخ النتائج</string>
+    <string name="detailed_scan">تفاصيل الفحص</string>
 </resources>

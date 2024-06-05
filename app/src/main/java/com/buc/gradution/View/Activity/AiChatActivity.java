@@ -81,23 +81,34 @@ public class AiChatActivity extends AppCompatActivity {
         recyclerView.scrollToPosition(messages.size()-1);
         RetrofitService.getRetrofit("https://api.coze.com/open_api/v2/")
                 .create(ChatBotInterface.class)
-                .getResponse(body,"Bearer "+Constant.token)
+                .getResponse(body,
+                        "Bearer "+Constant.token,
+                        Constant.typeValue,
+                        Constant.acceptValue,
+                        Constant.hostValue,
+                        Constant.connectionValue)
                 .enqueue(new Callback<ChatBotResponseModel>() {
                     @Override
                     public void onResponse(Call<ChatBotResponseModel> call, Response<ChatBotResponseModel> response) {
                         progress.setVisibility(View.INVISIBLE);
                         String res = "";
-                        for(ChatBotMessagesModel messageModel : response.body().getMessages()){
-                            if(messageModel.getType().equals("answer")){
-                                res = messageModel.getContent();
+                        if(response.body() != null){
+                            for(ChatBotMessagesModel messageModel : response.body().getMessages()){
+                                if(messageModel.getType().equals("answer")){
+                                    res = messageModel.getContent();
+                                    UserAiChatMessageModel aiMessage = new UserAiChatMessageModel(0,res);
+                                    messages.add(aiMessage);
+                                    addMessagesToHistory();
+                                    adapter.setMessages(messages);
+                                    recyclerView.setAdapter(adapter);
+                                    recyclerView.scrollToPosition(messages.size()-1);
+                                    break;
+                                }
                             }
                         }
-                        UserAiChatMessageModel aiMessage = new UserAiChatMessageModel(0,res);
-                        messages.add(aiMessage);
-                        addMessagesToHistory();
-                        adapter.setMessages(messages);
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.scrollToPosition(messages.size()-1);
+                        else {
+                            Toast.makeText(AiChatActivity.this, "Sorry, Couldn't get results", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

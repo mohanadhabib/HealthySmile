@@ -121,7 +121,7 @@
     <string name="enter_your_phone_number">Enter your phone number</string>
     <string name="no_appointments_yet">No Appointments Yet</string>
     <string name="no_messages_yet">No Messages Yet</string>
-    <string name="chat_with_gemini">Chat With Gemini</string>
+    <string name="chat_with_gemini">Chat With AI</string>
     <string name="capture_image">Capture Real Image</string>
     <string name="add_notes">Add Notes</string>
     <string name="type_your_notes_here">Type Your Notes Here...</string>
@@ -171,4 +171,5 @@
     <string name="capture_real_image">Capture Real Image</string>
     <string name="scan_your_image">Scan Your Image</string>
     <string name="copy_results">Copy Results</string>
+    <string name="detailed_scan">Detailed Scan</string>
 </resources>

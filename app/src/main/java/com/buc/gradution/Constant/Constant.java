@@ -21,6 +21,10 @@ public abstract class Constant {
     public static final String ENCRYPTION_KEY = "a4sv28r19nset6ca20n7cge6xlnv4310";
     public static final String apiScanKey = "MS6qgKKeYSWKBqbaiV7N";
     public static final String token = "pat_Od6GzUe1Q9vU7870AxznAnEPTpSn9rkb6BrYDFvQnMi6wnAL6ddz2cQ1zDJNZcHz";
+    public static final String typeValue = "application/json";
+    public static final String acceptValue = "*/*";
+    public static final String hostValue = "api.coze.com";
+    public static final String connectionValue = "keep-alive";
     public static final String geminiApiKey = "AIzaSyBAETClT_PMhBZrD7KrGFrEt3hUY07Qxfw";
     public static final String webId = "101328423470-pqv65ekuels41oj66neliaa3h601unc5.apps.googleusercontent.com";
 }

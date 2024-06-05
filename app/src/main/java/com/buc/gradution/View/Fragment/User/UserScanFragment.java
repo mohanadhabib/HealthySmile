@@ -38,6 +38,7 @@ import com.buc.gradution.Service.FirebaseService;
 import com.buc.gradution.Service.NetworkService;
 import com.buc.gradution.Interface.ScanInterface;
 import com.buc.gradution.Service.RetrofitService;
+import com.buc.gradution.View.Activity.User.UserScanImageActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
@@ -65,6 +66,7 @@ public class UserScanFragment extends Fragment {
     private TextView resultTxt,noImageTxt,hintText,loadingTxt,beforeTxt,afterTxt;
     private CircularProgressIndicator progress;
     private Context context;
+    private Intent scanIntent;
     private final AtomicReference<Uri> uri = new AtomicReference<>();
 
     @Nullable
@@ -77,6 +79,7 @@ public class UserScanFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initComponents(view);
         context = view.getContext();
+        scanIntent = new Intent(context.getApplicationContext(), UserScanImageActivity.class);
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if(result.getResultCode() == RESULT_OK && result.getData() != null){
                 uri.set(result.getData().getData());
@@ -159,6 +162,9 @@ public class UserScanFragment extends Fragment {
                 beforeTxt.setVisibility(View.INVISIBLE);
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
+        });
+        afterImg.setOnClickListener(v -> {
+            startActivity(scanIntent);
         });
         copyResBtn.setOnClickListener(v -> {
             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -259,6 +265,7 @@ public class UserScanFragment extends Fragment {
                                         resultTxt.setText(x);
                                         afterImg.setImageBitmap(image);
                                         button.setClickable(true);
+                                        scanIntent.putExtra("image",v0.toString());
                                         Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
                                     })
                                     .addOnFailureListener(e -> {
@@ -396,7 +403,7 @@ public class UserScanFragment extends Fragment {
         try {
             String x = "";
             if(scanModel.getPredictions().isEmpty()){
-                Toast.makeText(context, "Error, it isn't teeth image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error, Couldn't recognize this image", Toast.LENGTH_SHORT).show();
                 progress.setProgress(100, true);
                 progress.setVisibility(View.INVISIBLE);
                 loadingTxt.setVisibility(View.INVISIBLE);
