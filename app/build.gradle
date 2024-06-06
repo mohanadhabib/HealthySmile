@@ -56,4 +56,5 @@ dependencies {
     implementation group: 'net.imagej', name: 'ij', version: '1.54h'
     implementation 'com.squareup.retrofit2:retrofit:2.11.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
+    implementation 'com.github.MikeOrtiz:TouchImageView:3.6'
 }

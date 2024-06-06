@@ -41,6 +41,7 @@ import com.buc.gradution.Service.RetrofitService;
 import com.buc.gradution.View.Activity.User.UserScanImageActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.ortiz.touchview.TouchImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -60,7 +61,8 @@ public class UserScanFragment extends Fragment {
     private ActivityResultLauncher<Intent> launcher,captureLauncher,galleryPickLauncher;
     private final FirebaseSecurity security = new FirebaseSecurity();
     private ScanOutputModel scanXray,scanPhoto;
-    private ImageView beforeImg, afterImg;
+    private ImageView beforeImg;
+    private TouchImageView afterImg;
     private LinearLayout btnLayout;
     private ExtendedFloatingActionButton button,captureImageBtn,pickImageBtn,scanXrayBtn,copyResBtn;
     private TextView resultTxt,noImageTxt,hintText,loadingTxt,beforeTxt,afterTxt;
@@ -163,7 +165,7 @@ public class UserScanFragment extends Fragment {
                 Toast.makeText(getContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
-        afterImg.setOnClickListener(v -> startActivity(scanIntent));
+        // afterImg.setOnClickListener(v -> startActivity(scanIntent));
         copyResBtn.setOnClickListener(v -> {
             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clipData = ClipData.newPlainText("Results",resultTxt.getText());
@@ -346,7 +348,7 @@ public class UserScanFragment extends Fragment {
             progress.setProgress(75,true);
             ScanInterface scan = RetrofitService.getRetrofit("https://detect.roboflow.com/")
                     .create(ScanInterface.class);
-            scan.postCapturedImage(Constant.apiScanKey,url)
+            scan.postCapturedImage(Constant.API_SCAN_KEY,url)
                     .enqueue(new Callback<ScanOutputModel>() {
                         @Override
                         public void onResponse(Call<ScanOutputModel> call, Response<ScanOutputModel> response) {
@@ -370,7 +372,7 @@ public class UserScanFragment extends Fragment {
             progress.setProgress(75,true);
             ScanInterface scan = RetrofitService.getRetrofit("https://detect.roboflow.com/")
                     .create(ScanInterface.class);
-            scan.postImage(Constant.apiScanKey, url)
+            scan.postImage(Constant.API_SCAN_KEY, url)
                     .enqueue(new Callback<ScanOutputModel>() {
                         @Override
                         public void onResponse(Call<ScanOutputModel> call, Response<ScanOutputModel> response) {

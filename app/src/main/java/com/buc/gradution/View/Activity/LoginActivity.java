@@ -371,7 +371,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private Intent googleSignIn(){
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(Constant.webId)
+                .requestIdToken(Constant.WEB_ID)
                 .requestEmail()
                 .build();
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this,googleSignInOptions);

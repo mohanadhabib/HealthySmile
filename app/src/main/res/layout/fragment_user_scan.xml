@@ -99,7 +99,7 @@
         android:textFontWeight="900"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <ImageView
+    <com.ortiz.touchview.TouchImageView
         android:id="@+id/after_img"
         android:clickable="true"
         app:layout_constraintTop_toBottomOf="@id/g1"
@@ -120,6 +120,7 @@
         app:layout_constraintBottom_toTopOf="@id/g2"
         app:layout_constraintStart_toEndOf="@id/vg0"
         app:layout_constraintEnd_toStartOf="@id/vg1"
+        android:fadeScrollbars="false"
         android:layout_width="0dp"
         android:layout_height="0dp">
         <TextView

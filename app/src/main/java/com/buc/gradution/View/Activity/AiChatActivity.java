@@ -83,11 +83,11 @@ public class AiChatActivity extends AppCompatActivity {
         RetrofitService.getLongTimeOutRetrofit("https://api.coze.com/open_api/v2/")
                 .create(ChatBotInterface.class)
                 .getResponse(body,
-                        "Bearer "+Constant.token,
-                        Constant.typeValue,
-                        Constant.acceptValue,
-                        Constant.hostValue,
-                        Constant.connectionValue)
+                        "Bearer "+Constant.TOKEN,
+                        Constant.TYPE_VALUE,
+                        Constant.ACCEPT_VALUE,
+                        Constant.HOST_VALUE,
+                        Constant.CONNECTION_VALUE)
                 .enqueue(new Callback<ChatBotResponseModel>() {
                     @Override
                     public void onResponse(Call<ChatBotResponseModel> call, Response<ChatBotResponseModel> response) {

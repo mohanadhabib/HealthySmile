@@ -17,6 +17,7 @@
         android:theme="@style/Theme.GradutionProject">
         <activity
             android:name=".View.Activity.User.UserScanImageActivity"
+            android:screenOrientation="landscape"
             android:exported="false" />
 
         <service
