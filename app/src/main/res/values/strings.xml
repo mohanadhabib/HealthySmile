@@ -172,4 +172,6 @@
     <string name="scan_your_image">Scan Your Image</string>
     <string name="copy_results">Copy Results</string>
     <string name="detailed_scan">Detailed Scan</string>
+    <string name="chatbot">Chat With ChatBot</string>
+    <string name="gemini">Chat With Gemini</string>
 </resources>

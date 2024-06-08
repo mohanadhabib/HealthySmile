@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context=".View.Activity.User.UserScanImageActivity">
+    tools:context=".view.activity.user.UserScanImageActivity">
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/g0"
         android:orientation="horizontal"

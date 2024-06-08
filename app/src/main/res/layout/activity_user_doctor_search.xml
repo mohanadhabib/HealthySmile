@@ -7,7 +7,7 @@
     android:paddingVertical="25dp"
     android:paddingHorizontal="15dp"
     android:background="@color/background_color"
-    tools:context=".View.Activity.User.UserDoctorSearchActivity">
+    tools:context=".view.activity.user.UserDoctorSearchActivity">
     <ImageView
         android:id="@+id/back"
         app:layout_constraintTop_toTopOf="parent"

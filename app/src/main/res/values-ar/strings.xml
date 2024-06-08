@@ -174,4 +174,6 @@
     <string name="scan_your_image">فحص صورتك</string>
     <string name="copy_results">انسخ النتائج</string>
     <string name="detailed_scan">تفاصيل الفحص</string>
+    <string name="chatbot">تحدث مع ChatBot</string>
+    <string name="gemini">تحدث مع Gemini</string>
 </resources>

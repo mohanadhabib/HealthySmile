@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/main_color"
-    tools:context=".View.Fragment.Doctor.DoctorProfileFragment">
+    tools:context=".view.fragment.doctor.DoctorProfileFragment">
     <TextView
         android:id="@+id/txt_header"
         app:layout_constraintTop_toTopOf="parent"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     android:padding="25dp"
-    tools:context=".View.Activity.VerifyCodeActivity">
+    tools:context=".view.activity.VerifyCodeActivity">
     <ImageView
         android:id="@+id/back_button"
         app:layout_constraintTop_toTopOf="parent"

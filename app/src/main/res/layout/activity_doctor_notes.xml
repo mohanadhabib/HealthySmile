@@ -7,7 +7,7 @@
     android:paddingTop="25dp"
     android:paddingHorizontal="15dp"
     android:background="@color/background_color"
-    tools:context=".View.Activity.Doctor.DoctorNotesActivity">
+    tools:context=".view.activity.doctor.DoctorNotesActivity">
     <ImageView
         android:id="@+id/back"
         android:src="@drawable/ic_arrow_back"

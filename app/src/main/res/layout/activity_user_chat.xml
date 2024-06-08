@@ -7,7 +7,7 @@
     android:paddingVertical="25dp"
     android:paddingHorizontal="15dp"
     android:background="@color/background_color"
-    tools:context=".View.Activity.User.UserChatActivity">
+    tools:context=".view.activity.user.UserChatActivity">
     <ImageView
         android:id="@+id/back"
         app:layout_constraintTop_toTopOf="parent"

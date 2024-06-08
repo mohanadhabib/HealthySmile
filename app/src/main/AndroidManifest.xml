@@ -16,9 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GradutionProject">
         <activity
-            android:name=".View.Activity.User.UserScanImageActivity"
-            android:screenOrientation="landscape"
+            android:name=".view.activity.GeminiChatActivity"
             android:exported="false" />
+        <activity
+            android:name=".view.activity.user.UserScanImageActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
@@ -30,106 +33,106 @@
         </service>
 
         <activity
-            android:name=".View.Activity.Doctor.DoctorSavedActivity"
+            android:name=".view.activity.doctor.DoctorSavedActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.GradutionProject" />
         <activity
-            android:name=".View.Activity.User.UserHistoryActivity"
+            android:name=".view.activity.user.UserHistoryActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserDoctorNotesActivity"
+            android:name=".view.activity.user.UserDoctorNotesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.GradutionProject" />
         <activity
-            android:name=".View.Activity.Doctor.DoctorNotesActivity"
+            android:name=".view.activity.doctor.DoctorNotesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.AiChatActivity"
+            android:name=".view.activity.AiChatActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserGuideActivity"
+            android:name=".view.activity.user.UserGuideActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.Doctor.DoctorChatActivity"
+            android:name=".view.activity.doctor.DoctorChatActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.VerifySignUpCodeActivity"
+            android:name=".view.activity.VerifySignUpCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserChatActivity"
+            android:name=".view.activity.user.UserChatActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserDoctorChatActivity"
+            android:name=".view.activity.user.UserDoctorChatActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserDoctorDetailsActivity"
+            android:name=".view.activity.user.UserDoctorDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserDoctorSearchActivity"
+            android:name=".view.activity.user.UserDoctorSearchActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserAllDoctorActivity"
+            android:name=".view.activity.user.UserAllDoctorActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.Doctor.DoctorHomeActivity"
+            android:name=".view.activity.doctor.DoctorHomeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.User.UserHomeActivity"
+            android:name=".view.activity.user.UserHomeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".View.Activity.CreateNewPasswordActivity"
+            android:name=".view.activity.CreateNewPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.VerifyCodeActivity"
+            android:name=".view.activity.VerifyCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.ResetPasswordActivity"
+            android:name=".view.activity.ResetPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.SignupActivity"
+            android:name=".view.activity.SignupActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.LoginActivity"
+            android:name=".view.activity.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.OnboardingFourActivity"
+            android:name=".view.activity.OnboardingFourActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.OnboardingThreeActivity"
+            android:name=".view.activity.OnboardingThreeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.OnboardingTwoActivity"
+            android:name=".view.activity.OnboardingTwoActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.OnboardingOneActivity"
+            android:name=".view.activity.OnboardingOneActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.Activity.SplashActivity"
+            android:name=".view.activity.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
