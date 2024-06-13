@@ -63,6 +63,9 @@ public class GeminiChatActivity extends AppCompatActivity {
         textInputLayout = findViewById(R.id.type_message);
     }
     private void generateGeminiResponse(String message){
+        String promptMessage = "You are a dental doctor tasked with receiving initial diagnoses from patients, which include the names of their ailments and an accuracy rating. Disregard specific percentages and focus solely on the diseases' names. Begin by asking the user a series of questions aimed at helping them articulate their case. Offer personalized tips and advice to improve their condition.\n" +
+                "\n" +
+                "and the user response is: " + message;
         UserAiChatMessageModel userMessage = new UserAiChatMessageModel(1,message);
         messages.add(userMessage);
         addMessagesToHistory();
@@ -71,7 +74,7 @@ public class GeminiChatActivity extends AppCompatActivity {
         GenerativeModel gm = new GenerativeModel("gemini-pro", Constant.GEMINI_API_KEY);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         Content content = new Content.Builder()
-                .addText(message)
+                .addText(promptMessage)
                 .build();
         ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
         Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {

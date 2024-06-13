@@ -99,20 +99,14 @@
         android:id="@+id/view_layout"
         app:layout_constraintTop_toTopOf="@id/view"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingTop="20dp"
+        android:paddingTop="10dp"
         android:paddingHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="0dp">
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gi0"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.015"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
         <LinearLayout
             android:id="@+id/layout_saved"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@id/gi0"
+            app:layout_constraintTop_toTopOf="parent"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:weightSum="6"
@@ -125,7 +119,7 @@
                 android:layout_height="45dp"/>
             <TextView
                 android:textColor="@color/text_color"
-                android:text="@string/my_saved"
+                android:text="@string/my_patient_s_saved"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textFontWeight="900"
@@ -140,24 +134,20 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/d1"
             app:layout_constraintTop_toBottomOf="@id/layout_saved"
             app:dividerColor="@color/grey"
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gi1"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <LinearLayout
             android:id="@+id/layout_appointment"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@id/gi1"
+            app:layout_constraintTop_toBottomOf="@id/d1"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:weightSum="6"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
@@ -182,24 +172,20 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/d2"
             app:layout_constraintTop_toBottomOf="@id/layout_appointment"
             app:dividerColor="@color/grey"
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gi2"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.385"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <LinearLayout
-            android:id="@+id/layout_gemini"
+            android:id="@+id/layout_chat_bot"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@id/gi2"
+            app:layout_constraintTop_toBottomOf="@id/d2"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:weightSum="6"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
@@ -224,24 +210,58 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <com.google.android.material.divider.MaterialDivider
-            app:layout_constraintTop_toBottomOf="@id/layout_gemini"
+            android:id="@+id/d3"
+            app:layout_constraintTop_toBottomOf="@id/layout_chat_bot"
             app:dividerColor="@color/grey"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gi3"
+        <LinearLayout
+            android:id="@+id/layout_gemini"
+            android:clickable="true"
+            app:layout_constraintTop_toBottomOf="@id/d3"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.575"
+            android:gravity="center_vertical"
+            android:weightSum="6"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_ai_with_background"
+                android:layout_weight="0.5"
+                android:layout_width="45dp"
+                android:layout_height="45dp"/>
+            <TextView
+                android:textColor="@color/text_color"
+                android:text="@string/chat_with_gemini_2"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textFontWeight="900"
+                android:fontFamily="@font/nunito"
+                android:layout_weight="4.5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:src="@drawable/ic_arrow"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/d4"
+            app:layout_constraintTop_toBottomOf="@id/layout_gemini"
+            app:dividerColor="@color/grey"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <LinearLayout
             android:id="@+id/layout_faq"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@id/gi3"
+            app:layout_constraintTop_toBottomOf="@id/d4"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:weightSum="6"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
@@ -266,24 +286,20 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/d5"
             app:layout_constraintTop_toBottomOf="@id/layout_faq"
             app:dividerColor="@color/grey"
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gi4"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.765"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <LinearLayout
             android:id="@+id/layout_logout"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@id/gi4"
+            app:layout_constraintTop_toBottomOf="@id/d5"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:weightSum="6"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView

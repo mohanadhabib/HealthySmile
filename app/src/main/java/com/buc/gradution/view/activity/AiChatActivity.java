@@ -69,7 +69,7 @@ public class AiChatActivity extends AppCompatActivity {
     private void getChatbotResponse(String message){
         HashMap<String, Object> body = new HashMap<>();
         body.put("conversation_id","0"+ FirebaseService.getFirebaseAuth().getCurrentUser().getUid() +"0");
-        body.put("bot_id","7377897245557489669");
+        body.put("bot_id","7379420348422815750");
         body.put("user",FirebaseService.getFirebaseAuth().getCurrentUser().getUid());
         body.put("query",message);
         body.put("stream",false);

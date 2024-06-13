@@ -27,6 +27,7 @@ import com.buc.gradution.service.FirebaseSecurity;
 import com.buc.gradution.service.FirebaseService;
 import com.buc.gradution.service.NetworkService;
 import com.buc.gradution.view.activity.AiChatActivity;
+import com.buc.gradution.view.activity.GeminiChatActivity;
 import com.buc.gradution.view.activity.OnboardingFourActivity;
 import com.buc.gradution.view.activity.user.UserGuideActivity;
 import com.buc.gradution.view.activity.user.UserHistoryActivity;
@@ -45,7 +46,7 @@ public class UserProfileFragment extends Fragment {
     private final BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
     private TextView userName;
-    private LinearLayout savedLayout,appointmentLayout, geminiChatLayout,faqLayout,logOutLayout;
+    private LinearLayout savedLayout,appointmentLayout,geminiChatLayout,faqLayout,logOutLayout,chatBotLayout;
     private SharedPreferences.Editor editor;
     private Context context;
     private UserModel user;
@@ -125,6 +126,10 @@ public class UserProfileFragment extends Fragment {
             }
         });
         geminiChatLayout.setOnClickListener(v ->{
+            Intent intent = new Intent(getActivity().getApplicationContext(), GeminiChatActivity.class);
+            startActivity(intent);
+        });
+        chatBotLayout.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity().getApplicationContext(), AiChatActivity.class);
             startActivity(intent);
         });
@@ -137,6 +142,7 @@ public class UserProfileFragment extends Fragment {
         geminiChatLayout = view.findViewById(R.id.layout_gemini);
         faqLayout = view.findViewById(R.id.layout_faq);
         logOutLayout = view.findViewById(R.id.layout_logout);
+        chatBotLayout = view.findViewById(R.id.layout_chat_bot);
     }
     private void getUserInfo(){
         Gson gson = new Gson();

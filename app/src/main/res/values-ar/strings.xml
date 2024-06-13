@@ -176,4 +176,6 @@
     <string name="detailed_scan">تفاصيل الفحص</string>
     <string name="chatbot">تحدث مع ChatBot</string>
     <string name="gemini">تحدث مع Gemini</string>
+    <string name="my_patient_s_saved">محفوظات المرضي</string>
+    <string name="chat_with_gemini_2">Chat With Gemini</string>
 </resources>

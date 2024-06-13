@@ -20,7 +20,7 @@ public abstract class Constant {
     public static final String CURRENT_THEME = "Current Theme";
     public static final String ENCRYPTION_KEY = "a4sv28r19nset6ca20n7cge6xlnv4310";
     public static final String API_SCAN_KEY = "yP5uOBgbULGONx06SK9k";
-    public static final String TOKEN = "pat_eDGbbLrlPhT9leqkcvimVHkXoeNE8v3TnTz6Bp3NzYHBoox7HjoeUNsiyMEKjemA";
+    public static final String TOKEN = "pat_vkAtqxffkzqYRDmjnF9Yj07tQ7cPhHvRz7R2MAFvca0e1nYNBtowckIIK7NLHHDx";
     public static final String TYPE_VALUE = "application/json";
     public static final String ACCEPT_VALUE = "*/*";
     public static final String HOST_VALUE = "api.coze.com";

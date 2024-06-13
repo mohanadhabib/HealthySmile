@@ -27,6 +27,7 @@ import com.buc.gradution.service.FirebaseSecurity;
 import com.buc.gradution.service.FirebaseService;
 import com.buc.gradution.service.NetworkService;
 import com.buc.gradution.view.activity.AiChatActivity;
+import com.buc.gradution.view.activity.GeminiChatActivity;
 import com.buc.gradution.view.activity.doctor.DoctorSavedActivity;
 import com.buc.gradution.view.activity.OnboardingFourActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -44,7 +45,7 @@ public class DoctorProfileFragment extends Fragment {
     private final BottomNavigationView bottomNavigationView;
     private ShapeableImageView profileImg;
     private TextView userName;
-    private LinearLayout savedLayout,appointmentLayout, geminiChatLayout,faqLayout,logOutLayout;
+    private LinearLayout savedLayout,appointmentLayout, geminiChatLayout,faqLayout,logOutLayout,chatBotLayout;
     private Context context;
     private DoctorModel doctor;
     public DoctorProfileFragment (ViewPager2 viewPager, BottomNavigationView bottomNavigationView){
@@ -117,6 +118,10 @@ public class DoctorProfileFragment extends Fragment {
             }
         });
         geminiChatLayout.setOnClickListener(v ->{
+            Intent intent = new Intent(getActivity().getApplicationContext(), GeminiChatActivity.class);
+            startActivity(intent);
+        });
+        chatBotLayout.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity().getApplicationContext(), AiChatActivity.class);
             startActivity(intent);
         });
@@ -129,6 +134,7 @@ public class DoctorProfileFragment extends Fragment {
         geminiChatLayout = view.findViewById(R.id.layout_gemini);
         faqLayout = view.findViewById(R.id.layout_faq);
         logOutLayout = view.findViewById(R.id.layout_logout);
+        chatBotLayout = view.findViewById(R.id.layout_chat_bot);
     }
     private void getUserInfo(){
         Gson gson = new Gson();
